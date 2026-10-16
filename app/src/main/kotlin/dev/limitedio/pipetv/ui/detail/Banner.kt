@@ -19,7 +19,8 @@ import dev.limitedio.pipetv.ui.Txt
 import dev.limitedio.pipetv.ui.Ui
 
 /** What a channel or playlist page shows. */
-class Listing(val name: String, val sub: String, val desc: String, val img: String, val videos: Paged<Item>, val item: Item)
+class Listing(val name: String, val sub: String, val desc: String, val img: String, val videos: Paged<Item>, val item: Item,
+    val banner: String = "", val tabs: List<dev.limitedio.pipetv.data.ChannelTab> = emptyList())
 
 /** Header of a channel/playlist page: round picture, names, and the favourite button. */
 class Banner(c: Context) : AnimView(c) {
@@ -29,9 +30,18 @@ class Banner(c: Context) : AnimView(c) {
     private val pic = Paint(Paint.ANTI_ALIAS_FLAG); private val m = Matrix(); private val face = Ui.paint(Ui.SURFACE)
     private val ring = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val r = RectF()
+    init { Img.listen { invalidate() } }
 
     override fun render(c: Canvas, dt: Float) {
-        val pad = Ui.u(56); val d = Ui.u(150); val ax = Ui.mx(pad, d, width.toFloat()); val ay = Ui.u(36)
+        val pad = Ui.u(40); val d = Ui.u(130); val ax = Ui.mx(pad, d, width.toFloat()); val ay = Ui.u(if (data?.banner?.isNotEmpty() == true) 132 else 30)
+        data?.banner?.takeIf { it.isNotEmpty() }?.let { url ->
+            Img.get(url, width)?.let { p ->
+                val bh = Ui.u(110); val s = maxOf(width.toFloat() / p.bmp.width, bh / p.bmp.height)
+                m.setScale(s, s); m.postTranslate((width - p.bmp.width * s) / 2, (bh - p.bmp.height * s) / 2)
+                p.shader.setLocalMatrix(m); pic.shader = p.shader
+                r.set(pad, Ui.u(8), width - pad, bh); c.drawRoundRect(r, Ui.u(20), Ui.u(20), pic)
+            }
+        }
         c.drawCircle(ax + d / 2, ay + d / 2, d / 2, face)
         val l = data ?: run { Txt.draw(c, note, pad, Ui.u(110), width - pad * 2, dim); return }
         Img.get(l.img, 300)?.let { p ->

@@ -29,7 +29,7 @@ class Opener(private val root: Root) {
     fun channel(url: String) = show(ChannelPage(root.context) {
         val c = YtPages.channel(url)
         val subs = if (c.subs >= 0) S.f(K.SUBS, YtMap.count(c.subs)) else ""
-        Listing(c.name, subs, c.desc, c.avatar, c.videos, Item("c" + url.hashCode(), url, c.name, subs, 0, Item.CHANNEL, c.avatar, subs, ""))
+        Listing(c.name, subs, c.desc, c.avatar, c.videos, Item("c" + url.hashCode(), url, c.name, subs, 0, Item.CHANNEL, c.avatar, subs, ""), c.banner, c.tabs)
     }.also(::wire))
 
     private fun playlist(url: String) = show(ChannelPage(root.context) {

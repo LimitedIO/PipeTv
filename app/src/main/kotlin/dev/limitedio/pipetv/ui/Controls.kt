@@ -8,7 +8,7 @@ import dev.limitedio.pipetv.i18n.S
 import dev.limitedio.pipetv.media.Session
 import dev.limitedio.pipetv.ui.input.Voice
 
-/** All keyboard / remote handling. Focus zones: 0 nav rail, 1 content, 2 player dock, 3 shortcut rail. */
+/** All keyboard / remote handling. Focus zones: 0 menu, 1 content, 2 menu player. */
 class Controls(private val root: Root) {
     var onNav = false; private set
     val inContent get() = zone == 1; val hold = LongPress(root)
@@ -33,17 +33,18 @@ class Controls(private val root: Root) {
     }
 
     fun focusContent() = setZone(1)
+    fun focusNav() = setZone(0)
 
     fun sessionChanged() {
         if (Session.active && root.dockS.target == 0f) root.setDock(true)
-        if (!Session.active) { root.setDock(false); root.setFull(false); if (zone == 2 || zone == 3) setZone(1) }
-        Sound.update(); root.actions.focus(zone, Session.active); root.kick()
-        root.pages.repaint(); root.dock.invalidate(); root.hud.invalidate(); root.stage.refresh(); root.stage.refit()
+        if (!Session.active) { root.setDock(false); root.setFull(false); if (zone == 2) setZone(1) }
+        Sound.update(); root.kick()
+        root.pages.repaint(); root.nav.invalidate(); root.dock.invalidate(); root.hud.invalidate(); root.stage.refresh(); root.stage.refit()
     }
 
     private fun setZone(z: Int) {
         zone = z; onNav = z == 0; if (z != 0) root.nav.exit = false
-        root.nav.lit = z == 0; root.dock.lit = z == 2; root.actions.focus(z, Session.active); root.kick()
+        root.nav.lit = z == 0; root.dock.lit = z == 2; root.kick()
         root.pages.lit(root.tab, z == 1); root.screens.top?.lit(z == 1)
     }
 
@@ -53,8 +54,7 @@ class Controls(private val root: Root) {
         if ((k == KEYCODE_MENU || k == KEYCODE_INFO) && zone != 1) { if (Session.active) root.setFull(true); return true }
         return when (zone) {
             0 -> nav(k)
-            3 -> if (k == KEYCODE_DPAD_RIGHT) { setZone(0); true } else root.actions.key(k) || k in KEYCODE_DPAD_UP..KEYCODE_DPAD_RIGHT
-            2 -> if (k == KEYCODE_DPAD_LEFT) { setZone(1); true } else if (k == KEYCODE_PROG_RED || k == KEYCODE_BOOKMARK) { Session.item?.let(root::toggleFav); true } else root.dock.key(k) || k in KEYCODE_DPAD_UP..KEYCODE_DPAD_RIGHT
+            2 -> if (k == KEYCODE_PROG_RED || k == KEYCODE_BOOKMARK) { Session.item?.let(root::toggleFav); true } else root.dock.key(k) || k in KEYCODE_DPAD_UP..KEYCODE_DPAD_RIGHT
             else -> content(e, k)
         }
     }
@@ -76,8 +76,8 @@ class Controls(private val root: Root) {
     private fun nav(k: Int): Boolean {
         when (k) {
             KEYCODE_DPAD_UP -> if (root.nav.exit) root.nav.exit = false else if (root.tab > 0) root.show(root.tab - 1)
-            KEYCODE_DPAD_DOWN -> if (root.tab < 5) root.show(root.tab + 1) else root.nav.exit = true
-            KEYCODE_DPAD_LEFT -> if (Session.active) setZone(3) else return false
+            KEYCODE_DPAD_DOWN -> if (root.nav.exit && Session.item != null) setZone(2) else if (root.tab < 5) root.show(root.tab + 1) else root.nav.exit = true
+            KEYCODE_DPAD_LEFT -> if (Session.item != null) setZone(2) else return false
             KEYCODE_DPAD_RIGHT, KEYCODE_DPAD_CENTER, KEYCODE_ENTER -> if (!root.nav.exit) setZone(1) else if (k != KEYCODE_DPAD_RIGHT) onExit()
             else -> return false
         }
@@ -91,7 +91,6 @@ class Controls(private val root: Root) {
         if (used) return true
         when {
             k == KEYCODE_DPAD_LEFT -> setZone(0)
-            k == KEYCODE_DPAD_RIGHT && Session.active -> setZone(2)
             (k == KEYCODE_MENU || k == KEYCODE_INFO) && Session.active -> root.setFull(true)
             else -> return false
         }

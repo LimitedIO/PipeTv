@@ -36,6 +36,7 @@ class SubMenu(c: Context) : AnimView(c) {
     private fun begin(t: String, h: String) { title = t; help = h; open = true; show.snap(0f); show.to(1f); visibility = VISIBLE; slider = null; checked = null }
 
     fun choose(t: String, h: String, opts: List<String>, cur: Int, pick: (Int) -> Unit) {
+        if (opts.isEmpty()) return
         begin(t, h); options = opts; idx = cur.coerceIn(0, opts.size - 1); onPick = pick; current = { cur }; ry.snap(idx.toFloat())
     }
 
@@ -68,14 +69,29 @@ class SubMenu(c: Context) : AnimView(c) {
     override fun render(c: Canvas, dt: Float) {
         val a = show.value.coerceIn(0f, 1f); if (!open && a < .01f) return
         shade.alpha = (176 * a).toInt(); c.drawRect(0f, 0f, width.toFloat(), height.toFloat(), shade)
-        val rowH = Ui.u(76); val vis = minOf(options.size, 7)
-        val ph = Ui.u(190) + (if (slider != null) Ui.u(220) else vis * rowH + Ui.u(20)); val pw = Ui.u(780)
+        val pw = minOf(Ui.u(880), width - Ui.u(80))
+        val helpLines = Txt.wrap(dim, help, pw - Ui.u(96), 3)
+        val titleLines = Txt.wrap(h1, title, pw - Ui.u(96), 2)
+        val headerH = Ui.u(52) + titleLines.size * Ui.u(48) + helpLines.size * Ui.u(34) + Ui.u(28)
+        val footerH = Ui.u(82); val rowH = Ui.u(78)
+        val available = height - Ui.u(80) - headerH - footerH
+        val vis = minOf(options.size, 7, (available / rowH).toInt().coerceAtLeast(1))
+        val ph = headerH + (if (slider != null) Ui.u(220) else vis * rowH) + footerH
         val cx = width / 2f; val top = (height - ph) / 2f + (1 - a) * Ui.u(40)
-        r.set(cx - pw / 2, top, cx + pw / 2, top + ph); c.drawRoundRect(r, Ui.u(30), Ui.u(30), panel)
-        Txt.draw(c, title, r.left + Ui.u(40), top + Ui.u(70), pw - Ui.u(80), h1)
-        Txt.draw(c, Txt.fit(dim, help, pw - Ui.u(80)), r.left + Ui.u(40), top + Ui.u(112), pw - Ui.u(80), dim)
-        slider?.draw(c, r.left + Ui.u(60), top + Ui.u(170), pw - Ui.u(120)) ?: drawList(c, r.left + Ui.u(30), top + Ui.u(140), pw - Ui.u(60), rowH, vis)
-        Txt.draw(c, S.t(K.HINT_SUB), r.left, r.bottom - Ui.u(22), pw, dim, true)
+        val left = cx - pw / 2; val bottom = top + ph
+        c.save(); c.scale(.97f + .03f * a, .97f + .03f * a, cx, top + ph / 2)
+        r.set(left, top, left + pw, bottom); c.drawRoundRect(r, Ui.u(30), Ui.u(30), panel)
+        ring.shader = LinearGradient(left, 0f, left + pw, 0f, Ui.ACCENT, Ui.ACCENT2, Shader.TileMode.CLAMP)
+        ring.alpha = 90; ring.strokeWidth = Ui.u(2); c.drawRoundRect(r, Ui.u(30), Ui.u(30), ring)
+        ring.alpha = 255; ring.strokeWidth = Ui.u(4)
+        var textY = top + Ui.u(66)
+        for (line in titleLines) { Txt.draw(c, line, left + Ui.u(48), textY, pw - Ui.u(96), h1); textY += Ui.u(48) }
+        textY += Ui.u(2)
+        for (line in helpLines) { Txt.draw(c, line, left + Ui.u(48), textY, pw - Ui.u(96), dim); textY += Ui.u(34) }
+        slider?.draw(c, left + Ui.u(60), top + headerH, pw - Ui.u(120)) ?: drawList(c, left + Ui.u(32), top + headerH, pw - Ui.u(64), rowH, vis)
+        c.drawRect(left + Ui.u(32), bottom - footerH + Ui.u(12), left + pw - Ui.u(32), bottom - footerH + Ui.u(14), RowStyle.track)
+        Txt.draw(c, Txt.fit(dim, S.t(K.HINT_SUB), pw - Ui.u(80)), left + Ui.u(40), bottom - Ui.u(28), pw - Ui.u(80), dim, true)
+        c.restore()
     }
 
     private fun drawList(c: Canvas, x: Float, y: Float, w: Float, rowH: Float, vis: Int) {

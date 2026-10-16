@@ -21,13 +21,19 @@ object YtPages {
     fun channel(url: String): Channel {
         Yt.init()
         val info = ChannelInfo.getInfo(svc, url)
-        val tab = info.tabs.firstOrNull { it.contentFilters.contains("videos") } ?: info.tabs.first()
-        val first = ChannelTabInfo.getInfo(svc, tab)
-        val videos = Paged(YtMap.items(first.relatedItems, info.name), first.nextPage) { page ->
-            val r = ChannelTabInfo.getMoreItems(svc, tab, page)
-            YtMap.items(r.items, info.name) to r.nextPage
+        val tabs = info.tabs.map { tab ->
+            ChannelTab(tab.contentFilters.firstOrNull().orEmpty()) {
+                val first = ChannelTabInfo.getInfo(svc, tab)
+                Paged(YtMap.items(first.relatedItems, info.name), first.nextPage) { page ->
+                    val r = ChannelTabInfo.getMoreItems(svc, tab, page)
+                    YtMap.items(r.items, info.name) to r.nextPage
+                }
+            }
         }
-        return Channel(info.name, info.subscriberCount, info.description.orEmpty(), YtMap.img(info.avatars), videos)
+        val primary = tabs.firstOrNull { it.name == "videos" } ?: tabs.firstOrNull()
+        val ordered = listOfNotNull(primary) + tabs.filter { it !== primary }
+        val videos = primary?.load?.invoke() ?: Paged<Item>(emptyList(), null) { emptyList<Item>() to null }
+        return Channel(info.name, info.subscriberCount, info.description.orEmpty(), YtMap.img(info.avatars), videos, YtMap.img(info.banners), ordered)
     }
 
     fun playlist(url: String): Playlist {

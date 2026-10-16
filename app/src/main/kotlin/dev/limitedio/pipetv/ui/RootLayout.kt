@@ -7,27 +7,27 @@ import dev.limitedio.pipetv.media.Session
 object RootLayout {
     fun apply(root: Root, dk: Float, f: Float) {
         val w = root.width; val h = root.height; if (w == 0) return
-        val pw = Ui.u(root.panelW.value); val panel = pw * dk; val rail = Ui.u(104); val rtl = Ui.rtl
-        val ar = Ui.u(96) * root.actions.rail.value.coerceIn(0f, 1f); val l = if (rtl) panel else rail; val r = if (rtl) w - rail else w - panel
+        val rail = Ui.u(104); val rtl = Ui.rtl
+        val sidebar = rail + Ui.u(236) * dk
+        val l = if (rtl) 0f else sidebar; val r = if (rtl) w - sidebar else w.toFloat()
         (root.pages.views + root.screens.views).forEach { it.layout(l.toInt(), 0, r.toInt(), h) }
-        val nw = Ui.u(340).toInt(); if (rtl) root.nav.layout((w - nw - ar).toInt(), 0, (w - ar).toInt(), h) else root.nav.layout(ar.toInt(), 0, (ar + nw).toInt(), h)
-        if (rtl) root.actions.layout((w - ar).toInt(), 0, w, h) else root.actions.layout(0, 0, ar.toInt(), h)
-        val mw = pw - Ui.u(48); val mh = mw * 9 / 16
-        val mx = if (rtl) Ui.u(24) else w - panel + Ui.u(24); val my = Ui.u(48)
-        val g = 1f + .06f * root.dock.popValue * (1 - f); val gx = (mw * g - mw) / 2; val gy = (mh * g - mh) / 2
-        val x = (mx - gx) * (1 - f); val y = (my - gy) * (1 - f)
-        if (Session.active) root.stage.layout(x.toInt(), y.toInt(), (x + mw * g + (w - mw * g) * f).toInt(), (y + mh * g + (h - mh * g) * f).toInt())
+        val nw = Ui.u(340).toInt(); if (rtl) root.nav.layout(w - nw, 0, w, h) else root.nav.layout(0, 0, nw, h)
+        val mw = Ui.u(292); val mh = mw * 9 / 16
+        val mx = if (rtl) w - sidebar + Ui.u(24) else sidebar - Ui.u(316)
+        val my = h - Ui.u(380)
+        val x = mx * (1 - f); val y = my * (1 - f)
+        if (Session.active) root.stage.layout(x.toInt(), y.toInt(), (x + mw + (w - mw) * f).toInt(), (y + mh + (h - mh) * f).toInt())
         else root.stage.layout(0, 0, 1, 1)
         root.dock.videoH = mh
-        root.dock.layout(mx.toInt(), (my + mh + Ui.u(20)).toInt(), (mx + mw).toInt(), h - Ui.u(16).toInt())
+        root.dock.layout(mx.toInt(), (my + mh + Ui.u(10)).toInt(), (mx + mw).toInt(), h - Ui.u(12).toInt())
         root.hud.layout(0, 0, w, h); root.toast.layout(0, 0, w, h); root.update.layout(0, 0, w, h)
-        val mnw = Ui.u(820).toInt(); val mnx = if (rtl) Ui.u(40).toInt() else w - mnw - Ui.u(40).toInt()
+        val mnw = minOf(Ui.u(820).toInt(), w - Ui.u(80).toInt()); val mnx = (w - mnw) / 2
         root.playerSub.layout(0, 0, w, h)
-        root.menu.layout(mnx, Ui.u(110).toInt(), mnx + mnw, h - Ui.u(110).toInt())
+        root.menuShade.layout(0, 0, w, h)
+        root.menu.layout(mnx, Ui.u(64).toInt(), mnx + mnw, h - Ui.u(64).toInt())
         root.stage.alpha = if (Session.active) 1f else 0f
         root.dock.visibility = if (dk > .02f && f < .02f) View.VISIBLE else View.GONE
         root.hud.visibility = if (f > .02f) View.VISIBLE else View.GONE
         root.nav.visibility = if (f > .98f) View.GONE else View.VISIBLE
-        root.actions.visibility = if (f > .98f || ar < 2f) View.GONE else View.VISIBLE
     }
 }

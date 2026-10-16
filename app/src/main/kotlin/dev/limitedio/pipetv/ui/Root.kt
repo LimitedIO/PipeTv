@@ -18,12 +18,12 @@ import dev.limitedio.pipetv.ui.widgets.SubMenu
 /** The screen: owns the pages, the player and the two big motions (dock slide, fullscreen expand). */
 class Root(c: Context) : ViewGroup(c) {
     val nav = Nav(c); val stage = Stage(c); val dock = Dock(c); val hud = Hud(c); val toast = Toast(c); val update = UpdateUi(c)
-    val actions = Actions(c, ::act)
+    val menuShade = android.view.View(c).apply { setBackgroundColor(0xB807080F.toInt()); visibility = GONE }
     val menu = RowList(c, { S.t(K.OPTIONS) }, true).apply { visibility = GONE }
     val playerSub = SubMenu(c).apply { visibility = GONE }
     val controls = Controls(this); val screens = ScreenStack(this); val opener = Opener(this)
     val pages = Pages(c, opener::pick, opener::details, { onLanguage() }, toast::show)
-    val dockS = Spring(0f, 170f, 24f); val fullS = Spring(0f, 170f, 24f); val panelW = Spring(580f, 170f, 24f)
+    val dockS = Spring(0f, 170f, 24f); val fullS = Spring(0f, 170f, 24f)
     var tab = 0; private set
     var menuOpen = false; private set; var askMic: () -> Unit = {}
     var fromPlayer = false // a video-info page opened from fullscreen is up: Back returns to the video
@@ -33,20 +33,21 @@ class Root(c: Context) : ViewGroup(c) {
         var last = 0L
         override fun doFrame(t: Long) {
             val dt = if (last == 0L) .016f else minOf((t - last) / 1e9f, .05f); last = t
-            dockS.step(dt); fullS.step(dt); panelW.step(dt); actions.rail.step(dt); relayout()
-            if (dockS.moving || fullS.moving || panelW.moving || actions.rail.moving || dock.popMoving) Choreographer.getInstance().postFrameCallback(this) else { last = 0; running = false }
+            dockS.step(dt); fullS.step(dt); relayout()
+            if (dockS.moving || fullS.moving) Choreographer.getInstance().postFrameCallback(this) else { last = 0; running = false }
         }
     }
 
     init {
         setWillNotDraw(false); clipChildren = false // the dock draws its focus ring and progress over the video
         pages.views.forEach { addView(it); it.visibility = GONE }
-        listOf(nav, actions, stage, dock, hud, menu, playerSub, toast, update).forEach { addView(it) }
+        listOf(nav, stage, dock, hud, menuShade, menu, playerSub, toast, update).forEach { addView(it) }
         show(0, false)
         Session.onChange = { controls.sessionChanged() }
         Session.onReady = { setFull(true) }
         Session.onOpenFailed = { toast.show(S.t(K.CANT_PLAY).substringBefore(".")) }
-        dock.onExpand = { setFull(true) }; dock.onPlay = { Session.open(it) }; dock.onFocus = ::kick
+        dock.onAction = ::act; dock.drawIcon = Actions::icon
+        dock.onNav = { controls.focusNav() }; dock.onContent = { controls.focusContent() }
         pages.search.onVoice = { voice() }
         Voice.onFail = { quiet -> toast.show(S.t(if (quiet) K.NO_SPEECH else K.VOICE_NA)) }
     }
@@ -56,22 +57,23 @@ class Root(c: Context) : ViewGroup(c) {
     fun setFull(on: Boolean) { fullS.target = if (on) 1f else 0f; if (on) hud.nudge() else closeMenu(); kick() }
     val full get() = fullS.target == 1f
 
-    fun openMenu() { menu.rows = PlayerMenu.rows(playerSub); menuOpen = true; menu.visibility = VISIBLE; hud.nudge(); relayout() }
-    fun closeMenu() { menuOpen = false; menu.visibility = GONE; playerSub.close() }
+    fun openMenu() { menu.rows = PlayerMenu.rows(playerSub); menuOpen = true; menuShade.visibility = VISIBLE; menu.visibility = VISIBLE; hud.nudge(); relayout() }
+    fun closeMenu() { menuOpen = false; menuShade.visibility = GONE; menu.visibility = GONE; playerSub.close() }
 
     /** Adds or removes [item] from the favourites and says so. */
     fun toggleFav(item: dev.limitedio.pipetv.data.Item) {
         toast.show(S.t(if (Favs.toggle(item)) K.FAV_ADDED else K.FAV_REMOVED)); pages.refreshFavs()
+        dock.invalidate()
         screens.views.forEach { it.invalidate() }
     }
     fun voice() { show(1); if (Voice.available(context)) askMic() else toast.show(S.t(K.VOICE_NA)) }
     fun onLanguage() { Yt.relocalize(); pages.relocalize(tab); nav.invalidate(); relayout() }
 
-    fun syncDock() { val small = tab <= 2 || screens.any; panelW.target = if (small) 300f else 580f; dock.compact = small; kick() }
+    fun syncDock() { kick() }
 
     private fun act(i: Int) {
         when (i) {
-            0 -> setFull(true); 1 -> { Engine.exo.playWhenReady = !Engine.exo.playWhenReady; actions.invalidate(); dock.invalidate() }
+            0 -> setFull(true); 1 -> { Engine.exo.playWhenReady = !Engine.exo.playWhenReady; dock.invalidate() }
             2 -> Session.next(); 3 -> Session.item?.let(::toggleFav); 4 -> { setFull(true); openMenu() }
             else -> { Session.stop(); toast.show(S.t(K.PLAYBACK_CLOSED)); controls.focusContent() }
         }

@@ -30,15 +30,17 @@ class Nav(c: Context) : AnimView(c) {
     private val fill = Paint(Paint.ANTI_ALIAS_FLAG)
     private val r = RectF()
 
-    private val itemH get() = Ui.u(90)
-    private val y0 get() = Ui.u(190)
+    private val itemH get() = Ui.u(if (dev.limitedio.pipetv.media.Session.active) 58 else 90)
+    private val y0 get() = Ui.u(if (dev.limitedio.pipetv.media.Session.active) 88 else 190)
 
     override fun render(c: Canvas, dt: Float) {
-        val pw = Ui.u(104) + open.value.coerceIn(0f, 1f) * Ui.u(226)
+        val active = dev.limitedio.pipetv.media.Session.active
+        val expanded = if (active) 1f else open.value.coerceIn(0f, 1f)
+        val pw = Ui.u(104) + expanded * Ui.u(236)
         val ox = if (Ui.rtl) width - pw else 0f
         c.drawRect(ox, 0f, ox + pw, height.toFloat(), bg)
-        brand.alpha = (255 * open.value).toInt().coerceIn(0, 255)
-        Txt.draw(c, "PipeTv", ox + Ui.u(40), Ui.u(130), pw - Ui.u(80), brand)
+        brand.alpha = (255 * expanded).toInt().coerceIn(0, 255)
+        Txt.draw(c, "PipeTv", ox + Ui.u(40), Ui.u(if (active) 58 else 130), pw - Ui.u(80), brand)
         val py = y0 + pill.value * itemH
         r.set(ox + Ui.u(20), py, ox + pw - Ui.u(20), py + itemH - Ui.u(14))
         fill.shader = LinearGradient(r.left, 0f, r.right, 0f, Ui.ACCENT, Ui.ACCENT2, Shader.TileMode.CLAMP)
@@ -47,12 +49,12 @@ class Nav(c: Context) : AnimView(c) {
         for ((i, t) in tabs.withIndex()) {
             val cy = y0 + i * itemH + (itemH - Ui.u(14)) / 2
             val on = if (exit) i == 6 else i == sel
-            icon.color = if (on) 0xFF0A0B14.toInt() else Ui.DIM
+            icon.color = if (on && lit) 0xFF0A0B14.toInt() else Ui.DIM
             val ix = if (Ui.rtl) width - Ui.u(52) else Ui.u(52) // centre of the 104-wide collapsed rail (same as the highlight)
             if (t.second == Glyphs.FAV) Glyphs.star(c, ix, cy, Ui.u(20), icon, on) else if (t.second == Glyphs.EXIT) Glyphs.power(c, ix, cy, Ui.u(18), icon) else Icons.draw(c, t.second, ix, cy, Ui.u(18), icon)
-            label.color = if (on) 0xFF0A0B14.toInt() else Ui.TEXT
-            label.alpha = (255 * open.value).toInt().coerceIn(0, 255)
-            if (open.value > .05f) Txt.draw(c, t.first, ox + if (Ui.rtl) Ui.u(30) else Ui.u(108), cy + Ui.u(10), pw - Ui.u(140), label)
+            label.color = if (on && lit) 0xFF0A0B14.toInt() else Ui.TEXT
+            label.alpha = (255 * expanded).toInt().coerceIn(0, 255)
+            if (expanded > .05f) Txt.draw(c, t.first, ox + if (Ui.rtl) Ui.u(30) else Ui.u(108), cy + Ui.u(10), pw - Ui.u(140), label)
         }
     }
 }

@@ -24,7 +24,7 @@ class TimelineView(c: Context) : AnimView(c) {
     private val dim = Ui.paint(Ui.DIM, 22f); private val axis = Ui.paint(0x33FFFFFF)
     private val paint = TimelinePaint({ width }, Ui.u(158))
     private val pad get() = Ui.u(56); private val rowH get() = Ui.u(158); private val dayH get() = Ui.u(112)
-    private val top get() = Ui.u(130)
+    private val top get() = Ui.u(166)
 
     private var total = ""
 
@@ -60,9 +60,10 @@ class TimelineView(c: Context) : AnimView(c) {
     private fun dev.limitedio.pipetv.ui.Spring.to2(v: Float) { target = v.coerceAtLeast(0f); invalidate() }
 
     override fun render(c: Canvas, dt: Float) {
-        Txt.draw(c, S.t(K.HISTORY), pad, Ui.u(84) - scroll.value.coerceAtMost(Ui.u(60)), width - pad * 2, head)
-        if (lines.isNotEmpty()) { val tw = dim.measureText(total); Txt.draw(c, total, Ui.mx(width - pad - tw, tw, width.toFloat()), Ui.u(84) - scroll.value.coerceAtMost(Ui.u(60)), tw, dim) }
-        if (lines.isEmpty()) { Txt.draw(c, S.t(K.NOTHING_WATCHED), pad, Ui.u(150), width - pad * 2, dim.apply { textSize = Ui.u(28) }); return }
+        Txt.draw(c, S.t(K.HISTORY), pad, Ui.u(84), width - pad * 2, head)
+        Txt.draw(c, Txt.fit(dim, total, width - pad * 2), pad, Ui.u(126), width - pad * 2, dim)
+        if (lines.isEmpty()) { Txt.draw(c, S.t(K.NOTHING_WATCHED), pad, Ui.u(210), width - pad * 2, dim); return }
+        c.save(); c.clipRect(0f, top, width.toFloat(), height.toFloat())
         val ax = pad + Ui.u(150)
         c.drawRect(x(ax - Ui.u(2), Ui.u(4)), 0f, x(ax - Ui.u(2), Ui.u(4)) + Ui.u(4), height.toFloat(), axis)
         var y = top - scroll.value
@@ -71,6 +72,7 @@ class TimelineView(c: Context) : AnimView(c) {
             if (y + h > 0 && y < height) if (l is Line.Day) paint.day(c, l, y, ax) else paint.entry(c, (l as Line.Watch).e, y, ax, lit && i == idx)
             y += h
         }
+        c.restore()
         Scrollbar.draw(c, width.toFloat(), top, height - Ui.u(20), yOf(lines.size), height.toFloat(), scroll.value, lit)
     }
 }

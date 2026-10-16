@@ -14,7 +14,8 @@ class Paged<T>(var items: List<T>, var next: Page?, private val more: (Page) -> 
     }
 }
 
-class Channel(val name: String, val subs: Long, val desc: String, val avatar: String, val videos: Paged<Item>)
+class ChannelTab(val name: String, val load: () -> Paged<Item>)
+class Channel(val name: String, val subs: Long, val desc: String, val avatar: String, val videos: Paged<Item>, val banner: String = "", val tabs: List<ChannelTab> = emptyList())
 
 class Playlist(val name: String, val by: String, val count: Long, val thumb: String, val videos: Paged<Item>)
 
