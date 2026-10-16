@@ -49,4 +49,5 @@ val Ru = mapOf(
     LAYOUT to "Направление интерфейса", LAYOUT_HELP to "Зеркалит весь интерфейс для языков справа налево",
     LTR to "Слева направо", RTL to "Справа налево", RTL_ASK to "Отзеркалить интерфейс для этого языка?",
     KEEP_LTR to "Нет, оставить слева направо", USE_RTL to "Да, справа налево",
+    POPULAR to "Популярное", T_MUSIC to "Музыка", T_GAMING to "Игры", T_NEWS to "Новости", T_SPORTS to "Спорт", T_MOVIES to "Фильмы", T_LEARN to "Обучение", T_COMEDY to "Юмор", T_LIVE to "Прямой эфир",
 )

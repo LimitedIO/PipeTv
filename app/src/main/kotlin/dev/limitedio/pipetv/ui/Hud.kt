@@ -24,11 +24,12 @@ class Hud(c: Context) : AnimView(c) {
     private val badge = Ui.paint(Ui.ACCENT2, 26f, true); private val dark = Ui.paint(0x66000000)
     private val fill = Paint(Paint.ANTI_ALIAS_FLAG); private val shade = Paint()
     private val r = RectF(); private val extras = HudExtras()
-    private val waiting get() = Session.item != null && Engine.exo.playWhenReady && !Engine.exo.isPlaying &&
-        Engine.exo.playbackState != Player.STATE_ENDED && !Session.failed
+    /** Buffering mid-video. The very first load is the stage backdrop's job, so the two spinners never show together. */
+    private val waiting get() = Session.item != null && Engine.frame && Session.pending == null && Engine.exo.playWhenReady &&
+        !Engine.exo.isPlaying && Engine.exo.playbackState != Player.STATE_ENDED && !Session.failed
     override val animating get() = waiting || spin.value > .01f
     override val ticking get() = visibility == VISIBLE
-    override val tickMs get() = 120L
+    override val tickMs get() = 120L // chrome refresh; the spinner itself runs per frame via animating
 
     fun nudge() { shownAt = SystemClock.uptimeMillis(); alpha.to(1f) }
 
@@ -65,7 +66,7 @@ class Hud(c: Context) : AnimView(c) {
         c.drawText(Ui.fmt(p.currentPosition), x0, y + Ui.u(52), time)
         val t = Ui.fmt(p.duration.coerceAtLeast(0)); c.drawText(t, x1 - time.measureText(t), y + Ui.u(52), time)
         Txt.draw(c, S.t(K.HINT_PLAYER), 0f, h - Ui.u(48), w, hint, true)
-        if (!p.isPlaying && !waiting && !Session.failed && Session.item != null) Icons.pause(c, w / 2, h / 2, Ui.u(46), dot)
+        if (!p.isPlaying && !waiting && Engine.frame && !Session.failed && Session.item != null) Icons.pause(c, w / 2, h / 2, Ui.u(46), dot)
         if (Session.failed) Txt.draw(c, S.t(K.RETRYING), 0f, h / 2, w, title, true)
         if (Subs.state == 1) Txt.draw(c, S.t(K.SUBS_LOADING), 0f, h - Ui.u(300), w, hint, true)
     }

@@ -18,7 +18,6 @@ class TimelinePaint(private val widthOf: () -> Int, private val rowH: Float) {
     private val time = Ui.paint(Ui.DIM, 24f, true); private val title = Ui.paint(Ui.TEXT, 27f, true)
     private val face = Ui.paint(Ui.SURFACE)
     private val dot = Ui.paint(Ui.ACCENT); private val track = Ui.paint(0x33FFFFFF); private val bar = Ui.paint(Ui.ACCENT2)
-    private val red = Ui.paint(0xFFE5254B.toInt()); private val white = Ui.paint(Ui.TEXT, 24f, true)
     private val ring = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE; strokeWidth = Ui.u(4) }
     private val r = RectF()
     private val pad get() = Ui.u(56)
@@ -31,7 +30,7 @@ class TimelinePaint(private val widthOf: () -> Int, private val rowH: Float) {
         Txt.draw(c, l.summary, x(ax + Ui.u(40), width - ax - pad - Ui.u(40)), y + Ui.u(84), width - ax - pad - Ui.u(40), dim)
     }
 
-    fun entry(c: Canvas, e: Entry, y: Float, ax: Float, on: Boolean, removing: Boolean) {
+    fun entry(c: Canvas, e: Entry, y: Float, ax: Float, on: Boolean) {
         val cx = ax + Ui.u(36); val cw = width - cx - pad
         dot.alpha = if (on) 255 else 120; c.drawCircle(x(ax, 0f), y + rowH / 2, Ui.u(if (on) 9 else 6), dot)
         Txt.draw(c, Days.time(e.at), x(pad, Ui.u(110)), y + rowH / 2 + Ui.u(8), Ui.u(110), time)
@@ -46,7 +45,6 @@ class TimelinePaint(private val widthOf: () -> Int, private val rowH: Float) {
         val note = if (e.fraction >= .95f) S.t(K.WATCHED) else if (e.resume > 0) S.f(K.RESUME_AT, Ui.fmt(e.resume)) else ""
         Txt.draw(c, note, bx, r.top + Ui.u(32), bw, dim)
         if (on) outline(c, x(cx, cw), y, cw)
-        if (on && removing) removeChip(c, x(cx, cw) + cw, y)
     }
 
     private fun outline(c: Canvas, cx: Float, y: Float, cw: Float) {
@@ -55,11 +53,5 @@ class TimelinePaint(private val widthOf: () -> Int, private val rowH: Float) {
         c.drawRoundRect(r, Ui.u(18), Ui.u(18), ring)
     }
 
-    private fun removeChip(c: Canvas, edge: Float, y: Float) {
-        val w = white.measureText(S.t(K.REMOVE)) + Ui.u(48)
-        val l = if (Ui.rtl) edge - width.toFloat() + pad else edge - w - Ui.u(20)
-        r.set(l, y + rowH / 2 - Ui.u(28), l + w, y + rowH / 2 + Ui.u(28)); c.drawRoundRect(r, Ui.u(28), Ui.u(28), red)
-        Txt.draw(c, S.t(K.REMOVE), r.left, r.centerY() + Ui.u(9), r.width(), white, true)
-    }
 
 }

@@ -49,4 +49,5 @@ val En = mapOf(
     LAYOUT to "Layout direction", LAYOUT_HELP to "Mirror the whole interface for right-to-left languages",
     LTR to "Left to right", RTL to "Right to left", RTL_ASK to "Mirror the layout for this language?",
     KEEP_LTR to "No, keep left-to-right", USE_RTL to "Yes, mirror to right-to-left",
+    POPULAR to "Popular", T_MUSIC to "Music", T_GAMING to "Gaming", T_NEWS to "News", T_SPORTS to "Sports", T_MOVIES to "Movies", T_LEARN to "Learning", T_COMEDY to "Comedy", T_LIVE to "Live",
 )

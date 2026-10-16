@@ -7,6 +7,8 @@ import dev.limitedio.pipetv.data.Store
 object Progress {
     private val saver = object : Runnable { override fun run() { save(); Bg.main.postDelayed(this, 10_000) } }
 
+    private var dog: Runnable? = null
+
     fun schedule() { Bg.main.removeCallbacks(saver); Bg.main.postDelayed(saver, 10_000) }
     fun cancel() = Bg.main.removeCallbacks(saver)
 
@@ -21,7 +23,9 @@ object Progress {
     /** Sound but no picture after a few seconds means the decoder gave up: step the quality down. */
     fun watchFrames() {
         val t = Session.token; val si = Session.info ?: return
-        if (si.videoOnlyStreams.isEmpty() && si.videoStreams.isEmpty()) return
-        Bg.main.postDelayed({ if (t == Session.token && Engine.exo.isPlaying && Engine.exo.videoSize.width == 0) Recovery.onError() }, 5000)
+        if (Engine.frame || (si.videoOnlyStreams.isEmpty() && si.videoStreams.isEmpty())) return
+        dog?.let(Bg.main::removeCallbacks)
+        dog = Runnable { if (t == Session.token && !Engine.frame && Engine.exo.playWhenReady && Engine.exo.playbackState == androidx.media3.common.Player.STATE_READY) Recovery.noPicture() }
+        Bg.main.postDelayed(dog!!, 3500)
     }
 }

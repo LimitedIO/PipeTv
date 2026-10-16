@@ -49,4 +49,5 @@ val Ar = mapOf(
     LAYOUT to "اتجاه الواجهة", LAYOUT_HELP to "عكس الواجهة بالكامل للغات من اليمين إلى اليسار",
     LTR to "من اليسار إلى اليمين", RTL to "من اليمين إلى اليسار", RTL_ASK to "هل تريد عكس الواجهة لهذه اللغة؟",
     KEEP_LTR to "لا، أبقِ من اليسار إلى اليمين", USE_RTL to "نعم، من اليمين إلى اليسار",
+    POPULAR to "الأكثر رواجًا", T_MUSIC to "موسيقى", T_GAMING to "ألعاب", T_NEWS to "أخبار", T_SPORTS to "رياضة", T_MOVIES to "أفلام", T_LEARN to "تعلّم", T_COMEDY to "كوميديا", T_LIVE to "بث مباشر",
 )

@@ -49,4 +49,5 @@ val Pt = mapOf(
     LAYOUT to "Direção do layout", LAYOUT_HELP to "Espelha toda a interface para idiomas da direita para a esquerda",
     LTR to "Esquerda para a direita", RTL to "Direita para a esquerda", RTL_ASK to "Espelhar o layout para este idioma?",
     KEEP_LTR to "Não, manter esquerda para a direita", USE_RTL to "Sim, direita para a esquerda",
+    POPULAR to "Popular", T_MUSIC to "Música", T_GAMING to "Jogos", T_NEWS to "Notícias", T_SPORTS to "Esportes", T_MOVIES to "Filmes", T_LEARN to "Aprender", T_COMEDY to "Comédia", T_LIVE to "Ao vivo",
 )

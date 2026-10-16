@@ -11,7 +11,7 @@ import dev.limitedio.pipetv.i18n.S
 
 /** Left rail: icons only while content has focus, glides open with labels when it gets focus. */
 class Nav(c: Context) : AnimView(c) {
-    private val tabs get() = listOf(S.t(K.HOME) to Icons.HOME, S.t(K.SEARCH) to Icons.SEARCH, S.t(K.TRENDING) to Icons.TREND,
+    private val tabs get() = listOf(S.t(K.HOME) to Icons.HOME, S.t(K.SEARCH) to Icons.SEARCH, S.t(K.POPULAR) to Icons.TREND,
         S.t(K.FAVORITES) to Glyphs.FAV, S.t(K.HISTORY) to Icons.HISTORY, S.t(K.SETTINGS) to Icons.SETTINGS)
     var sel = 0
         set(v) { field = v; pill.to(v.toFloat()) }

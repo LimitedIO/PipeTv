@@ -17,6 +17,10 @@ object Feed {
     fun trending(): List<Item> =
         runCatching { Yt.trending() }.getOrNull()?.takeIf { it.isNotEmpty() } ?: Yt.search("trending now").items
 
+    /** One topic of the Popular page: the trending kiosk, or a search for the (localised) topic name. */
+    fun topic(name: String, trending: Boolean): List<Item> =
+        if (trending) trending() else Yt.search(name).items.filter { it.kind == Item.VIDEO }
+
     /** Round-robin merge so every source shows up near the top, minus duplicates and seen videos. */
     private fun mix(lists: List<List<Item>?>, seen: Set<String>): List<Item> {
         val out = LinkedHashMap<String, Item>()

@@ -29,6 +29,8 @@ object Session {
     var onReady: () -> Unit = {}
     private var expand = false
     internal var cap = 2160
+    /** Picture fallback: 0 normal, 1 720p, 2 combined stream. */
+    internal var safe = 0
 
     val failed get() = Recovery.failed
     val active get() = item != null || pending != null
@@ -36,8 +38,7 @@ object Session {
     val loading get() = pending != null
     val height get() = if (Prefs.quality == 0) minOf(1080, cap) else minOf(Prefs.quality, cap)
 
-    fun changed() = onChange()
-    fun noExpand() { expand = false }
+    fun changed() = onChange() ; fun noExpand() { expand = false }
 
     private class Opened(val info: StreamInfo, val related: List<Item>, val resume: Long)
 
@@ -59,7 +60,7 @@ object Session {
 
     private fun swap(it: Item, o: Opened) {
         Progress.save(); Recovery.reset()
-        item = it; info = o.info; related = o.related; cap = 2160
+        item = it; info = o.info; related = o.related; cap = 2160; safe = 0
         subs = o.info.subtitles.distinctBy { s -> s.languageTag }; audios = AudioOpts.build(o.info); audioIdx = 0
         sub = if (!Prefs.subs) -1 else subs.indexOfFirst { s -> s.languageTag.startsWith(S.cur.code) }.takeIf { i -> i >= 0 }
             ?: subs.indexOfFirst { s -> s.languageTag.startsWith("en") }
@@ -73,7 +74,7 @@ object Session {
     internal fun start(pos: Long) {
         val si = info ?: return
         Engine.frame = false
-        Engine.exo.setMediaSource(Sources.build(si, height, audios.getOrNull(audioIdx)?.stream), pos)
+        Engine.exo.setMediaSource(Sources.build(si, if (safe > 0) minOf(height, 720) else height, safe > 1, audios.getOrNull(audioIdx)?.stream), pos)
         Engine.exo.playbackParameters = PlaybackParameters(Prefs.speed)
         Engine.exo.prepare(); Engine.exo.playWhenReady = true
     }

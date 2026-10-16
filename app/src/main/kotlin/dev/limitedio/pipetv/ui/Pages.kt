@@ -17,16 +17,15 @@ import dev.limitedio.pipetv.ui.timeline.TimelineView
 class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -> Unit, toast: (String) -> Unit) {
     val home = Grid(c) { S.t(K.RECOMMENDED) }
     val search = SearchPage(c)
-    val trending = Grid(c) { S.t(K.TRENDING) }
+    val popular = PopularPage(c)
     val favs = FavsPage(c)
     val history = TimelineView(c)
     val settings = SettingsPage(c, onLang, { search.keyboard.refresh() }, toast)
-    val views: List<View> = listOf(home, search, trending, favs, history, settings)
+    val views: List<View> = listOf(home, search, popular, favs, history, settings)
     private var homeAt = 0L
-    private var trendingLoaded = false
 
     init {
-        listOf(home, trending).forEach { it.onPick = pick; it.onMenu = menu }
+        home.onPick = pick; home.onMenu = menu; popular.picks(pick, menu)
         favs.picks(pick, menu)
         search.picks(pick, menu); history.onPick = pick; history.onMenu = menu
         home.items = mark(Store.load("feed"))
@@ -43,14 +42,14 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
     fun enter(i: Int) {
         when (i) {
             0 -> if (homeAt == 0L || SystemClock.uptimeMillis() - homeAt > 600_000) loadHome()
-            2 -> if (!trendingLoaded) { trendingLoaded = true; load(trending) { Feed.trending() } }
+            2 -> popular.enter()
             3 -> refreshFavs()
             4 -> history.reload()
         }
     }
 
     /** The language changed: refresh everything that was fetched in the old one. */
-    fun relocalize(current: Int) { homeAt = 0; trendingLoaded = false; search.keyboard.refresh(); enter(current) }
+    fun relocalize(current: Int) { homeAt = 0; popular.reset(); search.keyboard.refresh(); enter(current) }
 
     private fun loadHome() {
         homeAt = SystemClock.uptimeMillis()
@@ -61,33 +60,29 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
         }
     }
 
-    private fun load(g: Grid, work: () -> List<Item>) = Bg.io({ work() }) { r ->
-        g.message = if (r == null) S.t(K.LOAD_FAILED) else null
-        g.items = mark(r ?: emptyList()); g.busy = false
-    }
-
     /** Back closes an open settings pop-up first. */
     fun closeSub(): Boolean = settings.closeSub()
 
-    fun setCols(n: Int) { listOf(home, trending, favs.grid).forEach { it.cols = n } }
+    fun setCols(n: Int) { listOf(home, popular.grid, favs.grid).forEach { it.cols = n } }
 
     fun refreshFavs() { favs.reload(); views.forEach { it.invalidate() } }
 
     /** The focused card of page [i] (what the favourite key acts on). */
-    fun focusedItem(i: Int): Item? = when (val v = views[i]) { is Grid -> v.focused(); is FavsPage -> v.grid.focused(); is SearchPage -> v.grid.focused(); is TimelineView -> v.focused(); else -> null }
+    fun focusedItem(i: Int): Item? = when (val v = views[i]) { is Grid -> v.focused(); is PopularPage -> v.grid.focused(); is FavsPage -> v.grid.focused(); is SearchPage -> v.grid.focused(); is TimelineView -> v.focused(); else -> null }
 
     fun lit(i: Int, on: Boolean) {
         when (val v = views[i]) {
             is Grid -> { v.lit = on; v.invalidate() }
             is SearchPage -> v.lit(on)
             is FavsPage -> v.lit(on)
+            is PopularPage -> v.lit(on)
             is TimelineView -> { v.lit = on; v.invalidate() }
             is SettingsPage -> v.lit(on)
         }
     }
 
     fun key(i: Int, code: Int, repeat: Int): Boolean = when (val v = views[i]) {
-        is Grid -> v.key(code); is FavsPage -> v.key(code); is SearchPage -> v.key(code); is TimelineView -> v.key(code)
+        is Grid -> v.key(code); is PopularPage -> v.key(code); is FavsPage -> v.key(code); is SearchPage -> v.key(code); is TimelineView -> v.key(code)
         is SettingsPage -> v.key(code, repeat); else -> false
     }
 }

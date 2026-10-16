@@ -26,7 +26,7 @@ object Sources {
     fun heights(info: StreamInfo): List<Int> =
         (info.videoOnlyStreams + info.videoStreams).map { it.height }.filter { it > 0 }.distinct().sortedDescending()
 
-    fun build(info: StreamInfo, maxH: Int, pick: AudioStream?): MediaSource {
+    fun build(info: StreamInfo, maxH: Int, combinedOnly: Boolean, pick: AudioStream?): MediaSource {
         val live = info.streamType == StreamType.LIVE_STREAM || info.streamType == StreamType.AUDIO_LIVE_STREAM
         if (live && info.hlsUrl.isNotEmpty())
             return HlsMediaSource.Factory(http).createMediaSource(MediaItem.fromUri(info.hlsUrl))
@@ -35,11 +35,11 @@ object Sources {
         val audio = info.audioStreams.filter { it.isUrl }
             .sortedWith(compareByDescending<AudioStream> { it.format == MediaFormat.M4A }.thenByDescending { it.averageBitrate })
         val best = video.firstOrNull { it.format == MediaFormat.MPEG_4 } ?: video.firstOrNull()
-        val main: MediaSource = if (best != null && audio.isNotEmpty()) {
+        val single = info.videoStreams.filter { it.isUrl }.sortedByDescending { it.height }
+        val main: MediaSource = if (best != null && audio.isNotEmpty() && !(combinedOnly && single.isNotEmpty())) {
             MergingMediaSource(prog(best.content), prog((pick ?: audio[0]).content))
         } else {
-            val combined = info.videoStreams.filter { it.isUrl }.sortedByDescending { it.height }
-            prog((combined.firstOrNull { it.height <= maxH } ?: combined.last()).content)
+            prog((single.firstOrNull { it.height <= maxH } ?: single.last()).content)
         }
         return main
     }

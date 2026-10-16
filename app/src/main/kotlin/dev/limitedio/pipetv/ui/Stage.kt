@@ -15,11 +15,11 @@ private class Backdrop(c: Context) : AnimView(c) {
     private val shade = Ui.paint(0x99000000.toInt())
     private val pic = Paint(Paint.ANTI_ALIAS_FLAG); private val m = android.graphics.Matrix()
     private val text = Ui.paint(Ui.TEXT, 30f, true); private val rect = android.graphics.RectF()
-    override val animating get() = Session.active && (!Engine.frame || Session.loading)
+    override val animating get() = Session.active && !Engine.frame
 
     override fun render(c: Canvas, dt: Float) {
         val it = Session.shown ?: return
-        if (Engine.frame && !Session.loading) return
+        if (Engine.frame) return
         val w = width.toFloat(); val h = height.toFloat()
         Img.get(it.thumb, 640)?.let { p ->
             val s = maxOf(w / p.bmp.width, h / p.bmp.height)

@@ -11,6 +11,7 @@ Pure Kotlin · no XML layouts · no Google services · no account · no API key
 - **Instant** – one custom-drawn view tree; the last feed is cached so it shows before the network answers.
 - **Smooth everywhere** – virtualised canvas grid, spring physics, thumbnails decoded at card size. Android 5.0+.
 - **Keep browsing while watching** – video docks to the side and keeps playing; the grid reflows around it.
+- **Popular** – topic filters: Trending, Music, Gaming, News, Sports, Movies, Learning, Comedy, Live.
 - **Recommendations** – built from your watch history, mixed with trending and popular topics.
 - **Details** – description, facts, comments, up-next, and a jump to the channel (or playlist) for any video.
 - **Smart search** – custom on-screen keyboard (14 layouts incl. Arabic, Russian, Hindi…), live suggestions, recent searches, filters (videos / channels / playlists), endless results and **voice search**.
@@ -43,7 +44,6 @@ Pure Kotlin · no XML layouts · no Google services · no account · no API key
 | Fullscreen | `0`–`9` / `M` / `Back` | Jump to 0–90 % / mute / minimise |
 | Search | mic key, remote voice button | Voice search |
 | Search | any physical keyboard | Type directly |
-| History | `→` then `OK` | Remove an entry |
 | Anywhere | media keys | Play, pause, next, stop, ffwd, rew |
 | Nav rail | `Back` | Close the player, then exit |
 

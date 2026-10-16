@@ -17,6 +17,14 @@ object Recovery {
         Bg.main.removeCallbacks(retry); Bg.main.postDelayed(retry, minOf(30_000L, 3_000L * tries))
     }
 
+    /** Sound but no picture: re-attach the surface and restart at 720p, then fall back to one combined stream. */
+    fun noPicture() {
+        if (Session.safe >= 2) return onError()
+        Session.safe++
+        Engine.surface?.let { Engine.exo.clearVideoTextureView(it); Engine.exo.setVideoTextureView(it) }
+        Session.start(Engine.exo.currentPosition)
+    }
+
     /** Playing again: clear the error state so the "can't play" notice disappears. */
     fun onSuccess() {
         if (tries == 0 && !failed) return
