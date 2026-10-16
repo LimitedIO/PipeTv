@@ -2,7 +2,6 @@ package dev.limitedio.pipetv.ui
 
 import android.view.KeyEvent
 import android.view.View
-import dev.limitedio.pipetv.audio.Sfx
 import dev.limitedio.pipetv.data.Favs
 import dev.limitedio.pipetv.data.Item
 import dev.limitedio.pipetv.i18n.K
@@ -22,20 +21,20 @@ class LongPress(private val root: Root) {
         return if (free && tabOk) root.screens.top?.focused() ?: root.pages.focusedItem(root.tab) else null
     }
 
-    /** 0 = not ours; 1 = handled; 2 = handled, and it was a short press (play the select sound). */
-    fun handle(e: KeyEvent): Int {
+    /** Consumes OK while distinguishing a short press from a held quick action. */
+    fun handle(e: KeyEvent): Boolean {
         val k = e.keyCode
-        if (k != KeyEvent.KEYCODE_DPAD_CENTER && k != KeyEvent.KEYCODE_ENTER) return 0
+        if (k != KeyEvent.KEYCODE_DPAD_CENTER && k != KeyEvent.KEYCODE_ENTER) return false
         if (e.action == KeyEvent.ACTION_DOWN) {
-            if (e.repeatCount == 0) { armed = target() != null; fired = false; return if (armed) 1 else 0 }
-            if (!armed) return 0
-            if (!fired) { fired = true; target()?.let { Sfx.play(Sfx.Fx.OPEN); actions(it) } }
-            return 1
+            if (e.repeatCount == 0) { armed = target() != null; fired = false; return armed }
+            if (!armed) return false
+            if (!fired) { fired = true; target()?.let { actions(it) } }
+            return true
         }
-        if (!armed) return 0
+        if (!armed) return false
         armed = false
-        if (fired) return 1
-        root.controls.key(KeyEvent(KeyEvent.ACTION_DOWN, k)); return 2
+        if (fired) return true
+        root.controls.key(KeyEvent(KeyEvent.ACTION_DOWN, k)); return true
     }
 
     private fun actions(it: Item) {

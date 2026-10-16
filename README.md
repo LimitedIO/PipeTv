@@ -27,7 +27,7 @@ Pure Kotlin · no XML layouts · no Google services · no account · no API key
 - **Favorites** – videos, channels and playlists: red/bookmark key on a card (or the ★ button in details, channel and playlist pages, or `B` in fullscreen).
 - **Always plays** – playback retries by itself (lower quality, fresh links, growing pause); the notice disappears the moment it works. Subtitles load on their own and never touch the video.
 - **Updates** – checks on launch, asks before downloading, shows progress along the bottom, then offers to install.
-- **Alive** – a calm, slowly drifting background tinted per page; soft synthesised sound effects and an endless, very quiet ambient track while nothing plays (all switchable in Settings).
+- **Alive** – a calm, slowly drifting background tinted per page (switchable in Settings).
 - **10 languages** (EN, العربية, ES, FR, DE, RU, TR, PT, हिन्दी, 中文) with full right-to-left mirroring for Arabic.
 - **Auto-update** from GitHub Releases · **FOSS**: [NewPipeExtractor](https://github.com/TeamNewPipe/NewPipeExtractor) + [Media3](https://github.com/androidx/media) · GPL-3.0.
 

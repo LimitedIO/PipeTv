@@ -1,8 +1,6 @@
 package dev.limitedio.pipetv.ui
 
 import dev.limitedio.pipetv.Bg
-import dev.limitedio.pipetv.audio.Sfx
-import dev.limitedio.pipetv.audio.Sound
 import dev.limitedio.pipetv.data.Prefs
 import dev.limitedio.pipetv.data.Regions
 import dev.limitedio.pipetv.data.Store
@@ -53,8 +51,6 @@ object Settings {
                     Prefs.kbLangs = codes; onKb()
                 }
             },
-            toggle(K.SFX, K.SFX_HELP, { Prefs.sfx }) { Prefs.sfx = it; Sfx.play(if (it) Sfx.Fx.ON else Sfx.Fx.OFF) },
-            toggle(K.MUSIC, K.MUSIC_HELP, { Prefs.music }) { Prefs.music = it; Sound.update() },
             toggle(K.AMBIENT, K.AMBIENT_HELP, { Prefs.ambient }) { Prefs.ambient = it },
             HeaderRow { S.t(K.S_DATA) },
             ActionRow({ S.t(K.CLEAR_HISTORY) }, { S.t(K.CLEAR_HELP) }, { "OK" }) { Store.clearHistory(); toast(S.t(K.NOTHING_WATCHED)) },

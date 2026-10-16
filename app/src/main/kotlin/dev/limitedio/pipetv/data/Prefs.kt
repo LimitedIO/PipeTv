@@ -37,12 +37,6 @@ object Prefs {
     var content: String
         get() = sp.getString("content", "") ?: ""
         set(v) = sp.edit().putString("content", v).apply()
-    var sfx: Boolean
-        get() = sp.getBoolean("sfx", true)
-        set(v) = sp.edit().putBoolean("sfx", v).apply()
-    var music: Boolean
-        get() = sp.getBoolean("music", true)
-        set(v) = sp.edit().putBoolean("music", v).apply()
     var ambient: Boolean
         get() = sp.getBoolean("ambient", true)
         set(v) = sp.edit().putBoolean("ambient", v).apply()

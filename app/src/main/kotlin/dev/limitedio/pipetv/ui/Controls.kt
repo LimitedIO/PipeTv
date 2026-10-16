@@ -2,7 +2,6 @@ package dev.limitedio.pipetv.ui
 
 import android.view.KeyEvent
 import android.view.KeyEvent.*
-import dev.limitedio.pipetv.audio.Sound
 import dev.limitedio.pipetv.i18n.K
 import dev.limitedio.pipetv.i18n.S
 import dev.limitedio.pipetv.media.Session
@@ -38,7 +37,7 @@ class Controls(private val root: Root) {
     fun sessionChanged() {
         if (Session.active && root.dockS.target == 0f) root.setDock(true)
         if (!Session.active) { root.setDock(false); root.setFull(false); if (zone == 2) setZone(1) }
-        Sound.update(); root.kick()
+        root.kick()
         root.pages.repaint(); root.nav.invalidate(); root.dock.invalidate(); root.hud.invalidate(); root.stage.refresh(); root.stage.refit()
     }
 
