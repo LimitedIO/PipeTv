@@ -52,4 +52,5 @@ val Ar = mapOf(
     POPULAR to "الأكثر رواجًا", T_MUSIC to "موسيقى", T_GAMING to "ألعاب", T_NEWS to "أخبار", T_SPORTS to "رياضة", T_MOVIES to "أفلام", T_LEARN to "تعلّم", T_COMEDY to "كوميديا", T_LIVE to "بث مباشر",
     RETRY to "إعادة المحاولة",
     UPD_TITLE to "تحديث جديد متاح", UPD_BODY to "الإصدار %s من PipeTv جاهز للتنزيل.", UPD_NOW to "حدّث الآن", UPD_LATER to "لاحقًا", UPD_INSTALL to "ثبّت الآن", UPD_READY_BODY to "تم تنزيل الإصدار %s وهو جاهز للتثبيت.", UPD_FOUND to "التحديث %s متاح",
+    EXIT to "خروج", TOTAL_WATCHED to "إجمالي وقت المشاهدة: %s",
 )

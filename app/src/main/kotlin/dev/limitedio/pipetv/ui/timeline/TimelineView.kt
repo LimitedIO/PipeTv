@@ -26,12 +26,16 @@ class TimelineView(c: Context) : AnimView(c) {
     private val pad get() = Ui.u(56); private val rowH get() = Ui.u(158); private val dayH get() = Ui.u(112)
     private val top get() = Ui.u(130)
 
+    private var total = ""
+
     init { reload() }
 
     fun focused(): Item? = (lines.getOrNull(idx) as? Line.Watch)?.e?.item
 
     fun reload() {
-        lines = Days.group(Store.entries())
+        val all = Store.entries(); val mins = all.sumOf { it.pos } / 60_000
+        total = S.f(K.TOTAL_WATCHED, "${mins / 60}h ${"%02d".format(mins % 60)}m")
+        lines = Days.group(all)
         idx = lines.indexOfFirst { it is Line.Watch }.coerceAtLeast(0); scroll.snap(0f); invalidate()
     }
 
@@ -57,6 +61,7 @@ class TimelineView(c: Context) : AnimView(c) {
 
     override fun render(c: Canvas, dt: Float) {
         Txt.draw(c, S.t(K.HISTORY), pad, Ui.u(84) - scroll.value.coerceAtMost(Ui.u(60)), width - pad * 2, head)
+        if (lines.isNotEmpty()) { val tw = dim.measureText(total); Txt.draw(c, total, Ui.mx(width - pad - tw, tw, width.toFloat()), Ui.u(84) - scroll.value.coerceAtMost(Ui.u(60)), tw, dim) }
         if (lines.isEmpty()) { Txt.draw(c, S.t(K.NOTHING_WATCHED), pad, Ui.u(150), width - pad * 2, dim.apply { textSize = Ui.u(28) }); return }
         val ax = pad + Ui.u(150)
         c.drawRect(x(ax - Ui.u(2), Ui.u(4)), 0f, x(ax - Ui.u(2), Ui.u(4)) + Ui.u(4), height.toFloat(), axis)

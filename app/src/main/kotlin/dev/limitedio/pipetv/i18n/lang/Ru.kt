@@ -52,4 +52,5 @@ val Ru = mapOf(
     POPULAR to "Популярное", T_MUSIC to "Музыка", T_GAMING to "Игры", T_NEWS to "Новости", T_SPORTS to "Спорт", T_MOVIES to "Фильмы", T_LEARN to "Обучение", T_COMEDY to "Юмор", T_LIVE to "Прямой эфир",
     RETRY to "Повторить",
     UPD_TITLE to "Доступно обновление", UPD_BODY to "PipeTv %s готов к загрузке.", UPD_NOW to "Обновить сейчас", UPD_LATER to "Позже", UPD_INSTALL to "Установить", UPD_READY_BODY to "Версия %s загружена и готова к установке.", UPD_FOUND to "Доступно обновление %s",
+    EXIT to "Выход", TOTAL_WATCHED to "Всего просмотрено: %s",
 )

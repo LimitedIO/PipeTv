@@ -12,9 +12,12 @@ import dev.limitedio.pipetv.i18n.S
 /** Left rail: icons only while content has focus, glides open with labels when it gets focus. */
 class Nav(c: Context) : AnimView(c) {
     private val tabs get() = listOf(S.t(K.HOME) to Icons.HOME, S.t(K.SEARCH) to Icons.SEARCH, S.t(K.POPULAR) to Icons.TREND,
-        S.t(K.FAVORITES) to Glyphs.FAV, S.t(K.HISTORY) to Icons.HISTORY, S.t(K.SETTINGS) to Icons.SETTINGS)
+        S.t(K.FAVORITES) to Glyphs.FAV, S.t(K.HISTORY) to Icons.HISTORY, S.t(K.SETTINGS) to Icons.SETTINGS, S.t(K.EXIT) to Glyphs.EXIT)
     var sel = 0
         set(v) { field = v; pill.to(v.toFloat()) }
+    /** The Exit entry under Settings has focus (it is not a page). */
+    var exit = false
+        set(v) { field = v; pill.to(if (v) 6f else sel.toFloat()) }
     var lit = false
         set(v) { field = v; open.to(if (v) 1f else 0f) }
 
@@ -27,8 +30,8 @@ class Nav(c: Context) : AnimView(c) {
     private val fill = Paint(Paint.ANTI_ALIAS_FLAG)
     private val r = RectF()
 
-    private val itemH get() = Ui.u(96)
-    private val y0 get() = Ui.u(250)
+    private val itemH get() = Ui.u(90)
+    private val y0 get() = Ui.u(190)
 
     override fun render(c: Canvas, dt: Float) {
         val pw = Ui.u(104) + open.value.coerceIn(0f, 1f) * Ui.u(226)
@@ -43,10 +46,10 @@ class Nav(c: Context) : AnimView(c) {
         c.drawRoundRect(r, Ui.u(24), Ui.u(24), fill)
         for ((i, t) in tabs.withIndex()) {
             val cy = y0 + i * itemH + (itemH - Ui.u(14)) / 2
-            val on = i == sel
+            val on = if (exit) i == 6 else i == sel
             icon.color = if (on) 0xFF0A0B14.toInt() else Ui.DIM
             val ix = if (Ui.rtl) width - Ui.u(62) else Ui.u(62)
-            if (t.second == Glyphs.FAV) Glyphs.star(c, ix, cy, Ui.u(20), icon, on) else Icons.draw(c, t.second, ix, cy, Ui.u(18), icon)
+            if (t.second == Glyphs.FAV) Glyphs.star(c, ix, cy, Ui.u(20), icon, on) else if (t.second == Glyphs.EXIT) Glyphs.power(c, ix, cy, Ui.u(18), icon) else Icons.draw(c, t.second, ix, cy, Ui.u(18), icon)
             label.color = if (on) 0xFF0A0B14.toInt() else Ui.TEXT
             label.alpha = (255 * open.value).toInt().coerceIn(0, 255)
             if (open.value > .05f) Txt.draw(c, t.first, ox + if (Ui.rtl) Ui.u(30) else Ui.u(108), cy + Ui.u(10), pw - Ui.u(140), label)

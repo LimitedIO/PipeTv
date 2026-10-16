@@ -52,4 +52,5 @@ val Fr = mapOf(
     POPULAR to "Populaire", T_MUSIC to "Musique", T_GAMING to "Jeux", T_NEWS to "Actualités", T_SPORTS to "Sport", T_MOVIES to "Films", T_LEARN to "Apprendre", T_COMEDY to "Humour", T_LIVE to "En direct",
     RETRY to "Réessayer",
     UPD_TITLE to "Mise à jour disponible", UPD_BODY to "PipeTv %s est prêt à être téléchargé.", UPD_NOW to "Mettre à jour", UPD_LATER to "Plus tard", UPD_INSTALL to "Installer maintenant", UPD_READY_BODY to "La version %s est téléchargée et prête à être installée.", UPD_FOUND to "Mise à jour %s disponible",
+    EXIT to "Quitter", TOTAL_WATCHED to "Temps de visionnage total : %s",
 )

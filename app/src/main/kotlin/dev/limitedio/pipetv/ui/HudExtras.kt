@@ -19,13 +19,14 @@ class HudExtras {
 
     fun draw(c: Canvas, w: Float, h: Float, a: Float) { opening(c, w); countdown(c, w, h); subtitle(c, w, h, a) }
 
+    /** The next video is opening: a plain box with its title and a moving progress bar. */
     private fun opening(c: Canvas, w: Float) {
         val p = Session.pending ?: return
         if (Session.item == null) return
-        val s = Txt.fit(text, S.f(K.OPENING, p.title), w * .6f); val tw = text.measureText(s) + Ui.u(110)
-        r.set((w - tw) / 2, Ui.u(40), (w + tw) / 2, Ui.u(112)); c.drawRoundRect(r, Ui.u(36), Ui.u(36), pill)
-        Spinner.draw(c, r.left + Ui.u(44), r.centerY(), Ui.u(18), 1f)
-        c.drawText(s, r.left + Ui.u(76), r.centerY() + Ui.u(10), text)
+        val bw = minOf(w * .5f, Ui.u(760)); val x = (w - bw) / 2
+        r.set(x, Ui.u(36), x + bw, Ui.u(150)); c.drawRoundRect(r, Ui.u(26), Ui.u(26), pill)
+        Txt.draw(c, Txt.fit(text, S.f(K.OPENING, p.title), bw - Ui.u(56)), x + Ui.u(28), Ui.u(86), bw - Ui.u(56), text)
+        Spinner.bar(c, x + Ui.u(28), Ui.u(108), x + bw - Ui.u(28), Ui.u(122))
     }
 
     private fun countdown(c: Canvas, w: Float, h: Float) {

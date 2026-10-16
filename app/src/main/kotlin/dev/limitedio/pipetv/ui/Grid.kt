@@ -27,7 +27,7 @@ class Grid(c: Context, private val title: () -> String) : AnimView(c) {
     private val scroll = spring(0f, 150f, 24f); private val pop = spring(0f, 420f, 22f)
     private val rx = spring(0f, 300f, 27f); private val ry = spring(0f, 300f, 27f); private val rw = spring(0f, 300f, 27f)
     private val appear = spring(0f, 70f, 14f); private val head = Ui.paint(Ui.TEXT, 44f, true); private val fx = GridFx()
-    override val animating get() = busy && list.isEmpty()
+    override val animating get() = (busy && list.isEmpty()) || dev.limitedio.pipetv.media.Session.pending != null
 
     private val pad get() = Ui.u(56)
     private val gap get() = Ui.u(30); private val top get() = if (title().isEmpty()) Ui.u(28) else Ui.u(130)

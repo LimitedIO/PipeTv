@@ -52,4 +52,5 @@ val Zh = mapOf(
     POPULAR to "热门", T_MUSIC to "音乐", T_GAMING to "游戏", T_NEWS to "新闻", T_SPORTS to "体育", T_MOVIES to "电影", T_LEARN to "学习", T_COMEDY to "喜剧", T_LIVE to "直播",
     RETRY to "重试",
     UPD_TITLE to "有可用更新", UPD_BODY to "PipeTv %s 可供下载。", UPD_NOW to "立即更新", UPD_LATER to "稍后", UPD_INSTALL to "立即安装", UPD_READY_BODY to "版本 %s 已下载，可以安装。", UPD_FOUND to "有新版本 %s",
+    EXIT to "退出", TOTAL_WATCHED to "总观看时长：%s",
 )

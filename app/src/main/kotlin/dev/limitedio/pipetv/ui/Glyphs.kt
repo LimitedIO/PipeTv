@@ -9,6 +9,7 @@ import kotlin.math.sin
 /** Extra vector shapes: the favourite star and the infinity sign (endless playlists). */
 object Glyphs {
     const val FAV = 99
+    const val EXIT = 98
     private val path = Path()
 
     fun star(c: Canvas, cx: Float, cy: Float, r: Float, p: Paint, filled: Boolean) {
@@ -32,5 +33,12 @@ object Glyphs {
         path.cubicTo(cx - r * 1.25f, cy + r * .75f, cx - r * .45f, cy + r * .75f, cx, cy)
         p.style = Paint.Style.STROKE; p.strokeWidth = r * .22f; p.strokeCap = Paint.Cap.ROUND
         c.drawPath(path, p); p.style = Paint.Style.FILL
+    }
+
+    /** The power symbol: an open ring with a bar through its top. */
+    fun power(c: Canvas, cx: Float, cy: Float, r: Float, p: Paint) {
+        p.style = Paint.Style.STROKE; p.strokeWidth = r * .24f; p.strokeCap = Paint.Cap.ROUND
+        c.drawArc(cx - r, cy - r, cx + r, cy + r, -55f, 290f, false, p)
+        c.drawLine(cx, cy - r * 1.05f, cx, cy - r * .1f, p); p.style = Paint.Style.FILL
     }
 }

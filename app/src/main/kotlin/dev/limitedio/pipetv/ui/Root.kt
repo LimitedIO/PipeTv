@@ -40,7 +40,7 @@ class Root(c: Context) : ViewGroup(c) {
     }
 
     init {
-        setWillNotDraw(false)
+        setWillNotDraw(false); clipChildren = false // the dock draws its focus ring and progress over the video
         pages.views.forEach { addView(it); it.visibility = GONE }
         listOf(nav, stage, dock, hud, menu, playerSub, toast, update).forEach { addView(it) }
         show(0, false)
@@ -71,7 +71,7 @@ class Root(c: Context) : ViewGroup(c) {
     fun show(i: Int, animate: Boolean = true) {
         screens.clear()
         pages.views[tab].visibility = GONE
-        tab = i; nav.sel = i; panelW.target = if (i == 1) 340f else 580f; kick()
+        tab = i; nav.sel = i; panelW.target = if (i == 1) 300f else 580f; dock.compact = i == 1; kick()
         val v = pages.views[i]; v.visibility = VISIBLE
         if (animate) { v.alpha = 0f; v.translationX = Ui.u(if (Ui.rtl) -60 else 60); v.animate().alpha(1f).translationX(0f).setDuration(260).start() }
         pages.enter(i); pages.lit(i, !controls.onNav)

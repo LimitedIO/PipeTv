@@ -20,7 +20,7 @@ object Cards {
     private val title = Ui.paint(Ui.TEXT, 23f, true); private val by = Ui.paint(0xFFB4B9D2.toInt(), 20f); private val meta = Ui.paint(Ui.DIM, 18f)
     private val accent = Ui.paint(Ui.ACCENT2, 19f, true); private val bar = Ui.paint(Ui.ACCENT2)
     private val stack = Ui.paint(Ui.ACCENT); private val gold = Ui.paint(0xFFFFC83D.toInt())
-    private val m = Matrix()
+    private val big = Ui.paint(Ui.TEXT, 30f, true); private val shade = Ui.paint(0xB3000000.toInt()); private val m = Matrix()
     private val r = RectF()
 
     fun height(w: Float) = w * 9 / 16 + Ui.u(150)
@@ -81,10 +81,18 @@ object Cards {
         p.shader.setLocalMatrix(m); pic.shader = p.shader; pic.alpha = fade(p); c.drawCircle(cx, cy, d / 2, pic)
     }
 
+    /** This card is the video being opened right now: dimmed, with a moving progress bar. */
+    private fun loading(c: Canvas, x: Float, y: Float, w: Float, h: Float) {
+        r.set(x, y, x + w, y + h); c.drawRoundRect(r, Ui.u(14), Ui.u(14), shade)
+        Txt.draw(c, S.t(K.LOADING), x, y + h / 2 + Ui.u(8), w, big, true)
+        Spinner.bar(c, x + Ui.u(18), y + h - Ui.u(26), x + w - Ui.u(18), y + h - Ui.u(16))
+    }
+
     fun draw(c: Canvas, it: Item, x: Float, y: Float, w: Float, lit: Boolean) {
         val h = w * 9 / 16
         when (it.kind) { Item.CHANNEL -> channel(c, it, x, y, w, h); Item.PLAYLIST -> playlist(c, it, x, y, w, h); else -> video(c, it, x, y, w, h) }
         text(c, it, x, y + h, w, lit, it.kind == Item.CHANNEL)
+        if (dev.limitedio.pipetv.media.Session.pending?.id == it.id) loading(c, x, y, w, h)
         if (Favs.has(it.id)) { c.drawCircle(x + Ui.u(30), y + Ui.u(30), Ui.u(19), badge); Glyphs.star(c, x + Ui.u(30), y + Ui.u(30), Ui.u(12), gold, true) }
     }
 }

@@ -39,11 +39,11 @@ class Controls(private val root: Root) {
         if (Session.active && root.dockS.target == 0f) root.setDock(true)
         if (!Session.active) { root.setDock(false); root.setFull(false); if (zone == 2) setZone(1) }
         Sound.update()
-        root.dock.invalidate(); root.hud.invalidate(); root.stage.refresh(); root.stage.refit()
+        root.pages.repaint(); root.dock.invalidate(); root.hud.invalidate(); root.stage.refresh(); root.stage.refit()
     }
 
     private fun setZone(z: Int) {
-        zone = z; onNav = z == 0
+        zone = z; onNav = z == 0; if (z != 0) root.nav.exit = false
         root.nav.lit = z == 0; root.dock.lit = z == 2
         root.pages.lit(root.tab, z == 1); root.screens.top?.lit(z == 1)
     }
@@ -76,9 +76,9 @@ class Controls(private val root: Root) {
 
     private fun nav(k: Int): Boolean {
         when (k) {
-            KEYCODE_DPAD_UP -> if (root.tab > 0) root.show(root.tab - 1)
-            KEYCODE_DPAD_DOWN -> if (root.tab < 5) root.show(root.tab + 1)
-            KEYCODE_DPAD_RIGHT, KEYCODE_DPAD_CENTER, KEYCODE_ENTER -> setZone(1)
+            KEYCODE_DPAD_UP -> if (root.nav.exit) root.nav.exit = false else if (root.tab > 0) root.show(root.tab - 1)
+            KEYCODE_DPAD_DOWN -> if (root.tab < 5) root.show(root.tab + 1) else root.nav.exit = true
+            KEYCODE_DPAD_RIGHT, KEYCODE_DPAD_CENTER, KEYCODE_ENTER -> if (!root.nav.exit) setZone(1) else if (k != KEYCODE_DPAD_RIGHT) onExit()
             else -> return false
         }
         return true

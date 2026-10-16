@@ -71,11 +71,10 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
             home.invalidate()
         }
     }
-
-    /** Back closes an open settings pop-up first. */
     fun closeSub(): Boolean = settings.closeSub()
-
     fun setCols(n: Int) { listOf(home, popular.grid, favs.grid).forEach { it.cols = n } }
+    // Redraws every page and the grids inside them (cards show the loading state of the video being opened).
+    fun repaint() = views.forEach { v -> v.invalidate(); (v as? android.view.ViewGroup)?.let { g -> for (i in 0 until g.childCount) g.getChildAt(i).invalidate() } }
 
     fun refreshFavs() { favs.reload(); views.forEach { it.invalidate() } }
 
