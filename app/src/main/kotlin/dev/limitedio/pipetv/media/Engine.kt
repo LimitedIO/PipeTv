@@ -1,0 +1,35 @@
+package dev.limitedio.pipetv.media
+
+import android.view.SurfaceView
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.DefaultLoadControl
+import androidx.media3.exoplayer.DefaultRenderersFactory
+import androidx.media3.exoplayer.ExoPlayer
+import dev.limitedio.pipetv.App
+
+/** The single ExoPlayer instance, created lazily and tuned for weak TV hardware. */
+object Engine {
+    /** Set by the UI; attached as soon as the player exists (created off the launch path). */
+    var surface: SurfaceView? = null
+
+    val exo: ExoPlayer by lazy {
+        val renderers = DefaultRenderersFactory(App.ctx).setEnableDecoderFallback(true)
+        val load = DefaultLoadControl.Builder().setBufferDurationsMs(15_000, 40_000, 1_000, 2_000).build()
+        ExoPlayer.Builder(App.ctx, renderers).setLoadControl(load)
+            .setAudioAttributes(AudioAttributes.Builder().setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
+                .setUsage(C.USAGE_MEDIA).build(), true)
+            .setHandleAudioBecomingNoisy(true).build().also { it.addListener(Events); surface?.let(it::setVideoSurfaceView) }
+    }
+
+    private object Events : Player.Listener {
+        override fun onPlaybackStateChanged(state: Int) {
+            if (state == Player.STATE_ENDED) Session.ended()
+            Session.changed()
+        }
+        override fun onPlayerError(error: PlaybackException) = Session.error()
+        override fun onIsPlayingChanged(isPlaying: Boolean) = Session.changed()
+    }
+}
