@@ -1,6 +1,7 @@
 package dev.limitedio.pipetv.media
 
 import androidx.media3.common.PlaybackParameters
+import androidx.media3.common.C
 import dev.limitedio.pipetv.Bg
 import dev.limitedio.pipetv.data.Item
 import dev.limitedio.pipetv.data.Prefs
@@ -8,6 +9,7 @@ import dev.limitedio.pipetv.data.Store
 import dev.limitedio.pipetv.data.Yt
 import dev.limitedio.pipetv.i18n.S
 import org.schabi.newpipe.extractor.stream.StreamInfo
+import org.schabi.newpipe.extractor.stream.StreamType
 import org.schabi.newpipe.extractor.stream.SubtitlesStream
 
 /**
@@ -66,7 +68,8 @@ object Session {
             ?: subs.indexOfFirst { s -> s.languageTag.startsWith("en") }
         Subs.select(subs.getOrNull(sub))
         Store.push(it)
-        start(o.resume)
+        val live = it.isLive || o.info.streamType == StreamType.LIVE_STREAM || o.info.streamType == StreamType.AUDIO_LIVE_STREAM
+        start(if (live) C.TIME_UNSET else o.resume)
         Progress.schedule()
         if (expand) onReady()
     }
@@ -74,7 +77,9 @@ object Session {
     internal fun start(pos: Long) {
         val si = info ?: return
         Engine.frame = false
-        Engine.exo.setMediaSource(Sources.build(si, if (safe > 0) minOf(height, 720) else height, safe > 1, audios.getOrNull(audioIdx)?.stream), pos)
+        val live = si.streamType == StreamType.LIVE_STREAM || si.streamType == StreamType.AUDIO_LIVE_STREAM
+        val start = if (live && pos == 0L) C.TIME_UNSET else pos
+        Engine.exo.setMediaSource(Sources.build(si, if (safe > 0) minOf(height, 720) else height, safe > 1, audios.getOrNull(audioIdx)?.stream), start)
         Engine.exo.playbackParameters = PlaybackParameters(Prefs.speed)
         Engine.exo.prepare(); Engine.exo.playWhenReady = true
     }

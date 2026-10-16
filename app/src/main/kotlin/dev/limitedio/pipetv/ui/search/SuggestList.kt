@@ -21,6 +21,7 @@ class SuggestList(c: Context) : AnimView(c) {
     var recent = true
     var lit = false
     var onPick: (String) -> Unit = {}
+    var onClear: () -> Unit = {}
     private var idx = 0
     private val ry = spring(0f, 400f, 30f)
     private val row get() = Ui.u(88)
@@ -32,19 +33,25 @@ class SuggestList(c: Context) : AnimView(c) {
     private val r = RectF()
 
     fun key(code: Int): Boolean {
+        if (items.isEmpty()) return false
         when (code) {
-            KeyEvent.KEYCODE_DPAD_UP -> if (idx > 0) idx-- else return false
+            KeyEvent.KEYCODE_DPAD_UP -> if (idx >= 0) idx-- else return false
             KeyEvent.KEYCODE_DPAD_DOWN -> if (idx < items.size - 1) idx++
-            KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> { items.getOrNull(idx)?.let(onPick); return true }
+            KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> { if (idx == -1) onClear() else items.getOrNull(idx)?.let(onPick); return true }
             else -> return false
         }
         ry.to(idx.toFloat()); return true
     }
 
     override fun render(c: Canvas, dt: Float) {
-        val top = Ui.u(60); val pad = Ui.u(32)
+        val top = Ui.u(144); val pad = Ui.u(32)
         Txt.draw(c, S.t(if (recent) K.RECENT else K.SUGGESTED).uppercase(), pad, Ui.u(40), width - pad * 2, head)
-        val max = ((height - top) / row).toInt()
+        if (items.isNotEmpty()) {
+            r.set(pad, Ui.u(60), width - pad, Ui.u(122)); c.drawRoundRect(r, Ui.u(16), Ui.u(16), face)
+            Txt.draw(c, S.t(K.CLEAR), r.left, r.centerY() + Ui.u(11), r.width(), text, true)
+            if (lit && idx == -1) outline(c)
+        }
+        val max = ((height - top) / row).toInt().coerceAtLeast(1)
         val first = (idx - max + 1).coerceAtLeast(0)
         for (i in first until minOf(items.size, first + max)) {
             val y = top + (i - first) * row
@@ -53,10 +60,12 @@ class SuggestList(c: Context) : AnimView(c) {
             Icons.draw(c, if (recent) Icons.HISTORY else Icons.SEARCH, ix, r.centerY(), Ui.u(14), ico)
             val tx = if (Ui.rtl) r.left + Ui.u(24) else r.left + Ui.u(88)
             Txt.draw(c, Txt.fit(text, items[i], r.width() - Ui.u(120)), tx, r.centerY() + Ui.u(11), r.width() - Ui.u(120), text)
-            if (lit && i == idx) {
-                ring.shader = LinearGradient(r.left, 0f, r.right, 0f, Ui.ACCENT, Ui.ACCENT2, Shader.TileMode.CLAMP)
-                c.drawRoundRect(r, Ui.u(16), Ui.u(16), ring)
-            }
+            if (lit && i == idx) outline(c)
         }
+    }
+
+    private fun outline(c: Canvas) {
+        ring.shader = LinearGradient(r.left, 0f, r.right, 0f, Ui.ACCENT, Ui.ACCENT2, Shader.TileMode.CLAMP)
+        c.drawRoundRect(r, Ui.u(16), Ui.u(16), ring)
     }
 }

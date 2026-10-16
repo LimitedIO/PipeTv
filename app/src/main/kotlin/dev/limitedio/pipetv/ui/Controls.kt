@@ -63,9 +63,8 @@ class Controls(private val root: Root) {
 
     private fun back(): Boolean {
         when {
-            zone == 1 && root.tab == 5 && !root.screens.any && root.pages.closeSub() -> {}
             zone == 1 && root.screens.any -> if (root.screens.top?.back() != true) root.screens.pop()
-            zone == 1 && root.tab == 1 && !root.screens.any && root.pages.search.back() -> {}
+            zone == 1 && root.pages.back(root.tab) -> {}
             zone != 0 -> setZone(0)
             Session.active -> root.toast.show(S.t(K.BACK_HINT))
             else -> onExit()

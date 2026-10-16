@@ -18,6 +18,9 @@ class SearchData(private val grid: Grid, private val suggest: SuggestList) {
     fun typing() { results = false; token++ }
 
     fun showRecents() { suggest.recent = true; suggest.items = Store.recents() }
+    fun clearSuggestions() {
+        token++; Store.clearSearches(); suggest.items = emptyList()
+    }
 
     fun suggestions(q: String) {
         val t = ++token

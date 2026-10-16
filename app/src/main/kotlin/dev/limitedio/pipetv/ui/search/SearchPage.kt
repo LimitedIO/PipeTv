@@ -35,6 +35,7 @@ class SearchPage(c: Context) : ViewGroup(c) {
             }
         }
         suggest.onPick = { submit(it) }
+        suggest.onClear = { Bg.main.removeCallbacks(ask); data.clearSuggestions() }
         chips.onChange = { Bg.main.removeCallbacks(refilter); Bg.main.postDelayed(refilter, 450) }
         grid.onMore = { data.more() }
         Voice.onResult = { post { setText(it); submit(it) } }
@@ -63,8 +64,12 @@ class SearchPage(c: Context) : ViewGroup(c) {
         if (t.isBlank()) data.showRecents() else Bg.main.postDelayed(ask, 250)
     }
 
-    /** Back on results: clear the search and open the keyboard again. */
-    fun back(): Boolean { if (!data.results) return false; setText(""); setZone(0); relayout(); return true }
+    /** Back first returns from scrolled results to the filters, then opens the keyboard. */
+    fun back(): Boolean {
+        if (!data.results) return false
+        if (zone == 1) { setZone(2); return true }
+        setText(""); setZone(0); relayout(); return true
+    }
 
     fun submit(q: String) {
         val query = q.trim(); if (query.isEmpty()) return
@@ -88,7 +93,7 @@ class SearchPage(c: Context) : ViewGroup(c) {
             KeyEvent.KEYCODE_DPAD_UP -> if (data.results) { setZone(2); true } else false
             else -> false
         }
-        else -> chips.key(code) || (code == KeyEvent.KEYCODE_DPAD_DOWN).also { if (it) setZone(1) }
+        else -> chips.key(code) || (code == KeyEvent.KEYCODE_DPAD_DOWN || code == KeyEvent.KEYCODE_DPAD_CENTER || code == KeyEvent.KEYCODE_ENTER).also { if (it) setZone(1) }
     }
 
     private fun relayout() = onLayout(true, left, top, right, bottom)

@@ -48,6 +48,7 @@ object Store {
     fun clearHistory() { file("timeline").delete() }
 
     fun recents(): List<String> = runCatching { file("searches").readLines().filter { it.isNotBlank() } }.getOrDefault(emptyList())
+    fun clearSearches() { file("searches").delete() }
 
     fun addSearch(q: String) {
         runCatching { file("searches").writeText((listOf(q) + recents().filter { !it.equals(q, true) }).take(12).joinToString("\n")) }

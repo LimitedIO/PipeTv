@@ -9,6 +9,7 @@ import dev.limitedio.pipetv.i18n.S
 import dev.limitedio.pipetv.media.Engine
 import dev.limitedio.pipetv.media.Session
 import dev.limitedio.pipetv.media.Subs
+import dev.limitedio.pipetv.media.Playback
 
 /** Overlays that sit on top of the fullscreen video: the "opening next…" pill and the autoplay countdown card. */
 class HudExtras {
@@ -32,7 +33,7 @@ class HudExtras {
     private fun countdown(c: Canvas, w: Float, h: Float) {
         val it = Session.item; val next = Session.related.firstOrNull()
         val p = Engine.exo; val left = p.duration - p.currentPosition
-        if (it == null || next == null || !Prefs.autoplay || it.isLive || p.duration <= 0 || left > 8000 || left < 0 || Session.loading) return
+        if (it == null || next == null || !Prefs.autoplay || Playback.live || p.duration <= 0 || left > 8000 || left < 0 || Session.loading) return
         val cw = Ui.u(560); val x = if (Ui.rtl) Ui.u(70) else w - cw - Ui.u(70); val y = h - Ui.u(400)
         r.set(x, y, x + cw, y + Ui.u(130)); c.drawRoundRect(r, Ui.u(22), Ui.u(22), pill)
         Cards.picture(c, next, x + Ui.u(14), y + Ui.u(14), Ui.u(170), Ui.u(102))

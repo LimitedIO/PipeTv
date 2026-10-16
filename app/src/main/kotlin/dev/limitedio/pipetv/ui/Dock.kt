@@ -9,6 +9,7 @@ import dev.limitedio.pipetv.i18n.K
 import dev.limitedio.pipetv.i18n.S
 import dev.limitedio.pipetv.media.Engine
 import dev.limitedio.pipetv.media.Session
+import dev.limitedio.pipetv.media.Playback
 
 /** Separate player menu, revealed only while it has focus. */
 class Dock(c: Context) : AnimView(c) {
@@ -46,14 +47,16 @@ class Dock(c: Context) : AnimView(c) {
         val pad = Ui.u(24); val w = width - pad * 2; val p = Engine.exo
         Txt.draw(c, S.t(K.NOW_PLAYING), pad, Ui.u(72), w, heading)
         c.save(); c.translate(pad, Ui.u(120) + videoH + Ui.u(24))
-        val frac = if (p.duration > 0) (p.currentPosition.toFloat() / p.duration).coerceIn(0f, 1f) else 0f
         val lines = Txt.wrap(title, item.title, w, 2)
         lines.forEachIndexed { i, line -> Txt.draw(c, line, 0f, Ui.u(26 + i * 34), w, title) }
         if (lit && sel == 0) { r.set(0f, -videoH - Ui.u(24), w, -Ui.u(24)); c.drawRoundRect(r, Ui.u(10), Ui.u(10), ring) }
         c.translate(0f, (lines.size - 1).coerceAtLeast(0) * Ui.u(34))
-        r.set(0f, Ui.u(40), w, Ui.u(46)); c.drawRoundRect(r, Ui.u(3), Ui.u(3), track)
-        r.right = w * frac; c.drawRoundRect(r, Ui.u(3), Ui.u(3), accent)
-        val time = Ui.fmt(p.currentPosition.coerceAtLeast(0)) + " / " + if (p.duration > 0) Ui.fmt(p.duration) else item.meta
+        if (Playback.showProgress) {
+            r.set(0f, Ui.u(40), w, Ui.u(46)); c.drawRoundRect(r, Ui.u(3), Ui.u(3), track)
+            r.right = w * Playback.fraction; c.drawRoundRect(r, Ui.u(3), Ui.u(3), accent)
+        }
+        val time = if (Playback.live) S.t(K.LIVE) else if (Playback.duration > 0)
+            Ui.fmt(p.currentPosition.coerceAtLeast(0)) + " / " + Ui.fmt(Playback.duration) else ""
         Txt.draw(c, Txt.fit(dim, time, w), 0f, Ui.u(78), w, dim)
         val cell = w / 5
         for (i in 1..5) {

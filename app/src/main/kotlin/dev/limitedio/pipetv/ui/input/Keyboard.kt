@@ -35,7 +35,7 @@ class Keyboard(c: Context) : AnimView(c) {
     private fun build() {
         val layouts = Layouts.enabled(); lang = lang.coerceIn(0, layouts.size - 1)
         pad = KeyRows.build(layouts[lang], shift, sym)
-        cur = pad.keys.firstOrNull { it.token == cur?.token } ?: pad.keys[0]
+        cur = pad.keys.firstOrNull { it.token == cur?.token } ?: pad.keys.firstOrNull { !it.token.startsWith("@") } ?: pad.keys[0]
         snapFocus(); invalidate()
     }
 

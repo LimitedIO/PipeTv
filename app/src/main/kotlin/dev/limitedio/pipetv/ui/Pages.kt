@@ -43,7 +43,7 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
         when (i) {
             0 -> if (homeAt == 0L || SystemClock.uptimeMillis() - homeAt > 600_000) loadHome()
             2 -> popular.enter()
-            3 -> refreshFavs()
+            3 -> favs.enter()
             4 -> history.reload()
         }
     }
@@ -72,6 +72,9 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
         }
     }
     fun closeSub(): Boolean = settings.closeSub()
+    fun back(i: Int): Boolean = when (i) {
+        1 -> search.back(); 2 -> popular.back(); 3 -> favs.back(); 5 -> closeSub(); else -> false
+    }
     fun setCols(n: Int) { listOf(home, popular.grid, favs.grid).forEach { it.cols = n } }
     // Redraws every page and the grids inside them (cards show the loading state of the video being opened).
     fun repaint() = views.forEach { v -> v.invalidate(); (v as? android.view.ViewGroup)?.let { g -> for (i in 0 until g.childCount) g.getChildAt(i).invalidate() } }

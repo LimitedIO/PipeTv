@@ -25,6 +25,10 @@ class PopularPage(c: Context) : ViewGroup(c) {
     /** Loads the selected topic once; later visits show the cached list. */
     fun enter() { onChips = true; refresh(); if (cache[chips.sel] == null) show(chips.sel) }
     fun reset() { cache.clear(); show(chips.sel) }
+    fun back(): Boolean {
+        if (onChips) return false
+        onChips = true; refresh(); return true
+    }
 
     private fun show(i: Int) {
         val t = ++ask
@@ -50,7 +54,7 @@ class PopularPage(c: Context) : ViewGroup(c) {
             return false
         }
         if (chips.key(code)) return true
-        if (code == KeyEvent.KEYCODE_DPAD_DOWN) { onChips = false; refresh(); return true }
+        if (code == KeyEvent.KEYCODE_DPAD_DOWN || code == KeyEvent.KEYCODE_DPAD_CENTER || code == KeyEvent.KEYCODE_ENTER) { onChips = false; refresh(); return true }
         return false
     }
 

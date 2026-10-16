@@ -20,7 +20,6 @@ class Chips(c: Context) : AnimView(c) {
     var sel = 0; private set
     var lit = false
     var onChange: () -> Unit = {}
-    private val pill = spring(0f, 350f, 26f)
     private val text = Ui.paint(Ui.TEXT, 28f, true)
     private val face = Ui.paint(Ui.SURFACE)
     private val fill = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -30,7 +29,7 @@ class Chips(c: Context) : AnimView(c) {
         val d = when (code) { KeyEvent.KEYCODE_DPAD_LEFT -> -1; KeyEvent.KEYCODE_DPAD_RIGHT -> 1; else -> return false }
         val n = sel + d
         if (n !in 0..3) return false
-        sel = n; pill.to(n.toFloat()); onChange()
+        sel = n; invalidate(); onChange()
         return true
     }
 
@@ -40,7 +39,7 @@ class Chips(c: Context) : AnimView(c) {
             val x = pad + Ui.mx(i * w, w, width - pad * 2)
             r.set(x + Ui.u(5), Ui.u(14), x + w - Ui.u(5), height - Ui.u(14)); c.drawRoundRect(r, r.height() / 2, r.height() / 2, face)
         }
-        val px = pad + Ui.mx(pill.value * w, w, width - pad * 2)
+        val px = pad + Ui.mx(sel * w, w, width - pad * 2)
         r.set(px + Ui.u(5), Ui.u(14), px + w - Ui.u(5), height - Ui.u(14))
         fill.shader = LinearGradient(r.left, 0f, r.right, 0f, Ui.ACCENT, if (lit) Ui.ACCENT2 else Ui.ACCENT, Shader.TileMode.CLAMP)
         c.drawRoundRect(r, r.height() / 2, r.height() / 2, fill)

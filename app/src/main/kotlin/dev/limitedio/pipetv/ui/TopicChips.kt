@@ -16,7 +16,6 @@ class TopicChips(c: Context, private val names: List<K>) : AnimView(c) {
     var lit = false
     var onChange: (Int) -> Unit = {}
     private val scroll = spring(0f, 200f, 26f)
-    private val pill = spring(0f, 320f, 26f); private val pillW = spring(0f, 320f, 26f)
     private val text = Ui.paint(Ui.TEXT, 28f, true); private val face = Ui.paint(Ui.SURFACE)
     private val fill = Paint(Paint.ANTI_ALIAS_FLAG); private val r = RectF()
     private val pad get() = Ui.u(32); private val gap get() = Ui.u(12)
@@ -25,9 +24,9 @@ class TopicChips(c: Context, private val names: List<K>) : AnimView(c) {
     private fun mx(x: Float, w: Float) = Ui.mx(pad + x - scroll.value, w, width.toFloat())
 
     fun key(code: Int): Boolean {
-        val n = sel + when (code) { KeyEvent.KEYCODE_DPAD_LEFT -> if (Ui.rtl) 1 else -1; KeyEvent.KEYCODE_DPAD_RIGHT -> if (Ui.rtl) -1 else 1; else -> return false }
+        val n = sel + when (code) { KeyEvent.KEYCODE_DPAD_LEFT -> -1; KeyEvent.KEYCODE_DPAD_RIGHT -> 1; else -> return false }
         if (n !in names.indices) return false
-        sel = n; pill.to(x(n)); pillW.to(w(n))
+        sel = n
         val vis = width - pad * 2
         scroll.to((x(n) + w(n) / 2 - vis / 2).coerceIn(0f, maxOf(0f, x(names.size) - gap - vis)))
         onChange(n); return true
@@ -39,7 +38,7 @@ class TopicChips(c: Context, private val names: List<K>) : AnimView(c) {
             val cw = w(i); if (mx(x(i), cw) + cw < 0 || mx(x(i), cw) > width) continue
             r.set(mx(x(i), cw), t, mx(x(i), cw) + cw, b); c.drawRoundRect(r, r.height() / 2, r.height() / 2, face)
         }
-        r.set(mx(pill.value, pillW.value), t, mx(pill.value, pillW.value) + pillW.value, b)
+        r.set(mx(x(sel), w(sel)), t, mx(x(sel), w(sel)) + w(sel), b)
         fill.shader = LinearGradient(r.left, 0f, r.right, 0f, Ui.ACCENT, if (lit) Ui.ACCENT2 else Ui.ACCENT, Shader.TileMode.CLAMP)
         c.drawRoundRect(r, r.height() / 2, r.height() / 2, fill)
         for (i in names.indices) {

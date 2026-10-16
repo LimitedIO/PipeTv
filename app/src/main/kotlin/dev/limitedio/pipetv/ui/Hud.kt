@@ -13,6 +13,7 @@ import dev.limitedio.pipetv.i18n.S
 import dev.limitedio.pipetv.media.Engine
 import dev.limitedio.pipetv.media.Session
 import dev.limitedio.pipetv.media.Subs
+import dev.limitedio.pipetv.media.Playback
 
 /** Fullscreen playback overlay: fades in on any key, out after a few seconds of playback. */
 class Hud(c: Context) : AnimView(c) {
@@ -52,19 +53,23 @@ class Hud(c: Context) : AnimView(c) {
         shade.shader = LinearGradient(0f, h * .6f, 0f, h, 0, 0xEE000000.toInt(), Shader.TileMode.CLAMP)
         shade.alpha = (255 * a).toInt(); c.drawRect(0f, h * .6f, w, h, shade)
         for (pt in listOf(title, sub, time, hint, dot, badge)) pt.alpha = (255 * a).toInt()
-        val q = if (it?.isLive == true) S.t(K.LIVE) else if (p.videoSize.height > 0) "${p.videoSize.height}p" else ""
+        val q = if (Playback.live) S.t(K.LIVE) else if (p.videoSize.height > 0) "${p.videoSize.height}p" else ""
         val bw = if (q.isEmpty()) 0f else badge.measureText(q) + Ui.u(40)
         if (q.isNotEmpty()) { r.set(w - Ui.u(80) - bw, Ui.u(60), w - Ui.u(80), Ui.u(112)); fill.shader = null; fill.color = 0x33FFFFFF; c.drawRoundRect(r, Ui.u(26), Ui.u(26), fill); Txt.draw(c, q, r.left, r.centerY() + Ui.u(9), bw, badge, true) }
         it?.let { Txt.draw(c, Txt.fit(title, it.title, w - Ui.u(200) - bw), Ui.u(80), Ui.u(100), w - Ui.u(200) - bw, title); Txt.draw(c, it.sub, Ui.u(80), Ui.u(144), w - Ui.u(160), sub) }
         val x0 = Ui.u(80); val x1 = w - Ui.u(80); val y = h - Ui.u(150)
-        val dur = p.duration.coerceAtLeast(1); val f = (p.currentPosition.toFloat() / dur).coerceIn(0f, 1f)
-        r.set(x0, y, x1, y + Ui.u(10)); c.drawRoundRect(r, Ui.u(5), Ui.u(5), track)
-        r.right = x0 + (x1 - x0) * (p.bufferedPosition.toFloat() / dur).coerceIn(0f, 1f); c.drawRoundRect(r, Ui.u(5), Ui.u(5), buf)
-        r.right = x0 + (x1 - x0) * f
-        fill.shader = LinearGradient(x0, 0f, x1, 0f, Ui.ACCENT, Ui.ACCENT2, Shader.TileMode.CLAMP); fill.alpha = (255 * a).toInt()
-        c.drawRoundRect(r, Ui.u(5), Ui.u(5), fill); c.drawCircle(r.right, y + Ui.u(5), Ui.u(14), dot)
-        c.drawText(Ui.fmt(p.currentPosition), x0, y + Ui.u(52), time)
-        val t = Ui.fmt(p.duration.coerceAtLeast(0)); c.drawText(t, x1 - time.measureText(t), y + Ui.u(52), time)
+        if (Playback.showProgress) {
+            track.alpha = (64 * a).toInt(); buf.alpha = (85 * a).toInt()
+            r.set(x0, y, x1, y + Ui.u(10)); c.drawRoundRect(r, Ui.u(5), Ui.u(5), track)
+            r.right = x0 + (x1 - x0) * Playback.buffered; c.drawRoundRect(r, Ui.u(5), Ui.u(5), buf)
+            r.right = x0 + (x1 - x0) * Playback.fraction
+            fill.shader = LinearGradient(x0, 0f, x1, 0f, Ui.ACCENT, Ui.ACCENT2, Shader.TileMode.CLAMP); fill.alpha = (255 * a).toInt()
+            c.drawRoundRect(r, Ui.u(5), Ui.u(5), fill); c.drawCircle(r.right, y + Ui.u(5), Ui.u(14), dot)
+        }
+        if (!Playback.live && Playback.duration > 0) {
+            c.drawText(Ui.fmt(p.currentPosition.coerceAtLeast(0)), x0, y + Ui.u(52), time)
+            val t = Ui.fmt(Playback.duration); c.drawText(t, x1 - time.measureText(t), y + Ui.u(52), time)
+        }
         Txt.draw(c, S.t(K.HINT_PLAYER), 0f, h - Ui.u(48), w, hint, true)
         if (!p.isPlaying && !waiting && Engine.frame && !Session.failed && Session.item != null) Icons.pause(c, w / 2, h / 2, Ui.u(46), dot)
         if (Session.failed) Txt.draw(c, S.t(K.RETRYING), 0f, h / 2, w, title, true)

@@ -13,7 +13,7 @@ import dev.limitedio.pipetv.ui.search.Chips
 class FavsPage(c: Context) : ViewGroup(c) {
     val grid = Grid(c) { "" }.apply { upExit = true; busy = false }
     private val chips = Chips(c)
-    private var onChips = false; private var on = true
+    private var onChips = true; private var on = true
 
     init {
         addView(grid); addView(chips)
@@ -21,6 +21,11 @@ class FavsPage(c: Context) : ViewGroup(c) {
     }
 
     fun picks(pick: (Item) -> Unit, menu: (Item) -> Unit) { grid.onPick = pick; grid.onMenu = menu }
+    fun enter() { onChips = true; reload(); refresh() }
+    fun back(): Boolean {
+        if (onChips) return false
+        onChips = true; refresh(); return true
+    }
 
     /** Re-reads the favourites and applies the current filter. */
     fun reload() {
@@ -41,7 +46,7 @@ class FavsPage(c: Context) : ViewGroup(c) {
             return false
         }
         if (chips.key(code)) return true
-        if (code == KeyEvent.KEYCODE_DPAD_DOWN) { onChips = false; refresh(); return true }
+        if (code == KeyEvent.KEYCODE_DPAD_DOWN || code == KeyEvent.KEYCODE_DPAD_CENTER || code == KeyEvent.KEYCODE_ENTER) { onChips = false; refresh(); return true }
         return false
     }
 

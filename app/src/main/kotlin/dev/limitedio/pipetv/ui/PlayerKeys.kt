@@ -6,6 +6,7 @@ import dev.limitedio.pipetv.i18n.K
 import dev.limitedio.pipetv.i18n.S
 import dev.limitedio.pipetv.media.Engine
 import dev.limitedio.pipetv.media.Session
+import dev.limitedio.pipetv.media.Playback
 
 /** Keys that control playback: media keys everywhere, plus the fullscreen shortcuts. */
 class PlayerKeys(private val root: Root) {
@@ -17,7 +18,7 @@ class PlayerKeys(private val root: Root) {
             KEYCODE_MEDIA_PLAY -> p.play(); KEYCODE_MEDIA_PAUSE -> p.pause()
             KEYCODE_MEDIA_STOP -> Session.stop()
             KEYCODE_MEDIA_NEXT, KEYCODE_CHANNEL_UP -> Session.next()
-            KEYCODE_MEDIA_PREVIOUS, KEYCODE_CHANNEL_DOWN -> p.seekTo(0)
+            KEYCODE_MEDIA_PREVIOUS, KEYCODE_CHANNEL_DOWN -> Playback.seekFraction(0f)
             KEYCODE_MEDIA_FAST_FORWARD -> seek(30_000)
             KEYCODE_MEDIA_REWIND -> seek(-30_000)
             else -> return false
@@ -26,7 +27,7 @@ class PlayerKeys(private val root: Root) {
     }
 
     private fun seek(ms: Long) {
-        val p = Engine.exo; p.seekTo((p.currentPosition + ms).coerceIn(0, p.duration.coerceAtLeast(0)))
+        if (!Playback.seekBy(ms)) return
         root.hud.nudge(); root.toast.show(if (ms > 0) "+${ms / 1000}s" else "${ms / 1000}s")
     }
 
@@ -42,7 +43,7 @@ class PlayerKeys(private val root: Root) {
             KEYCODE_DPAD_DOWN -> { root.setFull(false); Session.item?.let { root.opener.details(it); root.fromPlayer = true } }
             KEYCODE_BACK, KEYCODE_MENU, KEYCODE_ESCAPE, KEYCODE_I -> { Session.noExpand(); root.setFull(false) }
             KEYCODE_M -> { p.volume = if (p.volume > 0f) 0f else 1f; root.toast.show(S.t(if (p.volume > 0f) K.SOUND_ON else K.MUTED)) }
-            in KEYCODE_0..KEYCODE_9 -> p.seekTo(p.duration.coerceAtLeast(0) * (k - KEYCODE_0) / 10)
+            in KEYCODE_0..KEYCODE_9 -> Playback.seekFraction((k - KEYCODE_0) / 10f)
             else -> return false
         }
         return true

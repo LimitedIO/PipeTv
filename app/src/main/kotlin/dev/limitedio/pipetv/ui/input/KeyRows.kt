@@ -9,20 +9,22 @@ class Key(val token: String, val label: String, val col: Int, val row: Int, val 
 /** A keyboard as a plain X-Y grid of equal blocks (like Tetris), [cols] x [rows] cells. */
 class Pad(val keys: List<Key>, val cols: Int, val rows: Int)
 
-/** Characters fill a grid of equal blocks; the actions sit in two wide, colour-coded rows right under it. */
+/** Frequent actions sit above the letters; numbers are available on the symbols layout. */
 object KeyRows {
     fun build(l: Layout, shift: Boolean, sym: Boolean): Pad {
         val letters = if (sym) Layouts.symbols.joinToString("") else l.rows.joinToString("").let { if (shift && l.cased) it.uppercase() else it }
-        val chars = letters + "1234567890"
+        val chars = if (sym) "1234567890" + letters else letters
         val lc = if (chars.length > 42) 9 else 7; val u = lc * 2; val rows = (chars.length + lc - 1) / lc
         val keys = ArrayList<Key>()
-        chars.forEachIndexed { i, ch -> keys.add(Key(ch.toString(), ch.toString(), i % lc * 2, i / lc, 2)) }
-        val spans = if (u == 14) listOf(2, 2, 2, 2, 3, 3) else listOf(3, 3, 3, 3, 3, 3)
-        val labels = listOf("", if (sym) "ABC" else "?123", l.code.uppercase(), "", S.t(K.CLEAR), "")
+        val spans = if (u == 14) listOf(4, 3, 3, 4) else listOf(5, 4, 4, 5)
+        val labels = listOf(S.t(K.CLEAR), "", "", S.t(K.GO))
         var x = 0
-        listOf("@shift", "@sym", "@lang", "@mic", "@clear", "@del").forEachIndexed { i, t -> keys.add(Key(t, labels[i], x, rows, spans[i])); x += spans[i] }
-        val sp = if (u == 14) 9 else 11
-        keys.add(Key("@space", S.t(K.SPACE), 0, rows + 1, sp)); keys.add(Key("@go", S.t(K.GO), sp, rows + 1, u - sp))
+        listOf("@clear", "@del", "@mic", "@go").forEachIndexed { i, t -> keys.add(Key(t, labels[i], x, 0, spans[i])); x += spans[i] }
+        chars.forEachIndexed { i, ch -> keys.add(Key(ch.toString(), ch.toString(), i % lc * 2, 1 + i / lc, 2)) }
+        val tools = if (u == 14) listOf(2, 3, 3, 6) else listOf(3, 3, 3, 9)
+        val toolLabels = listOf("", if (sym) "ABC" else "?123", l.code.uppercase(), S.t(K.SPACE))
+        x = 0
+        listOf("@shift", "@sym", "@lang", "@space").forEachIndexed { i, t -> keys.add(Key(t, toolLabels[i], x, rows + 1, tools[i])); x += tools[i] }
         return Pad(keys, u, rows + 2)
     }
 
