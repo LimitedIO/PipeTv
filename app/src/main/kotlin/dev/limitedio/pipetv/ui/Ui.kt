@@ -13,6 +13,11 @@ object Ui {
     const val TEXT = 0xFFF2F3FA.toInt()
     const val DIM = 0xFF8A8FA8.toInt()
     private var scale = 1f
+    /** Right-to-left layout (Arabic etc.): the whole screen mirrors. */
+    @JvmField var rtl = false
+
+    /** Mirrors an x coordinate of a [w]-wide box inside [total] when the layout is RTL. */
+    fun mx(x: Float, w: Float, total: Float) = if (rtl) total - x - w else x
 
     fun init(c: Context) {
         val m = c.resources.displayMetrics

@@ -2,7 +2,8 @@ package dev.limitedio.pipetv.ui
 
 import android.view.KeyEvent
 import android.view.KeyEvent.*
-import dev.limitedio.pipetv.data.Prefs
+import dev.limitedio.pipetv.i18n.K
+import dev.limitedio.pipetv.i18n.S
 import dev.limitedio.pipetv.media.Engine
 import dev.limitedio.pipetv.media.Session
 
@@ -36,23 +37,20 @@ class PlayerKeys(private val root: Root) {
             KEYCODE_DPAD_CENTER, KEYCODE_ENTER, KEYCODE_SPACE, KEYCODE_K -> p.playWhenReady = !p.playWhenReady
             KEYCODE_DPAD_RIGHT, KEYCODE_L -> seek(if (e.repeatCount > 20) 60_000 else if (e.repeatCount > 6) 30_000 else 10_000)
             KEYCODE_DPAD_LEFT, KEYCODE_J -> seek(-(if (e.repeatCount > 20) 60_000L else if (e.repeatCount > 6) 30_000L else 10_000L))
-            KEYCODE_DPAD_UP -> { cycleQuality(); Session.reload() }
-            KEYCODE_DPAD_DOWN -> cycleSpeed()
+            KEYCODE_DPAD_UP -> root.openMenu()
+            KEYCODE_DPAD_DOWN -> { root.setFull(false); Session.item?.let { root.opener.details(it) } }
             KEYCODE_BACK, KEYCODE_MENU, KEYCODE_ESCAPE, KEYCODE_I -> root.setFull(false)
-            KEYCODE_M -> { p.volume = if (p.volume > 0f) 0f else 1f; root.toast.show(if (p.volume > 0f) "Sound on" else "Muted") }
+            KEYCODE_M -> { p.volume = if (p.volume > 0f) 0f else 1f; root.toast.show(S.t(if (p.volume > 0f) K.SOUND_ON else K.MUTED)) }
             in KEYCODE_0..KEYCODE_9 -> p.seekTo(p.duration.coerceAtLeast(0) * (k - KEYCODE_0) / 10)
             else -> return false
         }
         return true
     }
 
-    private fun cycleQuality() {
-        val q = Prefs.qualities; Prefs.quality = q[(q.indexOf(Prefs.quality) + 1) % q.size]
-        root.toast.show("Quality: " + Prefs.qualityLabel())
-    }
-
-    private fun cycleSpeed() {
-        val s = Prefs.speeds; Prefs.speed = s[(s.indexOf(Prefs.speed) + 1) % s.size]
-        Engine.exo.setPlaybackSpeed(Prefs.speed); root.toast.show("Speed: ${Prefs.speed}x")
+    /** Options panel (Up key): everything goes to the panel, Back/Menu close it. */
+    fun menu(e: KeyEvent): Boolean {
+        if (e.keyCode == KEYCODE_BACK || e.keyCode == KEYCODE_MENU || e.keyCode == KEYCODE_ESCAPE) root.closeMenu()
+        else root.menu.key(e.keyCode, e.repeatCount)
+        root.hud.nudge(); return true
     }
 }

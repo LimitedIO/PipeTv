@@ -1,6 +1,7 @@
 package dev.limitedio.pipetv.data
 
-import org.schabi.newpipe.extractor.InfoItem
+import android.util.LruCache
+import dev.limitedio.pipetv.i18n.S
 import org.schabi.newpipe.extractor.NewPipe
 import org.schabi.newpipe.extractor.ServiceList
 import org.schabi.newpipe.extractor.kiosk.KioskInfo
@@ -8,48 +9,52 @@ import org.schabi.newpipe.extractor.localization.ContentCountry
 import org.schabi.newpipe.extractor.localization.Localization
 import org.schabi.newpipe.extractor.search.SearchInfo
 import org.schabi.newpipe.extractor.stream.StreamInfo
-import org.schabi.newpipe.extractor.stream.StreamInfoItem
 import java.util.Locale
 
 /** Thin facade over NewPipeExtractor: no API key, no account, no Google services. */
 object Yt {
     private val svc get() = ServiceList.YouTube
-    private val idRegex = Regex("(?:v=|youtu\\.be/|shorts/)([\\w-]{11})")
+    private val streams = LruCache<String, StreamInfo>(8)
     private var ready = false
 
-    @Synchronized private fun init() {
+    private fun country() = Locale.getDefault().country.ifEmpty { "US" }
+
+    @Synchronized fun init() {
         if (ready) return
-        val loc = Locale.getDefault()
-        NewPipe.init(Http, Localization.fromLocale(loc), ContentCountry(loc.country.ifEmpty { "US" }))
+        NewPipe.init(Http, Localization(S.cur.code, country()), ContentCountry(country()))
         ready = true
     }
 
-    fun search(query: String): List<Item> {
-        init()
-        val handler = svc.searchQHFactory.fromQuery(query, listOf("videos"), "")
-        return items(SearchInfo.getInfo(svc, handler).relatedItems)
+    /** Call after the app language changed so results and recommendations switch language. */
+    @Synchronized fun relocalize() {
+        if (ready) NewPipe.setupLocalization(Localization(S.cur.code, country()), ContentCountry(country()))
+        synchronized(streams) { streams.evictAll() }
     }
+
+    /** [filter] is one of: all, videos, channels, playlists. */
+    fun search(query: String, filter: String = "all"): Paged<Item> {
+        init()
+        val handler = svc.searchQHFactory.fromQuery(query, listOf(filter), "")
+        val info = SearchInfo.getInfo(svc, handler)
+        return Paged(YtMap.items(info.relatedItems), info.nextPage) { page ->
+            val r = SearchInfo.getMoreItems(svc, handler, page)
+            YtMap.items(r.items) to r.nextPage
+        }
+    }
+
+    fun suggestions(query: String): List<String> { init(); return svc.suggestionExtractor.suggestionList(query) }
 
     fun trending(): List<Item> {
         init()
         val url = svc.kioskList.getListLinkHandlerFactoryByType("Trending").fromId("Trending").url
-        return items(KioskInfo.getInfo(svc, url).relatedItems)
+        return YtMap.items(KioskInfo.getInfo(svc, url).relatedItems)
     }
 
-    fun stream(url: String): StreamInfo { init(); return StreamInfo.getInfo(svc, url) }
-
-    fun related(info: StreamInfo) = items(info.relatedItems)
-
-    fun items(list: List<InfoItem>): List<Item> = list.filterIsInstance<StreamInfoItem>().mapNotNull {
-        val id = idRegex.find(it.url)?.groupValues?.get(1) ?: return@mapNotNull null
-        val views = if (it.viewCount >= 0) " · ${count(it.viewCount)} views" else ""
-        Item(id, it.url, it.name, it.uploaderName.orEmpty() + views, it.duration)
+    fun stream(url: String): StreamInfo {
+        init()
+        synchronized(streams) { streams.get(url) }?.let { return it }
+        return StreamInfo.getInfo(svc, url).also { synchronized(streams) { streams.put(url, it) } }
     }
 
-    private fun count(n: Long) = when {
-        n >= 1_000_000_000 -> "%.1fB".format(n / 1e9)
-        n >= 1_000_000 -> "%.1fM".format(n / 1e6)
-        n >= 1_000 -> "%.0fK".format(n / 1e3)
-        else -> "$n"
-    }
+    fun related(info: StreamInfo) = YtMap.items(info.relatedItems)
 }

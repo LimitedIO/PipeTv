@@ -11,6 +11,7 @@ class GridFx {
     private val stroke = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val shade = Paint(Paint.ANTI_ALIAS_FLAG)
     private val r = RectF()
+    private val note = Ui.paint(Ui.DIM, 26f)
 
     /** Gradient ring (with a soft glow) around the thumbnail at x, y (already scroll-adjusted). */
     fun ring(c: Canvas, x: Float, y: Float, w: Float, pop: Float) {
@@ -23,13 +24,15 @@ class GridFx {
         stroke.alpha = 255; stroke.strokeWidth = Ui.u(4); c.drawRoundRect(r, Ui.u(18), Ui.u(18), stroke)
     }
 
-    /** Pulsing placeholder cards shown while a page loads. */
-    fun skeleton(c: Canvas, pad: Float, top: Float, w: Float, gap: Float, rowH: Float, cols: Int, busy: Boolean) {
+    /** Loading placeholders and the status message of an empty grid. */
+    fun empty(c: Canvas, pad: Float, top: Float, w: Float, gap: Float, rowH: Float, cols: Int, busy: Boolean, total: Float, message: String?) {
+        message?.let { Txt.draw(c, it, pad, top + Ui.u(40), total - pad * 2, note) }
         if (!busy) return
+        val top = if (message != null) top + Ui.u(70) else top
         val ph = (System.nanoTime() / 1_000_000 % 1200) / 1200f
         shade.shader = null
         for (i in 0 until cols * 2) {
-            val x = pad + (i % cols) * (w + gap); val y = top + (i / cols) * rowH
+            val x = Ui.mx(pad + (i % cols) * (w + gap), w, total); val y = top + (i / cols) * rowH
             shade.color = Ui.SURFACE
             shade.alpha = (150 + 90 * Math.sin((ph * 2 - i * .2) * Math.PI)).toInt().coerceIn(60, 255)
             c.drawRoundRect(x, y, x + w, y + w * 9 / 16, Ui.u(14), Ui.u(14), shade)

@@ -5,6 +5,7 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.text.CueGroup
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
@@ -14,6 +15,9 @@ import dev.limitedio.pipetv.App
 object Engine {
     /** Set by the UI; attached as soon as the player exists (created off the launch path). */
     var surface: SurfaceView? = null
+
+    /** Current subtitle text (empty when none is showing). */
+    @Volatile var cues = ""; private set
 
     val exo: ExoPlayer by lazy {
         val renderers = DefaultRenderersFactory(App.ctx).setEnableDecoderFallback(true)
@@ -30,6 +34,10 @@ object Engine {
             Session.changed()
         }
         override fun onPlayerError(error: PlaybackException) = Session.error()
-        override fun onIsPlayingChanged(isPlaying: Boolean) = Session.changed()
+        override fun onIsPlayingChanged(isPlaying: Boolean) { Session.saveNow(); Session.changed() }
+        override fun onCues(cueGroup: CueGroup) {
+            cues = cueGroup.cues.mapNotNull { it.text?.toString() }.joinToString("\n")
+            Session.changed()
+        }
     }
 }

@@ -6,6 +6,8 @@ import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Shader
+import dev.limitedio.pipetv.i18n.K
+import dev.limitedio.pipetv.i18n.S
 import dev.limitedio.pipetv.media.Engine
 import dev.limitedio.pipetv.media.Session
 
@@ -30,22 +32,22 @@ class Dock(c: Context) : AnimView(c) {
         val it = Session.item ?: return
         val p = Engine.exo
         var y = Ui.u(44)
-        for (l in Txt.wrap(title, it.title, width.toFloat(), 2)) { c.drawText(l, 0f, y, title); y += Ui.u(34) }
+        for (l in Txt.wrap(title, it.title, width.toFloat(), 2)) { Txt.draw(c, l, 0f, y, width.toFloat(), title); y += Ui.u(34) }
         val state = when {
-            Session.failed -> "Can't play this video"
-            Session.loading -> "Loading" + ".".repeat((System.nanoTime() / 400_000_000 % 4).toInt())
-            !p.isPlaying && p.playWhenReady.not() -> "Paused · " + Ui.fmt(p.currentPosition)
+            Session.failed -> S.t(K.CANT_PLAY).substringBefore(".")
+            Session.loading -> S.t(K.LOADING)
+            !p.isPlaying && p.playWhenReady.not() -> S.t(K.PAUSED) + " · " + Ui.fmt(p.currentPosition)
             else -> Ui.fmt(p.currentPosition) + " / " + Ui.fmt(p.duration.coerceAtLeast(0))
         }
-        c.drawText(Txt.fit(sub, it.sub, width.toFloat()), 0f, y - Ui.u(4), sub)
+        Txt.draw(c, Txt.fit(sub, it.sub, width.toFloat()), 0f, y - Ui.u(4), width.toFloat(), sub)
         val by = y + Ui.u(26)
         r.set(0f, by, width.toFloat(), by + Ui.u(7)); c.drawRoundRect(r, Ui.u(4), Ui.u(4), track)
         val frac = if (p.duration > 0) (p.currentPosition.toFloat() / p.duration).coerceIn(0f, 1f) else 0f
         r.right = width * frac
         bar.shader = LinearGradient(0f, 0f, width.toFloat(), 0f, Ui.ACCENT, Ui.ACCENT2, Shader.TileMode.CLAMP)
         c.drawRoundRect(r, Ui.u(4), Ui.u(4), bar)
-        c.drawText(state, 0f, by + Ui.u(40), sub)
-        Session.related.firstOrNull()?.let { c.drawText("Next: " + Txt.fit(next, it.title, width - Ui.u(80)), 0f, by + Ui.u(78), next) }
+        Txt.draw(c, state, 0f, by + Ui.u(40), width.toFloat(), sub)
+        Session.related.firstOrNull()?.let { Txt.draw(c, S.t(K.NEXT) + ": " + Txt.fit(next, it.title, width - Ui.u(80)), 0f, by + Ui.u(78), width.toFloat(), next) }
         if (glow.value > .01f) {
             ring.shader = bar.shader; ring.strokeWidth = Ui.u(4); ring.alpha = (255 * glow.value).toInt()
             r.set(-Ui.u(10), -videoH - Ui.u(10), width + Ui.u(10), by + Ui.u(96))

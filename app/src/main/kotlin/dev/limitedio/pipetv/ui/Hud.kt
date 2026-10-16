@@ -7,7 +7,8 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Shader
 import android.os.SystemClock
-import dev.limitedio.pipetv.data.Prefs
+import dev.limitedio.pipetv.i18n.K
+import dev.limitedio.pipetv.i18n.S
 import dev.limitedio.pipetv.media.Engine
 import dev.limitedio.pipetv.media.Session
 
@@ -24,6 +25,8 @@ class Hud(c: Context) : AnimView(c) {
     private val fill = Paint(Paint.ANTI_ALIAS_FLAG)
     private val shade = Paint()
     private val dot = Ui.paint(Ui.TEXT)
+    private val cue = Ui.paint(Ui.TEXT, 34f, true)
+    private val pill = Ui.paint(0xB3000000.toInt())
     private val r = RectF()
     override val animating get() = Session.loading || Engine.exo.playbackState == 2
     override val ticking get() = visibility == VISIBLE
@@ -48,7 +51,7 @@ class Hud(c: Context) : AnimView(c) {
         shade.shader = LinearGradient(0f, h * .6f, 0f, h, 0, 0xEE000000.toInt(), Shader.TileMode.CLAMP)
         shade.alpha = (255 * a).toInt(); c.drawRect(0f, h * .6f, w, h, shade)
         for (pt in listOf(title, sub, time, hint, dot)) pt.alpha = (255 * a).toInt()
-        it?.let { c.drawText(Txt.fit(title, it.title, w - Ui.u(160)), Ui.u(80), Ui.u(100), title); c.drawText(it.sub, Ui.u(80), Ui.u(144), sub) }
+        it?.let { Txt.draw(c, Txt.fit(title, it.title, w - Ui.u(160)), Ui.u(80), Ui.u(100), w - Ui.u(160), title); Txt.draw(c, it.sub, Ui.u(80), Ui.u(144), w - Ui.u(160), sub) }
         val x0 = Ui.u(80); val x1 = w - Ui.u(80); val y = h - Ui.u(150)
         val dur = p.duration.coerceAtLeast(1); val f = (p.currentPosition.toFloat() / dur).coerceIn(0f, 1f)
         r.set(x0, y, x1, y + Ui.u(10)); c.drawRoundRect(r, Ui.u(5), Ui.u(5), track)
@@ -58,10 +61,22 @@ class Hud(c: Context) : AnimView(c) {
         c.drawRoundRect(r, Ui.u(5), Ui.u(5), fill); c.drawCircle(r.right, y + Ui.u(5), Ui.u(14), dot)
         c.drawText(Ui.fmt(p.currentPosition), x0, y + Ui.u(52), time)
         val t = Ui.fmt(p.duration.coerceAtLeast(0)); c.drawText(t, x1 - time.measureText(t), y + Ui.u(52), time)
-        val hints = "OK Play/Pause   ← → Seek   ↑ Quality ${Prefs.qualityLabel()}   ↓ Speed ${Prefs.speed}x   Next skip   Back Minimize"
-        c.drawText(hints, (w - hint.measureText(hints)) / 2, h - Ui.u(48), hint)
+        Txt.draw(c, S.t(K.HINT_PLAYER), 0f, h - Ui.u(48), w, hint, true)
+        subtitle(c, w, h, a)
         if (!p.isPlaying && !animating && !Session.failed) Icons.pause(c, w / 2, h / 2, Ui.u(46), dot)
-        if (Session.failed) c.drawText("Can't play this video. Press Back.", w / 2 - Ui.u(260), h / 2, title)
+        if (Session.failed) Txt.draw(c, S.t(K.CANT_PLAY), 0f, h / 2, w, title, true)
+    }
+
+    /** Subtitles are drawn by us (no extra UI library): a dark pill with the current cue. */
+    private fun subtitle(c: Canvas, w: Float, h: Float, a: Float) {
+        val text = Engine.cues; if (text.isEmpty()) return
+        val lines = text.split('\n').flatMap { Txt.wrap(cue, it, w * .7f, 2) }.takeLast(3)
+        var y = h - (if (a > .05f) Ui.u(250) else Ui.u(110)) - (lines.size - 1) * Ui.u(46)
+        for (l in lines) {
+            val tw = cue.measureText(l) + Ui.u(36)
+            r.set((w - tw) / 2, y - Ui.u(36), (w + tw) / 2, y + Ui.u(12)); c.drawRoundRect(r, Ui.u(10), Ui.u(10), pill)
+            Txt.draw(c, l, 0f, y, w, cue, true); y += Ui.u(46)
+        }
     }
 
     private fun spinner(c: Canvas, w: Float, h: Float) {

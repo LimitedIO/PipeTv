@@ -26,6 +26,6 @@ class Toast(c: Context) : AnimView(c) {
         r.set(x, y, x + w, y + h)
         fill.alpha = (240 * pop.value.coerceIn(0f, 1f)).toInt(); text.alpha = (255 * pop.value.coerceIn(0f, 1f)).toInt()
         c.drawRoundRect(r, h / 2, h / 2, fill)
-        c.drawText(msg, x + Ui.u(32), y + h / 2 + Ui.u(10), text)
+        Txt.draw(c, msg, x, y + h / 2 + Ui.u(10), w, text, true)
     }
 }

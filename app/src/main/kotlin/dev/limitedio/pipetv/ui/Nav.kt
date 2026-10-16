@@ -6,11 +6,13 @@ import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Shader
+import dev.limitedio.pipetv.i18n.K
+import dev.limitedio.pipetv.i18n.S
 
 /** Left rail: icons only while content has focus, glides open with labels when it gets focus. */
 class Nav(c: Context) : AnimView(c) {
-    val tabs = listOf("Home" to Icons.HOME, "Search" to Icons.SEARCH, "Trending" to Icons.TREND,
-        "History" to Icons.HISTORY, "Settings" to Icons.SETTINGS)
+    private val tabs get() = listOf(S.t(K.HOME) to Icons.HOME, S.t(K.SEARCH) to Icons.SEARCH, S.t(K.TRENDING) to Icons.TREND,
+        S.t(K.HISTORY) to Icons.HISTORY, S.t(K.SETTINGS) to Icons.SETTINGS)
     var sel = 0
         set(v) { field = v; pill.to(v.toFloat()) }
     var lit = false
@@ -30,11 +32,12 @@ class Nav(c: Context) : AnimView(c) {
 
     override fun render(c: Canvas, dt: Float) {
         val pw = Ui.u(104) + open.value.coerceIn(0f, 1f) * Ui.u(226)
-        c.drawRect(0f, 0f, pw, height.toFloat(), bg)
+        val ox = if (Ui.rtl) width - pw else 0f
+        c.drawRect(ox, 0f, ox + pw, height.toFloat(), bg)
         brand.alpha = (255 * open.value).toInt().coerceIn(0, 255)
-        c.drawText("PipeTv", Ui.u(40), Ui.u(130), brand)
+        Txt.draw(c, "PipeTv", ox + Ui.u(40), Ui.u(130), pw - Ui.u(80), brand)
         val py = y0 + pill.value * itemH
-        r.set(Ui.u(20), py, pw - Ui.u(20), py + itemH - Ui.u(14))
+        r.set(ox + Ui.u(20), py, ox + pw - Ui.u(20), py + itemH - Ui.u(14))
         fill.shader = LinearGradient(r.left, 0f, r.right, 0f, Ui.ACCENT, Ui.ACCENT2, Shader.TileMode.CLAMP)
         fill.alpha = if (lit) 255 else 90
         c.drawRoundRect(r, Ui.u(24), Ui.u(24), fill)
@@ -42,10 +45,10 @@ class Nav(c: Context) : AnimView(c) {
             val cy = y0 + i * itemH + (itemH - Ui.u(14)) / 2
             val on = i == sel
             icon.color = if (on) 0xFF0A0B14.toInt() else Ui.DIM
-            Icons.draw(c, t.second, Ui.u(62), cy, Ui.u(18), icon)
+            Icons.draw(c, t.second, if (Ui.rtl) width - Ui.u(62) else Ui.u(62), cy, Ui.u(18), icon)
             label.color = if (on) 0xFF0A0B14.toInt() else Ui.TEXT
             label.alpha = (255 * open.value).toInt().coerceIn(0, 255)
-            if (open.value > .05f) c.drawText(t.first, Ui.u(108), cy + Ui.u(10), label)
+            if (open.value > .05f) Txt.draw(c, t.first, ox + if (Ui.rtl) Ui.u(30) else Ui.u(108), cy + Ui.u(10), pw - Ui.u(140), label)
         }
     }
 }

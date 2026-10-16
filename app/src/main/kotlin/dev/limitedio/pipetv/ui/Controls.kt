@@ -2,8 +2,10 @@ package dev.limitedio.pipetv.ui
 
 import android.view.KeyEvent
 import android.view.KeyEvent.*
-import dev.limitedio.pipetv.data.Item
+import dev.limitedio.pipetv.i18n.K
+import dev.limitedio.pipetv.i18n.S
 import dev.limitedio.pipetv.media.Session
+import dev.limitedio.pipetv.ui.input.Voice
 
 /** All keyboard / remote handling. Three focus zones while browsing: nav rail, content, player dock. */
 class Controls(private val root: Root) {
@@ -13,14 +15,20 @@ class Controls(private val root: Root) {
     private val keys = PlayerKeys(root)
 
     fun key(e: KeyEvent): Boolean {
-        if (keys.media(e.keyCode)) return true
+        val k = e.keyCode
+        if (Voice.active) { if (k == KEYCODE_BACK || k == KEYCODE_DPAD_CENTER || k == KEYCODE_ESCAPE) Voice.stop(); return true }
+        if (k == KEYCODE_VOICE_ASSIST || k == KEYCODE_SEARCH) { root.voice(); return true }
+        if (root.menuOpen) return keys.menu(e)
+        if (keys.media(k)) return true
         return if (root.full) keys.full(e) else browse(e)
     }
 
-    fun play(item: Item) {
+    fun play(item: dev.limitedio.pipetv.data.Item) {
         if (Session.item?.id != item.id) Session.open(item)
         root.setFull(true)
     }
+
+    fun focusContent() = setZone(1)
 
     fun sessionChanged() {
         if (Session.active && root.dockS.target == 0f) root.setDock(true)
@@ -30,13 +38,14 @@ class Controls(private val root: Root) {
 
     private fun setZone(z: Int) {
         zone = z; onNav = z == 0
-        root.nav.lit = z == 0; root.dock.lit = z == 2; root.pages.lit(root.tab, z == 1)
+        root.nav.lit = z == 0; root.dock.lit = z == 2
+        root.pages.lit(root.tab, z == 1); root.screens.top?.lit(z == 1)
     }
 
     private fun browse(e: KeyEvent): Boolean {
-        val k = e.keyCode
-        if (k == KEYCODE_MENU || k == KEYCODE_INFO) { if (Session.active) root.setFull(true); return true }
+        val k = mirror(e.keyCode)
         if (k == KEYCODE_BACK || k == KEYCODE_ESCAPE) return back()
+        if ((k == KEYCODE_MENU || k == KEYCODE_INFO) && zone != 1) { if (Session.active) root.setFull(true); return true }
         return when (zone) {
             0 -> nav(k)
             2 -> when (k) {
@@ -44,14 +53,18 @@ class Controls(private val root: Root) {
                 KEYCODE_DPAD_LEFT -> { setZone(1); true }
                 else -> k in KEYCODE_DPAD_UP..KEYCODE_DPAD_RIGHT
             }
-            else -> content(e)
+            else -> content(e, k)
         }
     }
 
+    /** In right-to-left languages the screen is mirrored, so Left/Right swap meaning. */
+    private fun mirror(k: Int) = if (!Ui.rtl) k else when (k) { KEYCODE_DPAD_LEFT -> KEYCODE_DPAD_RIGHT; KEYCODE_DPAD_RIGHT -> KEYCODE_DPAD_LEFT; else -> k }
+
     private fun back(): Boolean {
         when {
+            zone == 1 && root.screens.any -> root.screens.pop()
             zone != 0 -> setZone(0)
-            Session.active -> { Session.stop(); root.toast.show("Playback closed") }
+            Session.active -> { Session.stop(); root.toast.show(S.t(K.PLAYBACK_CLOSED)) }
             else -> onExit()
         }
         return true
@@ -67,19 +80,16 @@ class Controls(private val root: Root) {
         return true
     }
 
-    private fun content(e: KeyEvent): Boolean {
-        val k = e.keyCode
-        if (root.tab == 1) {
-            val ch = e.unicodeChar
-            if (k == KEYCODE_DEL) { root.pages.search.backspace(); return true }
-            if (ch in 32..126 && !e.isSystem && k !in KEYCODE_DPAD_UP..KEYCODE_DPAD_CENTER && k != KEYCODE_ENTER) {
-                root.pages.search.type(ch.toChar().toString()); return true
-            }
+    private fun content(e: KeyEvent, k: Int): Boolean {
+        if (root.tab == 1 && !root.screens.any && root.pages.search.typed(e)) return true
+        val used = root.screens.top?.key(k, e.repeatCount) ?: root.pages.key(root.tab, k, e.repeatCount)
+        if (used) return true
+        when {
+            k == KEYCODE_DPAD_LEFT -> setZone(0)
+            k == KEYCODE_DPAD_RIGHT && Session.active -> setZone(2)
+            (k == KEYCODE_MENU || k == KEYCODE_INFO) && Session.active -> root.setFull(true)
+            else -> return false
         }
-        if (root.pages.key(root.tab, k)) return true
-        if (k == KEYCODE_DPAD_LEFT) setZone(0)
-        else if (k == KEYCODE_DPAD_RIGHT && Session.active) setZone(2)
-        else return false
         return true
     }
 }

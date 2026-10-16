@@ -8,8 +8,9 @@ import kotlin.math.sin
 
 /** Vector icons drawn with plain canvas paths: no drawables, no XML. */
 object Icons {
-    const val HOME = 0; const val SEARCH = 1; const val TREND = 2; const val HISTORY = 3; const val SETTINGS = 4
+    const val HOME = 0; const val SEARCH = 1; const val TREND = 2; const val HISTORY = 3; const val SETTINGS = 4; const val MIC = 5; const val DEL = 6; const val SHIFT = 7
     private val path = Path()
+    private val RowRect = android.graphics.RectF()
 
     fun draw(c: Canvas, icon: Int, cx: Float, cy: Float, r: Float, p: Paint) {
         p.style = Paint.Style.STROKE; p.strokeWidth = r * 0.17f
@@ -35,6 +36,20 @@ object Icons {
             HISTORY -> {
                 c.drawCircle(cx, cy, r * .88f, p)
                 c.drawLine(cx, cy, cx, cy - r * .5f, p); c.drawLine(cx, cy, cx + r * .4f, cy + r * .2f, p)
+            }
+            MIC -> {
+                RowRect.set(cx - r * .38f, cy - r, cx + r * .38f, cy + r * .2f); c.drawRoundRect(RowRect, r * .38f, r * .38f, p)
+                RowRect.set(cx - r * .75f, cy - r * .55f, cx + r * .75f, cy + r * .6f); c.drawArc(RowRect, 20f, 140f, false, p)
+                c.drawLine(cx, cy + r * .6f, cx, cy + r, p); c.drawLine(cx - r * .4f, cy + r, cx + r * .4f, cy + r, p)
+            }
+            DEL -> {
+                path.moveTo(cx - r, cy); path.lineTo(cx - r * .4f, cy - r * .7f); path.lineTo(cx + r, cy - r * .7f)
+                path.lineTo(cx + r, cy + r * .7f); path.lineTo(cx - r * .4f, cy + r * .7f); path.close(); c.drawPath(path, p)
+                c.drawLine(cx, cy - r * .3f, cx + r * .5f, cy + r * .3f, p); c.drawLine(cx + r * .5f, cy - r * .3f, cx, cy + r * .3f, p)
+            }
+            SHIFT -> {
+                path.moveTo(cx, cy - r); path.lineTo(cx + r * .8f, cy); path.lineTo(cx + r * .35f, cy); path.lineTo(cx + r * .35f, cy + r * .8f)
+                path.lineTo(cx - r * .35f, cy + r * .8f); path.lineTo(cx - r * .35f, cy); path.lineTo(cx - r * .8f, cy); path.close(); c.drawPath(path, p)
             }
             SETTINGS -> {
                 c.drawCircle(cx, cy, r * .38f, p)

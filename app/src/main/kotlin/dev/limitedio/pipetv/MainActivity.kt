@@ -1,15 +1,21 @@
 package dev.limitedio.pipetv
 
+import android.Manifest
 import android.app.Activity
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
+import dev.limitedio.pipetv.i18n.K
+import dev.limitedio.pipetv.i18n.S
 import dev.limitedio.pipetv.media.Engine
 import dev.limitedio.pipetv.media.Session
 import dev.limitedio.pipetv.ui.Root
 import dev.limitedio.pipetv.ui.Ui
+import dev.limitedio.pipetv.ui.input.Voice
 import dev.limitedio.pipetv.update.Updater
 
 /** Single activity. The whole UI is one custom view tree built in code. */
@@ -19,13 +25,16 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Ui.init(this)
+        S.apply()
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         root = Root(this)
         root.controls.onExit = { finish() }
         setContentView(root)
         immersive()
         Looper.myQueue().addIdleHandler { Engine.exo; false } // build the player only once the first frame is out
-        Updater.onReady = { root.toast.show("Update $it downloaded. Open Settings to install.") }
+        Updater.status = S.f(K.UPD_OK, Updater.current)
+        Updater.onReady = { root.toast.show(S.f(K.UPD_TOAST, it)) }
+        root.askMic = ::startVoice
         Bg.main.postDelayed({ Updater.check() }, 5000)
     }
 
@@ -42,7 +51,18 @@ class MainActivity : Activity() {
         return super.dispatchKeyEvent(e)
     }
 
-    override fun onStop() { super.onStop(); if (Session.active) Engine.exo.pause() }
+    private fun startVoice() {
+        if (Build.VERSION.SDK_INT >= 23 && checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
+            requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), 7)
+        else Voice.start(this)
+    }
+
+    override fun onRequestPermissionsResult(code: Int, perms: Array<out String>, res: IntArray) {
+        if (code != 7) return
+        if (res.firstOrNull() == PackageManager.PERMISSION_GRANTED) Voice.start(this) else root.toast.show(S.t(K.MIC_DENIED))
+    }
+
+    override fun onStop() { super.onStop(); Voice.stop(); if (Session.active) Engine.exo.pause() }
 
     override fun onDestroy() { super.onDestroy(); if (isFinishing) { Session.stop(); Engine.exo.clearVideoSurface() } }
 }
