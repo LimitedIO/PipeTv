@@ -28,8 +28,9 @@ class Chips(c: Context) : AnimView(c) {
 
     fun key(code: Int): Boolean {
         val d = when (code) { KeyEvent.KEYCODE_DPAD_LEFT -> -1; KeyEvent.KEYCODE_DPAD_RIGHT -> 1; else -> return false }
-        val n = (sel + d).coerceIn(0, 3)
-        if (n != sel) { sel = n; pill.to(n.toFloat()); onChange() }
+        val n = sel + d
+        if (n !in 0..3) return false
+        sel = n; pill.to(n.toFloat()); onChange()
         return true
     }
 

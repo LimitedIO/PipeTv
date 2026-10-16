@@ -46,4 +46,7 @@ val Tr = mapOf(
     CLEAR to "Temizle", FAVORITES to "Favoriler", FAV_ADDED to "Favorilere eklendi", FAV_REMOVED to "Favorilerden kaldırıldı",
     NO_FAVS to "Henüz favori yok. Bir video, kanal veya oynatma listesi açıp Favori'yi seç.", FAVORITE to "Favori", SAVED to "Kaydedildi",
     SUBS_LOADING to "Altyazı yükleniyor…", RETRYING to "Şu an oynatılamıyor. Tekrar deneniyor…", AUDIO_DUB to "Ses dili",
+    LAYOUT to "Düzen yönü", LAYOUT_HELP to "Sağdan sola yazılan diller için arayüzü yansıtır",
+    LTR to "Soldan sağa", RTL to "Sağdan sola", RTL_ASK to "Bu dil için düzen yansıtılsın mı?",
+    KEEP_LTR to "Hayır, soldan sağa kalsın", USE_RTL to "Evet, sağdan sola",
 )

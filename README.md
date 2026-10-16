@@ -20,6 +20,7 @@ Pure Kotlin · no XML layouts · no Google services · no account · no API key
 - **Never interrupts** – opening a video keeps the current one playing until the new one is ready, with a clear "Opening…" state and the thumbnail while it loads. Cards look different for videos (with time-ago), channels and playlists.
 - **Under the mini player** – animated equaliser, progress, and your next recommended videos (↑/↓, OK to open). Autoplay shows an "Up next in 5…" card.
 - **Settings that stay focused** – every option opens its own pop-up (list, multi-select or big slider) that captures the keys. Content language is separate from the app language.
+- **Layout direction** is left-to-right by default; for Arabic-like languages PipeTv asks whether to mirror the layout (changeable any time in Settings).
 - **Favorites** – videos, channels and playlists: red/bookmark key on a card (or the ★ button in details, channel and playlist pages, or `B` in fullscreen).
 - **Always plays** – playback retries by itself (lower quality, fresh links, growing pause); the notice disappears the moment it works. Subtitles load on their own and never touch the video.
 - **Alive** – the background drifts and re-tints from the page and the video you watch; soft synthesised sound effects and an endless, very quiet ambient track while nothing plays (all switchable in Settings).

@@ -15,16 +15,16 @@ object PlayerMenu {
 
     fun rows(sub: SubMenu): List<Row> {
         val heights = Session.info?.let { Sources.heights(it) } ?: emptyList()
-        return listOf(
+        return listOfNotNull(
             StepRow({ S.t(K.QUALITY) }, { "" }, { listOf(S.t(K.AUTO)) + heights.map { "${it}p" } },
                 { if (Prefs.quality == 0) 0 else heights.indexOfFirst { it <= Prefs.quality } + 1 },
                 { Prefs.quality = if (it == 0) 0 else heights[it - 1]; Session.reload() }),
             SliderRow({ S.t(K.SPEED) }, { "" }, 0.25f, 3f, 0.25f, { Prefs.speed }, { Prefs.speed = it; Engine.exo.setPlaybackSpeed(it) }, { "%.2fx".format(it) }),
-            ActionRow({ S.t(K.SUBTITLES) }, { "" }, { if (Session.sub < 0) S.t(K.OFF) else if (Subs.state == 1) S.t(K.LOADING) else subLabel(Session.sub) }) {
+            if (Session.subs.isEmpty()) null else ActionRow({ S.t(K.SUBTITLES) }, { "" }, { if (Session.sub < 0) S.t(K.OFF) else if (Subs.state == 1) S.t(K.LOADING) else subLabel(Session.sub) }) {
                 sub.choose(S.t(K.SUBTITLES), "", listOf(S.t(K.OFF)) + Session.subs.indices.map(::subLabel), Session.sub + 1) { Session.pickSubs(it - 1) }
             },
-            ActionRow({ S.t(K.AUDIO_DUB) }, { "" }, { Session.audios.getOrNull(Session.audioIdx)?.label ?: "—" }) {
-                if (Session.audios.size > 1) sub.choose(S.t(K.AUDIO_DUB), "", Session.audios.map { it.label }, Session.audioIdx) { Session.pickAudio(it) }
+            if (Session.audios.size < 2) null else ActionRow({ S.t(K.AUDIO_DUB) }, { "" }, { Session.audios.getOrNull(Session.audioIdx)?.label ?: "—" }) {
+                sub.choose(S.t(K.AUDIO_DUB), "", Session.audios.map { it.label }, Session.audioIdx) { Session.pickAudio(it) }
             },
         )
     }

@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.media.audiofx.Visualizer
 import android.os.Build
 import dev.limitedio.pipetv.App
-import dev.limitedio.pipetv.media.Session
 import kotlin.math.sin
 import kotlin.math.sqrt
 
@@ -17,7 +16,7 @@ object Level {
 
     /** Level to show at time [t] seconds: the video's audio when one plays, otherwise the music. */
     fun now(t: Float): Float = when {
-        Session.item == null -> music
+        !Sound.videoPlaying() -> music
         viz != null -> video
         else -> .35f + .25f * sin(t * 2.3f) * sin(t * .7f) // no audio capture permission: a gentle stand-in
     }

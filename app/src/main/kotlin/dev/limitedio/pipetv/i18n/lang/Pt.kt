@@ -46,4 +46,7 @@ val Pt = mapOf(
     CLEAR to "Limpar", FAVORITES to "Favoritos", FAV_ADDED to "Adicionado aos favoritos", FAV_REMOVED to "Removido dos favoritos",
     NO_FAVS to "Ainda sem favoritos. Abra um vídeo, canal ou playlist e escolha Favorito.", FAVORITE to "Favorito", SAVED to "Salvo",
     SUBS_LOADING to "Carregando legendas…", RETRYING to "Não é possível reproduzir agora. Tentando de novo…", AUDIO_DUB to "Idioma do áudio",
+    LAYOUT to "Direção do layout", LAYOUT_HELP to "Espelha toda a interface para idiomas da direita para a esquerda",
+    LTR to "Esquerda para a direita", RTL to "Direita para a esquerda", RTL_ASK to "Espelhar o layout para este idioma?",
+    KEEP_LTR to "Não, manter esquerda para a direita", USE_RTL to "Sim, direita para a esquerda",
 )

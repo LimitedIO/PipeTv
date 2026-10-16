@@ -73,6 +73,7 @@ class DetailsView(c: Context, private val item: Item) : ViewGroup(c), Screen {
 
     private fun refreshLit() { head.lit = on && zone == 0; about.lit = on && zone == 1; comments.lit = on && zone == 1; related.lit = on && zone == 1 && head.sel == 3; listOf<View>(head, about, comments, related).forEach { it.invalidate() } }
     override fun lit(on: Boolean) { this.on = on; refreshLit() }
+    override fun back(): Boolean { if (zone == 0) return false; zone = 0; refreshLit(); return true }
     override fun focused(): Item? = if (zone == 1 && head.sel == 3) related.focused() else item
 
     override fun key(code: Int, repeat: Int): Boolean {

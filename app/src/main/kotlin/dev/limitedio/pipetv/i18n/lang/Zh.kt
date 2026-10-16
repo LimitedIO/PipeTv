@@ -46,4 +46,7 @@ val Zh = mapOf(
     CLEAR to "清除", FAVORITES to "收藏", FAV_ADDED to "已加入收藏", FAV_REMOVED to "已取消收藏",
     NO_FAVS to "还没有收藏。打开视频、频道或播放列表并选择收藏。", FAVORITE to "收藏", SAVED to "已收藏",
     SUBS_LOADING to "正在加载字幕…", RETRYING to "暂时无法播放，正在重试…", AUDIO_DUB to "音频语言",
+    LAYOUT to "布局方向", LAYOUT_HELP to "为从右到左的语言镜像整个界面",
+    LTR to "从左到右", RTL to "从右到左", RTL_ASK to "要为此语言镜像布局吗？",
+    KEEP_LTR to "否，保持从左到右", USE_RTL to "是，从右到左",
 )

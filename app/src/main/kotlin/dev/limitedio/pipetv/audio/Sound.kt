@@ -1,11 +1,16 @@
 package dev.limitedio.pipetv.audio
 
 import dev.limitedio.pipetv.data.Prefs
+import dev.limitedio.pipetv.media.Engine
 import dev.limitedio.pipetv.media.Session
 
-/** Decides when the calm music plays: only in the foreground, only while no video is playing or opening. */
+/** Decides when the calm music plays: only in the foreground and while no video is actually playing. */
 object Sound {
     var foreground = false
 
-    fun update() { Calm.want(foreground && Prefs.music && !Session.active); if (!Session.active) Level.release() }
+    /** True only while a video is really playing (not paused, buffering or still opening). */
+    fun videoPlaying() = Session.item != null && Engine.exo.isPlaying
+
+    /** Music and effects are allowed whenever no video is actually playing. */
+    fun update() { Calm.want(foreground && Prefs.music && !videoPlaying()); if (!Session.active) Level.release() }
 }

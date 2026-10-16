@@ -7,7 +7,7 @@ import kotlin.math.abs
 import kotlin.math.min
 
 /** Critically-damped-ish spring: gives every motion in the app the same physical feel. */
-class Spring(var value: Float = 0f, private val k: Float = 220f, private val d: Float = 28f) {
+class Spring(var value: Float = 0f, var k: Float = 220f, var d: Float = 28f) {
     var target = value
     private var vel = 0f
     val moving get() = abs(target - value) > 0.002f || abs(vel) > 0.01f

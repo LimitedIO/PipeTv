@@ -1,5 +1,6 @@
 package dev.limitedio.pipetv.ui
 
+import dev.limitedio.pipetv.Bg
 import dev.limitedio.pipetv.audio.Sfx
 import dev.limitedio.pipetv.audio.Sound
 import dev.limitedio.pipetv.data.Prefs
@@ -32,9 +33,13 @@ object Settings {
             open(K.LANGUAGE, K.LANGUAGE_HELP, { if (Prefs.language == "auto") S.t(K.AUTO) + " · " + S.cur.name else S.cur.name }) {
                 val cur = if (Prefs.language == "auto") 0 else S.all.indexOfFirst { it.code == Prefs.language } + 1
                 sub.choose(S.t(K.LANGUAGE), S.t(K.LANGUAGE_HELP), listOf(S.t(K.AUTO)) + S.all.map { it.name }, cur) {
-                    Prefs.language = if (it == 0) "auto" else S.all[it - 1].code; S.apply(); onLang()
+                    Prefs.language = if (it == 0) "auto" else S.all[it - 1].code; S.apply()
+                    if (!S.cur.rtl && Prefs.rtl) { Prefs.rtl = false; S.apply() }
+                    onLang()
+                    if (S.cur.rtl && !Prefs.rtl) Bg.main.post { direction(sub, onLang, ask = true) } // offered, never forced
                 }
             },
+            open(K.LAYOUT, K.LAYOUT_HELP, { S.t(if (Prefs.rtl) K.RTL else K.LTR) }) { direction(sub, onLang, ask = false) },
             open(K.CONTENT_LANG, K.CONTENT_HELP, { Regions.saved()?.name ?: S.t(K.SAME_AS_APP) }) {
                 val cur = Regions.all.indexOf(Regions.saved()) + 1
                 sub.choose(S.t(K.CONTENT_LANG), S.t(K.CONTENT_HELP), listOf(S.t(K.SAME_AS_APP)) + Regions.all.map { it.name }, cur) {
@@ -56,5 +61,12 @@ object Settings {
             ActionRow({ S.t(K.UPDATES) }, { S.t(K.UPDATES_HELP) }, { Updater.status }) { if (Updater.ready != null) Updater.install() else Updater.check() },
             ActionRow({ S.t(K.ABOUT_APP) }, { S.t(K.ABOUT_HELP) }, { "PipeTv ${Updater.current} · LimitedIO" }) {},
         )
+    }
+
+    /** Asks for (or lets the user change) the layout direction. */
+    private fun direction(sub: SubMenu, onLang: () -> Unit, ask: Boolean) {
+        val title = S.t(if (ask) K.RTL_ASK else K.LAYOUT)
+        val opts = if (ask) listOf(S.t(K.KEEP_LTR), S.t(K.USE_RTL)) else listOf(S.t(K.LTR), S.t(K.RTL))
+        sub.choose(title, S.t(K.LAYOUT_HELP), opts, if (Prefs.rtl) 1 else 0) { Prefs.rtl = it == 1; S.apply(); onLang() }
     }
 }

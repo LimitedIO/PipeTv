@@ -6,7 +6,6 @@ import android.media.SoundPool
 import dev.limitedio.pipetv.App
 import dev.limitedio.pipetv.Bg
 import dev.limitedio.pipetv.data.Prefs
-import dev.limitedio.pipetv.media.Session
 import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -56,7 +55,7 @@ object Sfx {
     }
 
     fun play(fx: Fx) {
-        if (!Prefs.sfx || Session.active) return
+        if (!Prefs.sfx || Sound.videoPlaying()) return
         val now = System.currentTimeMillis()
         if (fx == Fx.TICK && now - last < 55) return
         last = now

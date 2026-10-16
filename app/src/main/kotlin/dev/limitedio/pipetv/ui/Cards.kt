@@ -1,11 +1,9 @@
 package dev.limitedio.pipetv.ui
 
 import android.graphics.Canvas
-import android.graphics.LinearGradient
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
-import android.graphics.Shader
 import android.os.SystemClock
 import dev.limitedio.pipetv.data.Favs
 import dev.limitedio.pipetv.data.Item
@@ -22,8 +20,6 @@ object Cards {
     private val title = Ui.paint(Ui.TEXT, 23f, true); private val by = Ui.paint(0xFFB4B9D2.toInt(), 20f); private val meta = Ui.paint(Ui.DIM, 18f)
     private val accent = Ui.paint(Ui.ACCENT2, 19f, true); private val bar = Ui.paint(Ui.ACCENT2)
     private val stack = Ui.paint(Ui.ACCENT); private val gold = Ui.paint(0xFFFFC83D.toInt())
-    private val tile = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val ring = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val m = Matrix()
     private val r = RectF()
 
@@ -75,20 +71,14 @@ object Cards {
         Txt.draw(c, Txt.fit(badgeText, it.meta, sw - Ui.u(8)), r.left, r.centerY() + Ui.u(44), sw, badgeText, true)
     }
 
-    /** Channel: a tinted tile with a ringed avatar, centred text. */
+    /** Channel, like YouTube: just the round picture with the name and subscriber count below, no tile. */
     private fun channel(c: Canvas, it: Item, x: Float, y: Float, w: Float, h: Float) {
-        r.set(x, y, x + w, y + h)
-        tile.shader = LinearGradient(x, y, x + w, y + h, 0xFF22264A.toInt(), 0xFF123A3C.toInt(), Shader.TileMode.CLAMP)
-        c.drawRoundRect(r, Ui.u(18), Ui.u(18), tile)
-        val d = h * .6f; val cx = x + w / 2; val cy = y + h * .46f
-        ring.strokeWidth = Ui.u(4); ring.shader = LinearGradient(cx - d, cy - d, cx + d, cy + d, Ui.ACCENT, Ui.ACCENT2, Shader.TileMode.CLAMP)
-        c.drawCircle(cx, cy, d / 2 + Ui.u(8), ring)
-        Img.get(it.thumb, 200)?.let { p ->
-            val s = d / minOf(p.bmp.width, p.bmp.height)
-            m.setScale(s, s); m.postTranslate(cx - d / 2 - (p.bmp.width * s - d) / 2, cy - d / 2 - (p.bmp.height * s - d) / 2)
-            p.shader.setLocalMatrix(m); pic.shader = p.shader; pic.alpha = fade(p); c.drawCircle(cx, cy, d / 2, pic)
-        } ?: c.drawCircle(cx, cy, d / 2, ph)
-        tag(c, S.t(K.CHANNEL), x, y - h + Ui.u(48), w, h, badge)
+        val d = h * .86f; val cx = x + w / 2; val cy = y + h / 2
+        val p = Img.get(it.thumb, 240)
+        if (p == null) { c.drawCircle(cx, cy, d / 2, ph); return }
+        val s = d / minOf(p.bmp.width, p.bmp.height)
+        m.setScale(s, s); m.postTranslate(cx - d / 2 - (p.bmp.width * s - d) / 2, cy - d / 2 - (p.bmp.height * s - d) / 2)
+        p.shader.setLocalMatrix(m); pic.shader = p.shader; pic.alpha = fade(p); c.drawCircle(cx, cy, d / 2, pic)
     }
 
     fun draw(c: Canvas, it: Item, x: Float, y: Float, w: Float, lit: Boolean) {

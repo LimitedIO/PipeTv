@@ -46,4 +46,7 @@ val Es = mapOf(
     CLEAR to "Borrar", FAVORITES to "Favoritos", FAV_ADDED to "Añadido a favoritos", FAV_REMOVED to "Quitado de favoritos",
     NO_FAVS to "Aún no hay favoritos. Abre un vídeo, canal o lista y elige Favorito.", FAVORITE to "Favorito", SAVED to "Guardado",
     SUBS_LOADING to "Cargando subtítulos…", RETRYING to "No se puede reproducir ahora. Reintentando…", AUDIO_DUB to "Idioma del audio",
+    LAYOUT to "Dirección del diseño", LAYOUT_HELP to "Refleja toda la interfaz para idiomas de derecha a izquierda",
+    LTR to "De izquierda a derecha", RTL to "De derecha a izquierda", RTL_ASK to "¿Reflejar el diseño para este idioma?",
+    KEEP_LTR to "No, mantener izquierda a derecha", USE_RTL to "Sí, de derecha a izquierda",
 )

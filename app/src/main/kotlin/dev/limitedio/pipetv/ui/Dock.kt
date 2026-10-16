@@ -62,7 +62,7 @@ class Dock(c: Context) : AnimView(c) {
             Session.loading -> S.f(K.OPENING, it.title)
             Session.failed -> S.t(K.RETRYING)
             !p.playWhenReady -> S.t(K.PAUSED) + " · " + Ui.fmt(p.currentPosition)
-            else -> Ui.fmt(p.currentPosition) + " / " + Ui.fmt(p.duration.coerceAtLeast(0))
+            else -> Ui.fmt(p.currentPosition) + " / " + Ui.fmt(p.duration.coerceAtLeast(0)) + (if (p.videoSize.height > 0) " · ${p.videoSize.height}p" else "")
         }
         Txt.draw(c, Txt.fit(if (Session.loading) tag else dim, state, w), 0f, Ui.u(274), w, if (Session.loading) tag else dim)
         queue(c, w)

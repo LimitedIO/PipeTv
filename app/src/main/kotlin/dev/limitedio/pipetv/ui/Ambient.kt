@@ -35,10 +35,11 @@ class Ambient {
     }
 
     /** Picks target colours: the page's palette, or the playing video's colour when something is on. */
-    fun mood(tab: Int, tint: Int, playing: Boolean, paused: Boolean, loading: Boolean, voice: Float, level: Float) {
+    fun mood(tab: Int, tint: Int, playing: Boolean, paused: Boolean, loading: Boolean, voice: Float, level: Float, live: IntArray? = null) {
         val base = palettes[tab.coerceIn(0, 5)]
         for ((i, cl) in clouds.withIndex()) {
-            val col = if (tint != 0 && playing) when (i) { 0 -> tint; 1 -> Color.rgb(Color.red(tint) / 2, Color.green(tint) / 2, Color.blue(tint) / 2 + 60); else -> base[1] } else base[i]
+            val col = if (live != null) live[i] else if (tint != 0 && playing) when (i) { 0 -> tint; 1 -> Color.rgb(Color.red(tint) / 2, Color.green(tint) / 2, Color.blue(tint) / 2 + 60); else -> base[1] } else base[i]
+            for (sp in listOf(cl.r, cl.g, cl.b)) { sp.k = if (live != null) 70f else 14f; sp.d = if (live != null) 15f else 8f }
             cl.r.target = Color.red(col) / 255f; cl.g.target = Color.green(col) / 255f; cl.b.target = Color.blue(col) / 255f
         }
         energy.target = (if (playing) (if (paused) .55f else 1.0f) else .9f) + voice * 1.4f + (if (loading) .3f else 0f) + level * 1.1f

@@ -83,9 +83,9 @@ class Root(c: Context) : ViewGroup(c) {
         val t = now / 1e9f; val it = Session.shown; val level = Level.now(t)
         val playing = Session.item != null
         if (playing) { glow.tick(stage, Engine.exo.isPlaying); glow.draw(c, width.toFloat(), height.toFloat(), t, level, 1f - fullS.value) } else glow.reset()
-        ambient.mood(tab, ambient.tintOf(it), Session.active, playing && !Engine.exo.playWhenReady, Session.loading, if (Voice.active) Voice.level else 0f, level)
+        ambient.mood(tab, ambient.tintOf(it), Session.active, playing && !Engine.exo.playWhenReady, Session.loading, if (Voice.active) Voice.level else 0f, level, if (glow.ready && playing) glow.colors else null)
         ambient.draw(c, width.toFloat(), height.toFloat(), dt, t)
-        postInvalidateDelayed(40)
+        postInvalidateDelayed(if (playing) 33 else 40)
     }
 
     override fun onLayout(ch: Boolean, l: Int, t: Int, r: Int, b: Int) = relayout()

@@ -46,4 +46,7 @@ val En = mapOf(
     CLEAR to "Clear", FAVORITES to "Favorites", FAV_ADDED to "Added to favorites", FAV_REMOVED to "Removed from favorites",
     NO_FAVS to "No favorites yet. Open a video, channel or playlist and choose Favorite.", FAVORITE to "Favorite", SAVED to "Saved",
     SUBS_LOADING to "Loading subtitles…", RETRYING to "Can't play right now. Trying again…", AUDIO_DUB to "Audio language",
+    LAYOUT to "Layout direction", LAYOUT_HELP to "Mirror the whole interface for right-to-left languages",
+    LTR to "Left to right", RTL to "Right to left", RTL_ASK to "Mirror the layout for this language?",
+    KEEP_LTR to "No, keep left-to-right", USE_RTL to "Yes, mirror to right-to-left",
 )

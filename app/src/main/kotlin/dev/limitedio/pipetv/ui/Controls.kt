@@ -38,7 +38,7 @@ class Controls(private val root: Root) {
         if (Session.active && root.dockS.target == 0f) root.setDock(true)
         if (!Session.active) { root.setDock(false); root.setFull(false); if (zone == 2) setZone(1) }
         Sound.update()
-        root.dock.invalidate(); root.hud.invalidate(); root.stage.refresh(); root.stage.requestLayout()
+        root.dock.invalidate(); root.hud.invalidate(); root.stage.refresh(); root.stage.refit()
     }
 
     private fun setZone(z: Int) {
@@ -64,7 +64,7 @@ class Controls(private val root: Root) {
     private fun back(): Boolean {
         when {
             zone == 1 && root.tab == 5 && !root.screens.any && root.pages.closeSub() -> {}
-            zone == 1 && root.screens.any -> root.screens.pop()
+            zone == 1 && root.screens.any -> if (root.screens.top?.back() != true) root.screens.pop()
             zone != 0 -> setZone(0)
             Session.active -> { Session.stop(); root.toast.show(S.t(K.PLAYBACK_CLOSED)) }
             else -> onExit()

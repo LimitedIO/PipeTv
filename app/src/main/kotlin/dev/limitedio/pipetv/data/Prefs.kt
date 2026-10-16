@@ -47,5 +47,10 @@ object Prefs {
         get() = sp.getBoolean("ambient", true)
         set(v) = sp.edit().putBoolean("ambient", v).apply()
 
+    /** Mirror the layout (right-to-left). Off by default, even for Arabic: the user is asked. */
+    var rtl: Boolean
+        get() = sp.getBoolean("rtl", false)
+        set(v) = sp.edit().putBoolean("rtl", v).apply()
+
     fun qualityLabel(q: Int = quality) = if (q == 0) S.t(K.AUTO) else "${q}p"
 }

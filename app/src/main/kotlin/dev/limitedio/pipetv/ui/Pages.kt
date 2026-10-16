@@ -18,7 +18,7 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
     val home = Grid(c) { S.t(K.RECOMMENDED) }
     val search = SearchPage(c)
     val trending = Grid(c) { S.t(K.TRENDING) }
-    val favs = Grid(c) { S.t(K.FAVORITES) }
+    val favs = FavsPage(c)
     val history = TimelineView(c)
     val settings = SettingsPage(c, onLang, { search.keyboard.refresh() }, toast)
     val views: List<View> = listOf(home, search, trending, favs, history, settings)
@@ -26,7 +26,8 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
     private var trendingLoaded = false
 
     init {
-        listOf(home, trending, favs).forEach { it.onPick = pick; it.onMenu = menu }
+        listOf(home, trending).forEach { it.onPick = pick; it.onMenu = menu }
+        favs.picks(pick, menu)
         search.picks(pick, menu); history.onPick = pick; history.onMenu = menu
         home.items = mark(Store.load("feed"))
         if (home.items.isEmpty()) home.busy = true
@@ -68,24 +69,25 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
     /** Back closes an open settings pop-up first. */
     fun closeSub(): Boolean = settings.closeSub()
 
-    fun setCols(n: Int) { listOf(home, trending, favs).forEach { it.cols = n } }
+    fun setCols(n: Int) { listOf(home, trending, favs.grid).forEach { it.cols = n } }
 
-    fun refreshFavs() { favs.message = S.t(K.NO_FAVS); favs.items = Favs.items(); views.forEach { it.invalidate() } }
+    fun refreshFavs() { favs.reload(); views.forEach { it.invalidate() } }
 
     /** The focused card of page [i] (what the favourite key acts on). */
-    fun focusedItem(i: Int): Item? = when (val v = views[i]) { is Grid -> v.focused(); is SearchPage -> v.grid.focused(); is TimelineView -> v.focused(); else -> null }
+    fun focusedItem(i: Int): Item? = when (val v = views[i]) { is Grid -> v.focused(); is FavsPage -> v.grid.focused(); is SearchPage -> v.grid.focused(); is TimelineView -> v.focused(); else -> null }
 
     fun lit(i: Int, on: Boolean) {
         when (val v = views[i]) {
             is Grid -> { v.lit = on; v.invalidate() }
             is SearchPage -> v.lit(on)
+            is FavsPage -> v.lit(on)
             is TimelineView -> { v.lit = on; v.invalidate() }
             is SettingsPage -> v.lit(on)
         }
     }
 
     fun key(i: Int, code: Int, repeat: Int): Boolean = when (val v = views[i]) {
-        is Grid -> v.key(code); is SearchPage -> v.key(code); is TimelineView -> v.key(code)
+        is Grid -> v.key(code); is FavsPage -> v.key(code); is SearchPage -> v.key(code); is TimelineView -> v.key(code)
         is SettingsPage -> v.key(code, repeat); else -> false
     }
 }

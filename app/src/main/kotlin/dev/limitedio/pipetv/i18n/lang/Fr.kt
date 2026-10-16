@@ -46,4 +46,7 @@ val Fr = mapOf(
     CLEAR to "Effacer", FAVORITES to "Favoris", FAV_ADDED to "Ajouté aux favoris", FAV_REMOVED to "Retiré des favoris",
     NO_FAVS to "Aucun favori. Ouvrez une vidéo, une chaîne ou une playlist et choisissez Favori.", FAVORITE to "Favori", SAVED to "Enregistré",
     SUBS_LOADING to "Chargement des sous-titres…", RETRYING to "Lecture impossible pour l'instant. Nouvel essai…", AUDIO_DUB to "Langue audio",
+    LAYOUT to "Sens de l'interface", LAYOUT_HELP to "Inverse toute l'interface pour les langues de droite à gauche",
+    LTR to "De gauche à droite", RTL to "De droite à gauche", RTL_ASK to "Inverser l'interface pour cette langue ?",
+    KEEP_LTR to "Non, garder de gauche à droite", USE_RTL to "Oui, de droite à gauche",
 )

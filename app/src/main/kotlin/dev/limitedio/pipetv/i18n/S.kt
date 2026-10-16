@@ -16,11 +16,11 @@ object S {
     )
     var cur: Lang = all[0]; private set
 
-    /** Resolves the saved choice ("auto" follows the system) and mirrors the layout for RTL. */
+    /** Resolves the saved language ("auto" follows the system); the layout is mirrored only if the user chose RTL. */
     fun apply() {
         val pick = Prefs.language
         cur = all.firstOrNull { it.code == pick } ?: all.firstOrNull { it.code == Locale.getDefault().language } ?: all[0]
-        Ui.rtl = cur.rtl
+        Ui.rtl = Prefs.rtl
     }
 
     fun t(k: K): String = cur.map[k] ?: En[k] ?: k.name
