@@ -58,4 +58,5 @@ val Tr = mapOf(
     LICENSES to "Açık kaynak lisansları", DEVELOPER to "Geliştirici", REPOSITORY to "Kaynak kod deposu",
     SCAN_REPO to "Depoyu açmak için tarayın", APP_DESCRIPTION to "Android TV için gizliliğe önem veren bir YouTube istemcisi. Hesap veya API anahtarı gerektirmez.",
     PLAYER_MENU_HINT to "%s Oynatıcı kontrolleri", LICENSE_HINT to "Tamam: lisansı oku · Geri: dön",
+    BUFFERING to "Arabelleğe alınıyor…", PLAYBACK_ENDED to "Oynatma tamamlandı",
 )

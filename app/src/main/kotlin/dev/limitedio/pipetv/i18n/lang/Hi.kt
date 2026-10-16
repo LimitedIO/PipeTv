@@ -58,4 +58,5 @@ val Hi = mapOf(
     LICENSES to "ओपन-सोर्स लाइसेंस", DEVELOPER to "डेवलपर", REPOSITORY to "सोर्स रिपॉज़िटरी",
     SCAN_REPO to "रिपॉज़िटरी खोलने के लिए स्कैन करें", APP_DESCRIPTION to "Android TV के लिए गोपनीयता का सम्मान करने वाला YouTube क्लाइंट। खाते या API कुंजी की आवश्यकता नहीं।",
     PLAYER_MENU_HINT to "%s प्लेयर नियंत्रण", LICENSE_HINT to "OK: लाइसेंस पढ़ें · वापस: लौटें",
+    BUFFERING to "बफ़र हो रहा है…", PLAYBACK_ENDED to "प्लेबैक समाप्त",
 )

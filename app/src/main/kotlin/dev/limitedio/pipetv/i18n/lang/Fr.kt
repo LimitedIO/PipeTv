@@ -58,4 +58,5 @@ val Fr = mapOf(
     LICENSES to "Licences open source", DEVELOPER to "Développeur", REPOSITORY to "Dépôt du code source",
     SCAN_REPO to "Scannez pour ouvrir le dépôt", APP_DESCRIPTION to "Un client YouTube respectueux de la vie privée pour Android TV. Aucun compte ni clé API requis.",
     PLAYER_MENU_HINT to "%s Commandes du lecteur", LICENSE_HINT to "OK : lire la licence · Retour : revenir",
+    BUFFERING to "Mise en mémoire tampon…", PLAYBACK_ENDED to "Lecture terminée",
 )

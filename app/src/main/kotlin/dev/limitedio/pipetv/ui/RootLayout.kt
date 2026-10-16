@@ -16,25 +16,37 @@ object RootLayout {
         else root.nav.layout(panel.toInt(), 0, panel.toInt() + nw, h)
         val playerX = if (rtl) w - panel else panel - playerW
         root.playerPanel.layout(playerX.toInt(), 0, (playerX + playerW).toInt(), h)
-        val mw = playerW - Ui.u(48); val mh = mw * 9 / 16
-        val mx = playerX + Ui.u(24); val my = Ui.u(120)
+        val mw = playerW - Ui.u(48); val mh = h * mw / w
+        // Fullscreen transitions use a stationary preview anchor. The panel slides independently.
+        val previewX = if (rtl) w - playerW + Ui.u(24) else Ui.u(24)
+        val mx = if (f > 0f) previewX else playerX + Ui.u(24); val my = Ui.u(120)
         val x = mx * (1 - f); val y = my * (1 - f)
-        if (Session.active) root.stage.layout(x.toInt(), y.toInt(), (x + mw + (w - mw) * f).toInt(), (y + mh + (h - mh) * f).toInt())
-        else root.stage.layout(0, 0, 1, 1)
+        // Keep the decoder's TextureView at a stable size; transform the composed video instead.
+        root.stage.layout(0, 0, w, h)
+        val scale = mw / w + (1 - mw / w) * f
+        root.stage.pivotX = 0f; root.stage.pivotY = 0f
+        root.stage.scaleX = scale; root.stage.scaleY = scale
+        root.stage.translationX = x; root.stage.translationY = y
         root.dock.videoH = mh
         root.dock.layout(playerX.toInt(), 0, (playerX + playerW).toInt(), h)
         root.hud.layout(0, 0, w, h); root.toast.layout(0, 0, w, h); root.update.layout(0, 0, w, h)
         val mnw = minOf(Ui.u(820).toInt(), w - Ui.u(80).toInt()); val mnx = (w - mnw) / 2
         root.playerSub.layout(0, 0, w, h)
         root.navigationShade.layout(0, 0, w, h)
-        root.navigationShade.visibility = if (f < .98f && (root.controls.onNav || root.dock.lit || dk > .001f)) View.VISIBLE else View.GONE
+        root.navigationShade.visibility = if (f == 0f && (root.controls.onNav || root.dock.lit || dk > .001f)) View.VISIBLE else View.GONE
         root.menuShade.layout(0, 0, w, h)
         root.menu.layout(mnx, Ui.u(64).toInt(), mnx + mnw, h - Ui.u(64).toInt())
-        root.stage.alpha = if (Session.active) maxOf(dk, f) else 0f
-        val showPlayer = Session.item != null && dk > .001f && f < .98f
+        root.stage.alpha = when {
+            !Session.active -> 0f
+            root.full && root.fullFromDock -> 1f
+            f > 0f -> f
+            else -> dk
+        }
+        val showPlayer = Session.active && dk > .001f && f == 0f && !root.full
         root.playerPanel.visibility = if (showPlayer) View.VISIBLE else View.GONE
         root.dock.visibility = if (showPlayer) View.VISIBLE else View.GONE
-        root.hud.visibility = if (f > .02f) View.VISIBLE else View.GONE
-        root.nav.visibility = if (f > .98f) View.GONE else View.VISIBLE
+        root.hud.alpha = f
+        root.hud.visibility = if (f > 0f && root.full) View.VISIBLE else View.GONE
+        root.nav.visibility = if (f > 0f || root.full) View.GONE else View.VISIBLE
     }
 }

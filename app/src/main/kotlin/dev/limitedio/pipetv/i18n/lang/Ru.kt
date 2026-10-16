@@ -58,4 +58,5 @@ val Ru = mapOf(
     LICENSES to "Лицензии открытого ПО", DEVELOPER to "Разработчик", REPOSITORY to "Репозиторий исходного кода",
     SCAN_REPO to "Сканируйте, чтобы открыть репозиторий", APP_DESCRIPTION to "Приватный клиент YouTube для Android TV. Не требует аккаунта или ключа API.",
     PLAYER_MENU_HINT to "%s Управление плеером", LICENSE_HINT to "OK: читать лицензию · Назад: вернуться",
+    BUFFERING to "Буферизация…", PLAYBACK_ENDED to "Воспроизведение завершено",
 )

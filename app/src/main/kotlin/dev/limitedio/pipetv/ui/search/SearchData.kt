@@ -15,7 +15,7 @@ class SearchData(private val grid: Grid, private val suggest: SuggestList) {
     private var token = 0
     private var paged: Paged<Item>? = null
 
-    fun typing() { results = false; token++ }
+    fun typing() { results = false; token++; paged = null; grid.loading = false; grid.busy = false }
 
     fun showRecents() { suggest.recent = true; suggest.items = Store.recents() }
     fun clearSuggestions() {
@@ -30,8 +30,10 @@ class SearchData(private val grid: Grid, private val suggest: SuggestList) {
     fun search(q: String, filter: String) {
         Store.addSearch(q)
         results = true
-        grid.loading = true; grid.message = null
-        if (grid.items.isEmpty()) { grid.busy = true; grid.message = S.t(K.SEARCHING) }
+        paged = null
+        grid.busy = grid.items.isEmpty(); grid.loading = !grid.busy
+        grid.message = if (grid.busy) S.t(K.SEARCHING) else null
+        grid.invalidate()
         val t = ++token
         Bg.io({ Yt.search(q, filter) }) { r ->
             if (t != token) return@io
@@ -42,6 +44,7 @@ class SearchData(private val grid: Grid, private val suggest: SuggestList) {
     }
 
     fun more() {
+        if (grid.loading || grid.busy) return
         val p = paged?.takeIf { it.hasMore } ?: return
         val t = token; grid.loading = true
         Bg.io({ p.loadMore() }) { r -> if (t == token) { grid.loading = false; if (!r.isNullOrEmpty()) grid.append(r) } }

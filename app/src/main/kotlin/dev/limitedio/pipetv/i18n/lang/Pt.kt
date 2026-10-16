@@ -58,4 +58,5 @@ val Pt = mapOf(
     LICENSES to "Licenças de código aberto", DEVELOPER to "Desenvolvedor", REPOSITORY to "Repositório do código",
     SCAN_REPO to "Leia o código para abrir o repositório", APP_DESCRIPTION to "Um cliente privado do YouTube para Android TV. Não exige conta nem chave de API.",
     PLAYER_MENU_HINT to "%s Controles do player", LICENSE_HINT to "OK: ler licença · Voltar: retornar",
+    BUFFERING to "Carregando buffer…", PLAYBACK_ENDED to "Reprodução concluída",
 )

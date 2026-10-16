@@ -37,7 +37,7 @@ class Nav(c: Context) : AnimView(c) {
     private val playerCard = Ui.paint(Ui.SURFACE)
 
     private val itemH get() = Ui.u(90)
-    private val y0 get() = Ui.u(if (Session.item != null) 230 else 190)
+    private val y0 get() = Ui.u(if (Session.active) 230 else 190)
 
     override fun render(c: Canvas, dt: Float) {
         val expanded = open.value.coerceIn(0f, 1f)
@@ -45,13 +45,19 @@ class Nav(c: Context) : AnimView(c) {
         val ox = if (Ui.rtl) width - pw else 0f
         c.drawRect(ox, 0f, ox + pw, height.toFloat(), bg)
         brand.alpha = (255 * expanded).toInt().coerceIn(0, 255)
-        Txt.draw(c, "PipeTv", ox + Ui.u(40), Ui.u(if (Session.item != null) 64 else 130), pw - Ui.u(80), brand)
-        Session.item?.let { item ->
+        Txt.draw(c, "PipeTv", ox + Ui.u(40), Ui.u(if (Session.active) 64 else 130), pw - Ui.u(80), brand)
+        (Session.pending ?: Session.item)?.let { item ->
             if (expanded > .15f) {
                 val x = ox + Ui.u(20); val cw = pw - Ui.u(40)
                 r.set(x, Ui.u(88), x + cw, Ui.u(208)); c.drawRoundRect(r, Ui.u(18), Ui.u(18), playerCard)
                 val tx = x + Ui.u(16); val tw = cw - Ui.u(32)
-                Txt.draw(c, Txt.fit(status, S.t(if (Engine.exo.playWhenReady) K.NOW_PLAYING else K.PAUSED), tw), tx, Ui.u(118), tw, status)
+                val state = when {
+                    Session.pending != null -> K.LOADING
+                    Session.failed -> K.RETRYING
+                    Engine.exo.playWhenReady -> K.NOW_PLAYING
+                    else -> K.PAUSED
+                }
+                Txt.draw(c, Txt.fit(status, S.t(state), tw), tx, Ui.u(118), tw, status)
                 Txt.draw(c, Txt.fit(playingTitle, item.title, tw), tx, Ui.u(154), tw, playingTitle)
                 val cue = S.f(K.PLAYER_MENU_HINT, if (Ui.rtl) "→" else "←")
                 Txt.draw(c, Txt.fit(playerHint, cue, tw), tx, Ui.u(188), tw, playerHint)

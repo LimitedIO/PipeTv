@@ -26,6 +26,7 @@ class Root(c: Context) : ViewGroup(c) {
     val controls = Controls(this); val screens = ScreenStack(this); val opener = Opener(this)
     val pages = Pages(c, opener::pick, opener::details, { onLanguage() }, toast::show, opener::about)
     val dockS = Spring(0f, 170f, 24f); val fullS = Spring(0f, 170f, 24f)
+    var fullFromDock = false; private set
     var tab = 0; private set
     var menuOpen = false; private set; var askMic: () -> Unit = {}
     var fromPlayer = false // a video-info page opened from fullscreen is up: Back returns to the video
@@ -56,12 +57,13 @@ class Root(c: Context) : ViewGroup(c) {
 
     fun kick() { if (!running) { running = true; Choreographer.getInstance().postFrameCallback(frame) } }
     fun setDock(on: Boolean) {
-        val show = on && Session.item != null && !full
+        val show = on && Session.active && !full
         val target = if (show) 1f else 0f
         if (dockS.target == target) return
         dockS.target = target; kick()
     }
     fun setFull(on: Boolean) {
+        if (on && !full) fullFromDock = dockS.value > .001f || dockS.target > 0f
         fullS.target = if (on) 1f else 0f
         if (on) { setDock(false); hud.nudge() } else { controls.focusContent(); closeMenu() }
         kick()

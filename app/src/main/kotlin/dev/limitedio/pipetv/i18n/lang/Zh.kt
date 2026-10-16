@@ -58,4 +58,5 @@ val Zh = mapOf(
     LICENSES to "开源许可证", DEVELOPER to "开发者", REPOSITORY to "源代码仓库",
     SCAN_REPO to "扫描二维码打开仓库", APP_DESCRIPTION to "注重隐私的 Android TV YouTube 客户端。无需账号或 API 密钥。",
     PLAYER_MENU_HINT to "%s 播放控制", LICENSE_HINT to "确定：阅读许可证 · 返回：返回上一页",
+    BUFFERING to "缓冲中…", PLAYBACK_ENDED to "播放结束",
 )

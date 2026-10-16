@@ -58,4 +58,5 @@ val De = mapOf(
     LICENSES to "Open-Source-Lizenzen", DEVELOPER to "Entwickler", REPOSITORY to "Quellcode-Repository",
     SCAN_REPO to "Scannen, um das Repository zu öffnen", APP_DESCRIPTION to "Ein datenschutzfreundlicher YouTube-Client für Android TV. Kein Konto und kein API-Schlüssel erforderlich.",
     PLAYER_MENU_HINT to "%s Player-Steuerung", LICENSE_HINT to "OK: Lizenz lesen · Zurück: zurückkehren",
+    BUFFERING to "Puffern…", PLAYBACK_ENDED to "Wiedergabe beendet",
 )

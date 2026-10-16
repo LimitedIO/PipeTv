@@ -58,4 +58,5 @@ val Ar = mapOf(
     LICENSES to "تراخيص المصادر المفتوحة", DEVELOPER to "المطور", REPOSITORY to "مستودع المصدر",
     SCAN_REPO to "امسح الرمز لفتح المستودع", APP_DESCRIPTION to "تطبيق YouTube يحترم الخصوصية لأجهزة Android TV. لا يتطلب حسابًا أو مفتاح API.",
     PLAYER_MENU_HINT to "%s أدوات المشغل", LICENSE_HINT to "موافق: قراءة الترخيص · رجوع: العودة",
+    BUFFERING to "جارٍ التخزين المؤقت…", PLAYBACK_ENDED to "انتهى التشغيل",
 )

@@ -58,4 +58,5 @@ val Es = mapOf(
     LICENSES to "Licencias de código abierto", DEVELOPER to "Desarrollador", REPOSITORY to "Repositorio de código",
     SCAN_REPO to "Escanea para abrir el repositorio", APP_DESCRIPTION to "Un cliente privado de YouTube para Android TV. No requiere cuenta ni clave API.",
     PLAYER_MENU_HINT to "%s Controles de reproducción", LICENSE_HINT to "OK: leer licencia · Atrás: volver",
+    BUFFERING to "Almacenando en búfer…", PLAYBACK_ENDED to "Reproducción finalizada",
 )

@@ -79,7 +79,7 @@ class Grid(c: Context, private val title: () -> String) : AnimView(c) {
     override fun render(c: Canvas, dt: Float) {
         val w = cw; val s = scroll.value
         if (title().isNotEmpty()) Txt.draw(c, title(), pad, Ui.u(84) - s, width - pad * 2, head)
-        if (list.isEmpty()) { fx.empty(c, pad, top, w, gap, rowH, cols, busy, width.toFloat(), message, onRetry != null, lit); if (loading) fx.pill(c, width.toFloat(), height.toFloat()); return }
+        if (list.isEmpty()) { fx.empty(c, pad, top, w, gap, rowH, cols, busy, width.toFloat(), message, onRetry != null, lit); return }
         val h = Cards.height(w)
         for (i in list.indices) {
             val y = top + (i / cols) * rowH - s

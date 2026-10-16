@@ -76,7 +76,7 @@ class Controls(private val root: Root) {
         when (k) {
             KEYCODE_DPAD_UP -> if (root.nav.exit) root.nav.exit = false else if (root.tab > 0) root.show(root.tab - 1)
             KEYCODE_DPAD_DOWN -> if (root.tab < 5) root.show(root.tab + 1) else root.nav.exit = true
-            KEYCODE_DPAD_LEFT -> if (Session.item != null) setZone(2) else return false
+            KEYCODE_DPAD_LEFT -> if (Session.active) setZone(2) else return false
             KEYCODE_DPAD_RIGHT, KEYCODE_DPAD_CENTER, KEYCODE_ENTER -> if (!root.nav.exit) setZone(1) else if (k != KEYCODE_DPAD_RIGHT) onExit()
             else -> return false
         }
