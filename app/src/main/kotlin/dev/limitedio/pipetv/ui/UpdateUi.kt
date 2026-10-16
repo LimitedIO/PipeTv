@@ -15,7 +15,7 @@ import dev.limitedio.pipetv.update.Updater.St
 /** Update dialog (found / ready to install) and the download progress bar along the bottom of the screen. */
 class UpdateUi(c: Context) : AnimView(c) {
     /** True while the dialog is up: it takes every key. */
-    val modal get() = (Updater.st == St.FOUND || Updater.st == St.READY) && !Updater.snoozed
+    val modal get() = Updater.st == St.READY && !Updater.snoozed
     private var sel = 0
     private val show = spring(0f, 220f, 26f); private val bar = spring(0f, 120f, 20f); private val dock = spring(0f, 200f, 26f)
     private val dim = Ui.paint(0xB0000000.toInt()); private val card = Ui.paint(0xFF171A2B.toInt()); private val face = Ui.paint(Ui.SURFACE)

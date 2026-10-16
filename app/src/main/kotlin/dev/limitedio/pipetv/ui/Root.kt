@@ -9,7 +9,6 @@ import dev.limitedio.pipetv.data.Prefs
 import dev.limitedio.pipetv.data.Yt
 import dev.limitedio.pipetv.i18n.K
 import dev.limitedio.pipetv.i18n.S
-import dev.limitedio.pipetv.media.Engine
 import dev.limitedio.pipetv.media.Session
 import dev.limitedio.pipetv.ui.input.Voice
 import dev.limitedio.pipetv.ui.widgets.RowList
@@ -25,8 +24,8 @@ class Root(c: Context) : ViewGroup(c) {
     val playerSub = SubMenu(c).apply { visibility = GONE }
     val controls = Controls(this); val screens = ScreenStack(this); val opener = Opener(this)
     val pages = Pages(c, opener::pick, opener::details, { onLanguage() }, toast::show, opener::about)
-    val dockS = Spring(0f, 170f, 24f); val fullS = Spring(0f, 170f, 24f)
-    var fullFromDock = false; private set
+    val dockS = Spring(0f, 1000f, 64f); val fullS = Spring(0f, 1200f, 70f)
+    val fullOrigin = android.graphics.RectF()
     var tab = 0; private set
     var menuOpen = false; private set; var askMic: () -> Unit = {}
     var fromPlayer = false // a video-info page opened from fullscreen is up: Back returns to the video
@@ -37,7 +36,7 @@ class Root(c: Context) : ViewGroup(c) {
         override fun doFrame(t: Long) {
             val dt = if (last == 0L) .016f else minOf((t - last) / 1e9f, .05f); last = t
             dockS.step(dt); fullS.step(dt); relayout()
-            if (dockS.moving || fullS.moving) Choreographer.getInstance().postFrameCallback(this) else { last = 0; running = false }
+            if (dockS.moving || fullS.moving || nav.moving) Choreographer.getInstance().postFrameCallback(this) else { last = 0; running = false }
         }
     }
 
@@ -49,7 +48,8 @@ class Root(c: Context) : ViewGroup(c) {
         Session.onChange = { controls.sessionChanged() }
         Session.onReady = { setFull(true) }
         Session.onOpenFailed = { toast.show(S.t(K.CANT_PLAY).substringBefore(".")) }
-        dock.onAction = ::act; dock.drawIcon = Actions::icon
+        dock.onExpand = { setFull(true) }
+        dock.onClose = { Session.stop(); toast.show(S.t(K.PLAYBACK_CLOSED)); controls.focusContent() }
         dock.onNav = { controls.focusNav() }
         pages.search.onVoice = { voice() }
         Voice.onFail = { quiet -> toast.show(S.t(if (quiet) K.NO_SPEECH else K.VOICE_NA)) }
@@ -63,9 +63,16 @@ class Root(c: Context) : ViewGroup(c) {
         dockS.target = target; kick()
     }
     fun setFull(on: Boolean) {
-        if (on && !full) fullFromDock = dockS.value > .001f || dockS.target > 0f
+        val changed = on != full
+        if (changed) {
+            if (on && stage.alpha > .001f && width > 0) {
+                fullOrigin.set(stage.translationX, stage.translationY,
+                    stage.translationX + width * stage.scaleX, stage.translationY + height * stage.scaleY)
+            } else fullOrigin.set(RootLayout.mini(this))
+        }
         fullS.target = if (on) 1f else 0f
-        if (on) { setDock(false); hud.nudge() } else { controls.focusContent(); closeMenu() }
+        if (on) { setDock(false); hud.nudge() }
+        else { if (changed) { if (Session.active) controls.focusNav() else controls.focusContent() }; closeMenu() }
         kick()
     }
     val full get() = fullS.target == 1f
@@ -83,14 +90,6 @@ class Root(c: Context) : ViewGroup(c) {
     fun onLanguage() { Yt.relocalize(); pages.relocalize(tab); nav.invalidate(); relayout() }
 
     fun syncDock() { kick() }
-
-    private fun act(i: Int) {
-        when (i) {
-            0 -> setFull(true); 1 -> { Engine.exo.playWhenReady = !Engine.exo.playWhenReady; dock.invalidate() }
-            2 -> Session.next(); 3 -> Session.item?.let(::toggleFav); 4 -> { setFull(true); openMenu() }
-            else -> { Session.stop(); toast.show(S.t(K.PLAYBACK_CLOSED)); controls.focusContent() }
-        }
-    }
 
     fun show(i: Int, animate: Boolean = true) {
         fromPlayer = false

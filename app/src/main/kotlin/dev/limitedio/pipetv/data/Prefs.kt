@@ -17,6 +17,9 @@ object Prefs {
     var autoplay: Boolean
         get() = sp.getBoolean("autoplay", true)
         set(v) = sp.edit().putBoolean("autoplay", v).apply()
+    var sponsorBlock: Boolean
+        get() = sp.getBoolean("sponsorBlock", true)
+        set(v) = sp.edit().putBoolean("sponsorBlock", v).apply()
     var speed: Float
         get() = sp.getFloat("speed", 1f)
         set(v) = sp.edit().putFloat("speed", v).apply()

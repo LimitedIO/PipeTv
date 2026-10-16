@@ -10,7 +10,7 @@ import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
 
-/** Self-update from GitHub Releases (FOSS, no store). Checks on its own, asks first, shows progress, then installs. */
+/** Downloads new releases automatically; installation remains an explicit action. */
 object Updater {
     enum class St { IDLE, CHECKING, FOUND, DOWNLOADING, READY, FAILED }
     @Volatile var st = St.IDLE; private set
@@ -34,16 +34,17 @@ object Updater {
         connectTimeout = 15_000; readTimeout = 30_000; setRequestProperty("Accept", "application/vnd.github+json")
     }
 
-    /** Looks for a newer release; a found one opens the update dialog (unless [manual] is false and it was snoozed). */
+    /** Looks for a newer release and downloads it in the background. */
     fun check(manual: Boolean = false) {
         if (st == St.CHECKING || st == St.DOWNLOADING) return
         if (manual) snoozed = false
-        if (st == St.FOUND || st == St.READY) return set(st)
+        if (st == St.FOUND) return download()
+        if (st == St.READY) return set(st)
+        set(St.CHECKING)
         Bg.io { runCatching { look() }.onFailure { set(St.FAILED) } }
     }
 
     private fun look() {
-        set(St.CHECKING)
         val rel = JSONObject(open("https://api.github.com/repos/${Config.REPO}/releases/latest").inputStream.use { it.readBytes().decodeToString() })
         val assets = rel.getJSONArray("assets")
         val apk = (0 until assets.length()).map { assets.getJSONObject(it) }.firstOrNull { it.getString("name").endsWith(".apk") }
@@ -51,12 +52,14 @@ object Updater {
         if (apk == null || !newer(tag, current)) return set(St.IDLE)
         url = apk.getString("browser_download_url"); size = apk.optLong("size")
         file = File(App.ctx.cacheDir, "update-$tag.apk")
-        set(if (file!!.exists()) St.READY else St.FOUND)
+        val cached = file!!.takeIf { it.exists() && it.length() > 0 && (size <= 0 || it.length() == size) }
+        if (cached != null) set(St.READY) else { set(St.FOUND); download() }
     }
 
     /** Starts the download (progress is published as it goes). */
     fun download() {
         if (st != St.FOUND && st != St.FAILED) return
+        if (url.isBlank() || file == null) return check()
         progress = 0f; set(St.DOWNLOADING)
         Bg.io { runCatching { fetch() }.onFailure { set(St.FAILED) } }
     }
@@ -73,7 +76,9 @@ object Updater {
                 if (pct != last) { last = pct; Bg.main.post { onChange() } }
             }
         } }
-        tmp.renameTo(out); snoozed = false; set(St.READY)
+        kotlin.check(done > 0 && (size <= 0 || done == size)) { "Incomplete update download" }
+        kotlin.check(tmp.renameTo(out)) { "Could not save update" }
+        snoozed = false; set(St.READY)
     }
 
     fun install() { file?.takeIf { st == St.READY }?.let { Installer.install(it) } }

@@ -22,7 +22,7 @@ class Keyboard(c: Context) : AnimView(c) {
     private var pad = Pad(emptyList(), 1, 1)
     private var cur: Key? = null
     private var lang = 0; private var shift = false; private var sym = false
-    private val fx = spring(0f, 400f, 28f); private val fy = spring(0f, 400f, 28f); private val press = spring(0f, 500f, 18f)
+    private val fx = spring(0f, 1200f, 70f); private val fy = spring(0f, 1200f, 70f); private val press = spring(0f, 1400f, 75f)
     private val face = Ui.paint(Ui.SURFACE); private val glyph = Ui.paint(Ui.TEXT, 40f, true); private val ico = Ui.paint(Ui.TEXT)
     private val query = Ui.paint(Ui.TEXT, 48f, true); private val hint = Ui.paint(Ui.DIM, 42f); private val ring = Paint(Paint.ANTI_ALIAS_FLAG)
     private val r = RectF()
@@ -63,7 +63,7 @@ class Keyboard(c: Context) : AnimView(c) {
             else -> return false
         }
         val n = neighbour(dx, dy) ?: return dx == 0
-        cur = n; fx.to(kx(n)); fy.to(ky(n)); return true
+        cur = n; snapFocus(); invalidate(); return true
     }
 
     private fun tap(k: Key) {
@@ -92,7 +92,7 @@ class Keyboard(c: Context) : AnimView(c) {
         Txt.draw(c, Txt.fit(p, if (text.isEmpty()) S.t(K.SEARCH_HINT) else text + "▏", w), r.left + Ui.u(28), r.centerY() + Ui.u(16), w, p)
         if (compact) return else for (k in pad.keys) if (!(lit && cur === k)) label(c, k, false)
         val k = cur ?: return; if (!lit) return
-        val s = 1f + .06f * press.value; r.set(fx.value + Ui.u(5), fy.value + Ui.u(5), fx.value + k.cs * cw - Ui.u(5), fy.value + k.rs * ch - Ui.u(5))
+        val s = 1f + .015f * press.value; r.set(fx.value + Ui.u(5), fy.value + Ui.u(5), fx.value + k.cs * cw - Ui.u(5), fy.value + k.rs * ch - Ui.u(5))
         r.inset(-r.width() * (s - 1) / 2, -r.height() * (s - 1) / 2)
         ring.shader = LinearGradient(r.left, r.top, r.right, r.bottom, Ui.ACCENT, Ui.ACCENT2, Shader.TileMode.CLAMP)
         c.drawRoundRect(r, Ui.u(20), Ui.u(20), ring); label(c, k, true)

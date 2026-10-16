@@ -64,7 +64,9 @@ class Hud(c: Context) : AnimView(c) {
             r.right = x0 + (x1 - x0) * Playback.buffered; c.drawRoundRect(r, Ui.u(5), Ui.u(5), buf)
             r.right = x0 + (x1 - x0) * Playback.fraction
             fill.shader = LinearGradient(x0, 0f, x1, 0f, Ui.ACCENT, Ui.ACCENT2, Shader.TileMode.CLAMP); fill.alpha = (255 * a).toInt()
-            c.drawRoundRect(r, Ui.u(5), Ui.u(5), fill); c.drawCircle(r.right, y + Ui.u(5), Ui.u(14), dot)
+            c.drawRoundRect(r, Ui.u(5), Ui.u(5), fill)
+            SponsorMarks.draw(c, x0, y, x1, y + Ui.u(10), a)
+            c.drawCircle(r.right, y + Ui.u(5), Ui.u(14), dot)
         }
         if (!Playback.live && Playback.duration > 0) {
             c.drawText(Ui.fmt(p.currentPosition.coerceAtLeast(0)), x0, y + Ui.u(52), time)

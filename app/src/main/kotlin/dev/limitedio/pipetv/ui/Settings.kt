@@ -27,6 +27,9 @@ object Settings {
             },
             toggle(K.AUTOPLAY, K.AUTOPLAY_HELP, { Prefs.autoplay }) { Prefs.autoplay = it },
             toggle(K.SUBS_DEFAULT, K.SUBS_HELP, { Prefs.subs }) { Prefs.subs = it },
+            ToggleRow({ S.t(K.SPONSORBLOCK) }, { "" }, { Prefs.sponsorBlock }) {
+                Prefs.sponsorBlock = it; dev.limitedio.pipetv.media.SponsorBlock.configure()
+            },
             HeaderRow { S.t(K.S_GENERAL) },
             open(K.LANGUAGE, K.LANGUAGE_HELP, { if (Prefs.language == "auto") S.t(K.AUTO) + " · " + S.cur.name else S.cur.name }) {
                 val cur = if (Prefs.language == "auto") 0 else S.all.indexOfFirst { it.code == Prefs.language } + 1

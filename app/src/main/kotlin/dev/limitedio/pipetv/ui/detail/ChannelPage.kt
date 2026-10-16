@@ -45,6 +45,7 @@ class ChannelPage(c: Context, load: () -> Listing) : ViewGroup(c), Screen {
 
     init {
         addView(banner); addView(tabs); addView(grid); addView(about)
+        grid.onScroll = { refresh() }
         banner.note = S.t(K.LOADING)
         grid.onMore = {
             paged?.takeIf { it.hasMore && loadingPages.add(it) }?.let { p ->
@@ -91,6 +92,10 @@ class ChannelPage(c: Context, load: () -> Listing) : ViewGroup(c), Screen {
     }
 
     override fun focused(): Item? = if (zone == 0) banner.data?.item else if (zone == 2 && grid.visibility == VISIBLE) grid.focused() else null
+    override fun back(): Boolean {
+        if (zone != 2 || !channel) return false
+        zone = 1; refresh(); return true
+    }
     override fun key(code: Int, repeat: Int): Boolean {
         if (zone == 2) {
             if (if (about.visibility == VISIBLE) about.key(code) else grid.key(code)) return true
@@ -113,12 +118,17 @@ class ChannelPage(c: Context, load: () -> Listing) : ViewGroup(c), Screen {
     }
 
     private fun refresh() {
+        val compact = channel && zone == 2 && grid.visibility == VISIBLE && grid.hasScrolled
+        if (banner.compact != compact) {
+            banner.compact = compact
+            if (width > 0) onLayout(true, left, top, right, bottom)
+        }
         grid.lit = on && zone == 2; about.lit = grid.lit; banner.focus = on && zone == 0
         grid.invalidate(); about.invalidate(); banner.invalidate(); tabs.invalidate()
     }
     override fun lit(on: Boolean) { this.on = on; refresh() }
     override fun onLayout(ch: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        val hh = Ui.u(if (banner.data?.banner?.isNotEmpty() == true) 300 else 200).toInt()
+        val hh = Ui.u(if (banner.compact) 104 else if (banner.data?.banner?.isNotEmpty() == true) 300 else 200).toInt()
         val th = if (channel) Ui.u(76).toInt() else 0
         banner.layout(0, 0, r - l, hh); tabs.layout(0, hh, r - l, hh + th)
         grid.layout(0, hh + th, r - l, b - t); about.layout(0, hh + th, r - l, b - t)

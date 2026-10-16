@@ -61,7 +61,7 @@ object Session {
     }
 
     private fun swap(it: Item, o: Opened) {
-        Progress.save(); Recovery.reset()
+        Progress.save(); Recovery.reset(); SponsorBlock.reset()
         item = it; info = o.info; related = o.related; cap = 2160; safe = 0
         subs = o.info.subtitles.distinctBy { s -> s.languageTag }; audios = AudioOpts.build(o.info); audioIdx = 0
         sub = if (!Prefs.subs) -1 else subs.indexOfFirst { s -> s.languageTag.startsWith(S.cur.code) }.takeIf { i -> i >= 0 }
@@ -70,6 +70,7 @@ object Session {
         Store.push(it)
         val live = it.isLive || o.info.streamType == StreamType.LIVE_STREAM || o.info.streamType == StreamType.AUDIO_LIVE_STREAM
         start(if (live) C.TIME_UNSET else o.resume)
+        SponsorBlock.load(it.id)
         Progress.schedule()
         if (expand) onReady()
     }
@@ -99,7 +100,7 @@ object Session {
     fun next() { related.firstOrNull { !Store.seen(it.id) && it.id != item?.id }?.let { open(it) } }
 
     fun stop() {
-        Progress.save(); token++; item = null; pending = null; info = null; Progress.cancel(); Recovery.reset(); Subs.select(null)
+        Progress.save(); token++; item = null; pending = null; info = null; Progress.cancel(); SponsorBlock.reset(); Recovery.reset(); Subs.select(null)
         Engine.exo.stop(); changed()
     }
 }

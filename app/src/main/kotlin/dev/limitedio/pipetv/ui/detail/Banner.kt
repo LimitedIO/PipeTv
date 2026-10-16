@@ -25,6 +25,7 @@ class Listing(val name: String, val sub: String, val desc: String, val img: Stri
 /** Header of a channel/playlist page: round picture, names, and the favourite button. */
 class Banner(c: Context) : AnimView(c) {
     var data: Listing? = null; var note = ""; var focus = false
+    var compact = false
     private val h1 = Ui.paint(Ui.TEXT, 44f, true); private val sub = Ui.paint(Ui.ACCENT2, 26f, true)
     private val dim = Ui.paint(Ui.DIM, 24f); private val btn = Ui.paint(Ui.TEXT, 24f, true)
     private val pic = Paint(Paint.ANTI_ALIAS_FLAG); private val m = Matrix(); private val face = Ui.paint(Ui.SURFACE)
@@ -33,6 +34,15 @@ class Banner(c: Context) : AnimView(c) {
     init { Img.listen { invalidate() } }
 
     override fun render(c: Canvas, dt: Float) {
+        if (compact) {
+            val l = data ?: return; val pad = Ui.u(40); val bw = Ui.u(230)
+            val x = if (Ui.rtl) pad + bw + Ui.u(24) else pad
+            val w = width - pad * 2 - bw - Ui.u(24)
+            Txt.draw(c, Txt.fit(h1, l.name, w), x, Ui.u(50), w, h1)
+            Txt.draw(c, Txt.fit(sub, l.sub, w), x, Ui.u(86), w, sub)
+            favButton(c, l, if (Ui.rtl) pad else width - pad - bw, Ui.u(18), bw)
+            return
+        }
         val pad = Ui.u(40); val d = Ui.u(130); val ax = Ui.mx(pad, d, width.toFloat()); val ay = Ui.u(if (data?.banner?.isNotEmpty() == true) 132 else 30)
         data?.banner?.takeIf { it.isNotEmpty() }?.let { url ->
             Img.get(url, width)?.let { p ->

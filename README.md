@@ -10,7 +10,7 @@ Pure Kotlin · no XML layouts · no Google services · no account · no API key
 ## Why
 - **Instant** – one custom-drawn view tree; the last feed is cached so it shows before the network answers.
 - **Smooth everywhere** – virtualised canvas grid, spring physics, thumbnails decoded at card size. Android 5.0+.
-- **Keep browsing while watching** – video docks to the side and keeps playing; the grid reflows around it.
+- **Keep browsing while watching** – menus overlay the page without resizing it; the main menu shows a live mini preview.
 - **Popular** – topic filters: Trending, Music, Gaming, News, Sports, Movies, Learning, Comedy, Live.
 - **Recommendations** – built from your watch history, mixed with trending and popular topics.
 - **Details** – description, facts, comments, up-next, and a jump to the channel (or playlist) for any video.
@@ -19,14 +19,15 @@ Pure Kotlin · no XML layouts · no Google services · no account · no API key
 - **Clear controls** – sliders and steppers for quality, speed, volume, subtitles; same widgets in Settings and in the player.
 - **Audio & subtitles** – pick the dub/language track or bitrate and any subtitle track, in the player options.
 - **Never interrupts** – opening a video keeps the current one playing until the new one is ready, with a clear "Opening…" state and the thumbnail while it loads. Cards look different for videos (with time-ago), channels and playlists.
-- **Shortcut rail** – while a video plays, press ← in the main menu to reach a rail with open, play/pause, next, favorite, options and close. It only shows while the menu has focus. Back never closes a video.
+- **Player menu** – while a video plays, press ← in the main menu to open the larger player panel. An arrow and slim edge line mark its location. Its only button is Close; select the video to return to fullscreen.
 - **Quick actions** – hold OK on any card: play, info, favorite, open the uploader's channel. Comments with replies open with OK; Back returns to the list.
-- **Mini player** – just the picture with progress inside the frame (a pause icon only while paused), a clear "opening" box for the next video, and your upcoming videos (↑/↓, OK to open; the focused one stays centred). On Search it shrinks to a small picture.
+- **Mini player** – fast transitions from fullscreen to a live preview, with clear loading, buffering, paused and retrying states in the player panel.
+- **SponsorBlock** – silently skips community-marked sections, with color-coded progress-bar marks and one Settings toggle. Segment data: [SponsorBlock](https://sponsor.ajay.app/).
 - **Settings that stay focused** – every option opens its own pop-up (list, multi-select or big slider) that captures the keys. Content language is separate from the app language.
 - **Layout direction** is left-to-right by default; for Arabic-like languages PipeTv asks whether to mirror the layout (changeable any time in Settings).
 - **Favorites** – videos, channels and playlists: red/bookmark key on a card (or the ★ button in details, channel and playlist pages, or `B` in fullscreen).
 - **Always plays** – playback retries by itself (lower quality, fresh links, growing pause); the notice disappears the moment it works. Subtitles load on their own and never touch the video.
-- **Updates** – checks on launch, asks before downloading, shows progress along the bottom, then offers to install.
+- **Updates** – checks on launch, downloads new versions automatically, shows progress along the bottom, then offers to install.
 - **Alive** – a calm, slowly drifting background tinted per page (switchable in Settings).
 - **10 languages** (EN, العربية, ES, FR, DE, RU, TR, PT, हिन्दी, 中文) with full right-to-left mirroring for Arabic.
 - **Auto-update** from GitHub Releases · **FOSS**: [NewPipeExtractor](https://github.com/TeamNewPipe/NewPipeExtractor) + [Media3](https://github.com/androidx/media) · GPL-3.0.

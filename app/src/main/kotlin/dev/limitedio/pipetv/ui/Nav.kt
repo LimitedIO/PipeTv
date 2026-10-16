@@ -22,9 +22,13 @@ class Nav(c: Context) : AnimView(c) {
         set(v) { field = v; pill.to(if (v) 6f else sel.toFloat()) }
     var lit = false
         set(v) { field = v; open.to(if (v) 1f else 0f) }
+    var playerMenuFocused = false
+        set(v) { if (field != v) { field = v; invalidate() } }
+    val moving get() = open.moving || pill.moving
+    val previewAlpha get() = if (playerMenuFocused) 0f else open.value.coerceIn(0f, 1f)
 
-    private val open = spring(0f, 200f, 26f)
-    private val pill = spring(0f, 320f, 25f)
+    private val open = spring(0f, 900f, 60f)
+    private val pill = spring(0f, 1000f, 64f)
     private val bg = Ui.paint(0xF00B0D18.toInt())
     private val label = Ui.paint(Ui.TEXT, 30f, true)
     private val icon = Ui.paint(Ui.DIM)
@@ -36,8 +40,8 @@ class Nav(c: Context) : AnimView(c) {
     private val playerHint = Ui.paint(Ui.DIM, 26f)
     private val playerCard = Ui.paint(Ui.SURFACE)
 
-    private val itemH get() = Ui.u(90)
-    private val y0 get() = Ui.u(if (Session.active) 230 else 190)
+    private val itemH get() = Ui.u(if (Session.active) 70 else 90)
+    private val y0 get() = Ui.u(if (Session.active) 370 else 190)
 
     override fun render(c: Canvas, dt: Float) {
         val expanded = open.value.coerceIn(0f, 1f)
@@ -46,10 +50,11 @@ class Nav(c: Context) : AnimView(c) {
         c.drawRect(ox, 0f, ox + pw, height.toFloat(), bg)
         brand.alpha = (255 * expanded).toInt().coerceIn(0, 255)
         Txt.draw(c, "PipeTv", ox + Ui.u(40), Ui.u(if (Session.active) 64 else 130), pw - Ui.u(80), brand)
-        (Session.pending ?: Session.item)?.let { item ->
+        (Session.item ?: Session.pending)?.takeIf { !playerMenuFocused }?.let { item ->
             if (expanded > .15f) {
                 val x = ox + Ui.u(20); val cw = pw - Ui.u(40)
-                r.set(x, Ui.u(88), x + cw, Ui.u(208)); c.drawRoundRect(r, Ui.u(18), Ui.u(18), playerCard)
+                r.set(x, Ui.u(82), x + cw, Ui.u(350)); c.drawRoundRect(r, Ui.u(18), Ui.u(18), playerCard)
+                Cards.picture(c, item, ox + Ui.u(40), Ui.u(96), Ui.u(260), Ui.u(260) * 9 / 16)
                 val tx = x + Ui.u(16); val tw = cw - Ui.u(32)
                 val state = when {
                     Session.pending != null -> K.LOADING
@@ -57,10 +62,14 @@ class Nav(c: Context) : AnimView(c) {
                     Engine.exo.playWhenReady -> K.NOW_PLAYING
                     else -> K.PAUSED
                 }
-                Txt.draw(c, Txt.fit(status, S.t(state), tw), tx, Ui.u(118), tw, status)
-                Txt.draw(c, Txt.fit(playingTitle, item.title, tw), tx, Ui.u(154), tw, playingTitle)
+                Txt.draw(c, Txt.fit(status, S.t(state), tw), tx, Ui.u(274), tw, status)
+                Txt.draw(c, Txt.fit(playingTitle, item.title, tw), tx, Ui.u(308), tw, playingTitle)
                 val cue = S.f(K.PLAYER_MENU_HINT, if (Ui.rtl) "→" else "←")
-                Txt.draw(c, Txt.fit(playerHint, cue, tw), tx, Ui.u(188), tw, playerHint)
+                Txt.draw(c, Txt.fit(playerHint, cue, tw), tx, Ui.u(342), tw, playerHint)
+                if (lit) {
+                    val edge = if (Ui.rtl) width - Ui.u(6) else Ui.u(2)
+                    r.set(edge, Ui.u(96), edge + Ui.u(4), Ui.u(342)); c.drawRoundRect(r, Ui.u(2), Ui.u(2), status)
+                }
             } else {
                 val cx = if (Ui.rtl) width - Ui.u(52) else Ui.u(52)
                 c.drawCircle(cx, Ui.u(134), Ui.u(8), status)

@@ -15,6 +15,9 @@ class Grid(c: Context, private val title: () -> String) : AnimView(c) {
     var busy = true; var message: String? = null; var lit = true
     /** When true, Up on the first row is not consumed so a parent can take focus. */
     var upExit = false
+    var onScroll: () -> Unit = {}
+    val hasScrolled get() = idx >= cols
+    private var wasScrolled = false
     var cols = 4
         set(v) { field = v; refocus(false) }
     var items: List<Item>
@@ -55,6 +58,7 @@ class Grid(c: Context, private val title: () -> String) : AnimView(c) {
         scroll.target = if (row == 0) 0f else min(maxScroll, top + row * rowH - Ui.u(50))
         rx.target = xOf(idx); ry.target = top + row * rowH; rw.target = cw
         if (snap) { rx.snap(rx.target); ry.snap(ry.target); rw.snap(cw); scroll.snap(scroll.target) }
+        if (wasScrolled != hasScrolled) { wasScrolled = hasScrolled; onScroll() }
         invalidate()
     }
 

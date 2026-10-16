@@ -49,7 +49,8 @@ class AboutPage(c: Context) : ViewGroup(c), Screen {
 
     private fun showDetails() {
         val details = S.t(K.APP_DESCRIPTION) + "\n\n" + S.t(K.DEVELOPER) + ": LimitedIO\n" +
-            S.t(K.REPOSITORY) + ": https://github.com/LimitedIO/PipeTv\n\n" + S.t(K.LICENSES)
+            S.t(K.REPOSITORY) + ": https://github.com/LimitedIO/PipeTv\n\n" +
+            "SponsorBlock · https://sponsor.ajay.app\n\n" + S.t(K.LICENSES)
         reader.blocks = listOf(Block("PipeTv", Updater.current, details)) + notices.map {
             Block(it.name, it.license, it.source, more = true)
         }
