@@ -53,4 +53,5 @@ val Hi = mapOf(
     RETRY to "पुनः प्रयास करें",
     UPD_TITLE to "अपडेट उपलब्ध है", UPD_BODY to "PipeTv %s डाउनलोड के लिए तैयार है।", UPD_NOW to "अभी अपडेट करें", UPD_LATER to "बाद में", UPD_INSTALL to "अभी इंस्टॉल करें", UPD_READY_BODY to "संस्करण %s डाउनलोड हो गया है और इंस्टॉल के लिए तैयार है।", UPD_FOUND to "अपडेट %s उपलब्ध है",
     EXIT to "बाहर निकलें", TOTAL_WATCHED to "कुल देखने का समय: %s",
+    A_OPEN to "प्लेयर खोलें", A_PLAYPAUSE to "चलाएँ / रोकें", A_CLOSE to "वीडियो बंद करें", BACK_HINT to "PipeTv से बाहर निकलने के लिए मेनू में बाहर निकलें चुनें",
 )

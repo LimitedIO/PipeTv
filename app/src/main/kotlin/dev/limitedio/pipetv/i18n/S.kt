@@ -23,6 +23,9 @@ object S {
         Ui.rtl = Prefs.rtl
     }
 
+    /** Separator between facts ("views · time ago"); in RTL languages it is wrapped in direction marks so the pieces never mix. */
+    val sep get() = if (cur.rtl) " \u200F\u2022\u200F " else " · "
+
     fun t(k: K): String = cur.map[k] ?: En[k] ?: k.name
     fun f(k: K, vararg a: Any): String = String.format(Locale.ROOT, t(k), *a)
 }

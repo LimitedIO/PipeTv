@@ -8,12 +8,11 @@ import dev.limitedio.pipetv.i18n.S
 import dev.limitedio.pipetv.media.Session
 import dev.limitedio.pipetv.ui.input.Voice
 
-/** All keyboard / remote handling. Three focus zones while browsing: nav rail, content, player dock. */
+/** All keyboard / remote handling. Focus zones: 0 nav rail, 1 content, 2 player dock, 3 shortcut rail. */
 class Controls(private val root: Root) {
     var onNav = false; private set
-    private var zone = 1 // 0 nav, 1 content, 2 dock
-    var onExit: () -> Unit = {}
-    private val keys = PlayerKeys(root)
+    private var zone = 1
+    var onExit: () -> Unit = {}; private val keys = PlayerKeys(root)
 
     fun key(e: KeyEvent): Boolean {
         val k = e.keyCode
@@ -26,7 +25,7 @@ class Controls(private val root: Root) {
         return if (root.full) keys.full(e) else browse(e)
     }
 
-    /** Opens a video. The current one keeps playing until the new one is ready (then it goes fullscreen). */
+    // Opens a video; the current one keeps playing until the new one is ready (then it goes fullscreen).
     fun play(item: dev.limitedio.pipetv.data.Item) {
         if (Session.item?.id == item.id) { root.setFull(true); return }
         if (Session.pending?.id != item.id) Session.open(item, true)
@@ -37,14 +36,14 @@ class Controls(private val root: Root) {
 
     fun sessionChanged() {
         if (Session.active && root.dockS.target == 0f) root.setDock(true)
-        if (!Session.active) { root.setDock(false); root.setFull(false); if (zone == 2) setZone(1) }
-        Sound.update()
+        if (!Session.active) { root.setDock(false); root.setFull(false); if (zone == 2 || zone == 3) setZone(1) }
+        Sound.update(); root.actS.target = if (Session.active) 1f else 0f; root.kick()
         root.pages.repaint(); root.dock.invalidate(); root.hud.invalidate(); root.stage.refresh(); root.stage.refit()
     }
 
     private fun setZone(z: Int) {
         zone = z; onNav = z == 0; if (z != 0) root.nav.exit = false
-        root.nav.lit = z == 0; root.dock.lit = z == 2
+        root.nav.lit = z == 0; root.dock.lit = z == 2; root.actions.lit = z == 3
         root.pages.lit(root.tab, z == 1); root.screens.top?.lit(z == 1)
     }
 
@@ -54,12 +53,12 @@ class Controls(private val root: Root) {
         if ((k == KEYCODE_MENU || k == KEYCODE_INFO) && zone != 1) { if (Session.active) root.setFull(true); return true }
         return when (zone) {
             0 -> nav(k)
+            3 -> if (k == KEYCODE_DPAD_RIGHT) { setZone(0); true } else root.actions.key(k) || k in KEYCODE_DPAD_UP..KEYCODE_DPAD_RIGHT
             2 -> if (k == KEYCODE_DPAD_LEFT) { setZone(1); true } else if (k == KEYCODE_PROG_RED || k == KEYCODE_BOOKMARK) { Session.item?.let(root::toggleFav); true } else root.dock.key(k) || k in KEYCODE_DPAD_UP..KEYCODE_DPAD_RIGHT
             else -> content(e, k)
         }
     }
 
-    /** In right-to-left languages the screen is mirrored, so Left/Right swap meaning. */
     private fun mirror(k: Int) = if (!Ui.rtl) k else when (k) { KEYCODE_DPAD_LEFT -> KEYCODE_DPAD_RIGHT; KEYCODE_DPAD_RIGHT -> KEYCODE_DPAD_LEFT; else -> k }
 
     private fun back(): Boolean {
@@ -68,7 +67,7 @@ class Controls(private val root: Root) {
             zone == 1 && root.screens.any -> if (root.screens.top?.back() != true) root.screens.pop()
             zone == 1 && root.tab == 1 && !root.screens.any && root.pages.search.back() -> {}
             zone != 0 -> setZone(0)
-            Session.active -> { Session.stop(); root.toast.show(S.t(K.PLAYBACK_CLOSED)) }
+            Session.active -> root.toast.show(S.t(K.BACK_HINT)) // Back never closes the video; Close is in the shortcut rail
             else -> onExit()
         }
         return true
@@ -78,6 +77,7 @@ class Controls(private val root: Root) {
         when (k) {
             KEYCODE_DPAD_UP -> if (root.nav.exit) root.nav.exit = false else if (root.tab > 0) root.show(root.tab - 1)
             KEYCODE_DPAD_DOWN -> if (root.tab < 5) root.show(root.tab + 1) else root.nav.exit = true
+            KEYCODE_DPAD_LEFT -> if (Session.active) setZone(3) else return false
             KEYCODE_DPAD_RIGHT, KEYCODE_DPAD_CENTER, KEYCODE_ENTER -> if (!root.nav.exit) setZone(1) else if (k != KEYCODE_DPAD_RIGHT) onExit()
             else -> return false
         }

@@ -34,7 +34,7 @@ class TimelineView(c: Context) : AnimView(c) {
 
     fun reload() {
         val all = Store.entries(); val mins = all.sumOf { it.pos } / 60_000
-        total = S.f(K.TOTAL_WATCHED, "${mins / 60}h ${"%02d".format(mins % 60)}m")
+        total = S.f(K.TOTAL_WATCHED, "${mins / 60}h ${"%02d".format(java.util.Locale.ROOT, mins % 60)}m")
         lines = Days.group(all)
         idx = lines.indexOfFirst { it is Line.Watch }.coerceAtLeast(0); scroll.snap(0f); invalidate()
     }

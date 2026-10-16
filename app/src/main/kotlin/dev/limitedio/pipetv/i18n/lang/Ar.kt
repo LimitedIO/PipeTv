@@ -53,4 +53,5 @@ val Ar = mapOf(
     RETRY to "إعادة المحاولة",
     UPD_TITLE to "تحديث جديد متاح", UPD_BODY to "الإصدار %s من PipeTv جاهز للتنزيل.", UPD_NOW to "حدّث الآن", UPD_LATER to "لاحقًا", UPD_INSTALL to "ثبّت الآن", UPD_READY_BODY to "تم تنزيل الإصدار %s وهو جاهز للتثبيت.", UPD_FOUND to "التحديث %s متاح",
     EXIT to "خروج", TOTAL_WATCHED to "إجمالي وقت المشاهدة: %s",
+    A_OPEN to "فتح المشغّل", A_PLAYPAUSE to "تشغيل / إيقاف مؤقت", A_CLOSE to "إغلاق الفيديو", BACK_HINT to "استخدم «خروج» في القائمة لمغادرة PipeTv",
 )

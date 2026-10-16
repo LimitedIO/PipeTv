@@ -19,6 +19,7 @@ Pure Kotlin · no XML layouts · no Google services · no account · no API key
 - **Clear controls** – sliders and steppers for quality, speed, volume, subtitles; same widgets in Settings and in the player.
 - **Audio & subtitles** – pick the dub/language track or bitrate and any subtitle track, in the player options.
 - **Never interrupts** – opening a video keeps the current one playing until the new one is ready, with a clear "Opening…" state and the thumbnail while it loads. Cards look different for videos (with time-ago), channels and playlists.
+- **Shortcut rail** – while a video plays, a rail left of the menu (← from the menu) offers open, play/pause, next, favorite, options and close. Back never closes a video.
 - **Mini player** – just the picture with progress inside the frame (a pause icon only while paused), a clear "opening" box for the next video, and your upcoming videos (↑/↓, OK to open; the focused one stays centred). On Search it shrinks to a small picture.
 - **Settings that stay focused** – every option opens its own pop-up (list, multi-select or big slider) that captures the keys. Content language is separate from the app language.
 - **Layout direction** is left-to-right by default; for Arabic-like languages PipeTv asks whether to mirror the layout (changeable any time in Settings).

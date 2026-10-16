@@ -10,10 +10,9 @@ import kotlin.math.min
 /** A virtualised, spring-scrolled card grid with a gliding focus ring. Mirrors itself in RTL languages. */
 class Grid(c: Context, private val title: () -> String) : AnimView(c) {
     var onPick: (Item) -> Unit = {}; var onMenu: (Item) -> Unit = {}
+    var loading = false; set(v) { field = v; invalidate() } // results (or more of them) are being fetched
     var onMore: () -> Unit = {}; var onRetry: (() -> Unit)? = null // onRetry: shows a Retry button on a failed, empty grid
-    var busy = true
-    var message: String? = null
-    var lit = true
+    var busy = true; var message: String? = null; var lit = true
     /** When true, Up on the first row is not consumed so a parent can take focus. */
     var upExit = false
     var cols = 4
@@ -27,7 +26,7 @@ class Grid(c: Context, private val title: () -> String) : AnimView(c) {
     private val scroll = spring(0f, 150f, 24f); private val pop = spring(0f, 420f, 22f)
     private val rx = spring(0f, 300f, 27f); private val ry = spring(0f, 300f, 27f); private val rw = spring(0f, 300f, 27f)
     private val appear = spring(0f, 70f, 14f); private val head = Ui.paint(Ui.TEXT, 44f, true); private val fx = GridFx()
-    override val animating get() = (busy && list.isEmpty()) || dev.limitedio.pipetv.media.Session.pending != null
+    override val animating get() = (busy && list.isEmpty()) || loading || dev.limitedio.pipetv.media.Session.pending != null
 
     private val pad get() = Ui.u(56)
     private val gap get() = Ui.u(30); private val top get() = if (title().isEmpty()) Ui.u(28) else Ui.u(130)
@@ -80,7 +79,7 @@ class Grid(c: Context, private val title: () -> String) : AnimView(c) {
     override fun render(c: Canvas, dt: Float) {
         val w = cw; val s = scroll.value
         if (title().isNotEmpty()) Txt.draw(c, title(), pad, Ui.u(84) - s, width - pad * 2, head)
-        if (list.isEmpty()) { fx.empty(c, pad, top, w, gap, rowH, cols, busy, width.toFloat(), message, onRetry != null, lit); return }
+        if (list.isEmpty()) { fx.empty(c, pad, top, w, gap, rowH, cols, busy, width.toFloat(), message, onRetry != null, lit); if (loading) fx.pill(c, width.toFloat(), height.toFloat()); return }
         val h = Cards.height(w)
         for (i in list.indices) {
             val y = top + (i / cols) * rowH - s
@@ -94,6 +93,7 @@ class Grid(c: Context, private val title: () -> String) : AnimView(c) {
             c.restore()
         }
         if (lit) fx.ring(c, rx.value, ry.value - s, rw.value, pop.value)
+        if (loading) fx.pill(c, width.toFloat(), height.toFloat())
         Scrollbar.draw(c, width.toFloat(), top, height - Ui.u(20), top + ((list.size + cols - 1) / cols) * rowH, height.toFloat(), s, lit)
     }
 }

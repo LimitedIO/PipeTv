@@ -33,12 +33,21 @@ class GridFx {
         Txt.draw(c, label, r.left, r.centerY() + Ui.u(10), bw, btn, true)
     }
 
+    /** Floating "Loading…" box with a moving bar: shown while results or more results are being fetched. */
+    fun pill(c: Canvas, w: Float, h: Float) {
+        val bw = Ui.u(460); val x = (w - bw) / 2; val y = h - Ui.u(150)
+        r.set(x, y, x + bw, y + Ui.u(100)); shade.shader = null; shade.color = 0xF0171A2B.toInt(); c.drawRoundRect(r, Ui.u(30), Ui.u(30), shade)
+        Txt.draw(c, dev.limitedio.pipetv.i18n.S.t(dev.limitedio.pipetv.i18n.K.LOADING), x, y + Ui.u(46), bw, btn.apply { color = Ui.TEXT }, true)
+        Spinner.bar(c, x + Ui.u(32), y + Ui.u(66), x + bw - Ui.u(32), y + Ui.u(78))
+    }
+
     /** Loading placeholders and the status message of an empty grid. */
     fun empty(c: Canvas, pad: Float, top: Float, w: Float, gap: Float, rowH: Float, cols: Int, busy: Boolean, total: Float, message: String?, retry: Boolean = false, lit: Boolean = false) {
         message?.let { Txt.draw(c, it, pad, top + Ui.u(40), total - pad * 2, note) }
         if (retry && !busy && message != null) button(c, pad, top + Ui.u(80), total, lit)
+        if (busy && message != null) Spinner.bar(c, pad, top + Ui.u(66), pad + minOf(Ui.u(520), total - pad * 2), top + Ui.u(78))
         if (!busy) return
-        val top = if (message != null) top + Ui.u(70) else top
+        val top = if (message != null) top + Ui.u(110) else top
         val ph = (System.nanoTime() / 1_000_000 % 1200) / 1200f
         shade.shader = null
         for (i in 0 until cols * 2) {

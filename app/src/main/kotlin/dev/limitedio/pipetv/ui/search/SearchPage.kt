@@ -63,9 +63,6 @@ class SearchPage(c: Context) : ViewGroup(c) {
         if (t.isBlank()) data.showRecents() else Bg.main.postDelayed(ask, 250)
     }
 
-    /** Results show a slim query bar instead of the keyboard; Left or Up on them brings the keyboard back. */
-    private fun expand() { data.typing(); showList(true); setZone(0); relayout(); data.suggestions(keyboard.text.trim()) }
-
     /** Back on results: clear the search and open the keyboard again. */
     fun back(): Boolean { if (!data.results) return false; setText(""); setZone(0); relayout(); return true }
 
@@ -87,11 +84,11 @@ class SearchPage(c: Context) : ViewGroup(c) {
     fun key(code: Int): Boolean = when (zone) {
         0 -> keyboard.key(code) || (code == KeyEvent.KEYCODE_DPAD_RIGHT && (data.results || suggest.items.isNotEmpty())).also { if (it) setZone(1) }
         1 -> (if (data.results) grid.key(code) else suggest.key(code)) || when (code) {
-            KeyEvent.KEYCODE_DPAD_LEFT -> { if (data.results) expand() else setZone(0); true }
+            KeyEvent.KEYCODE_DPAD_LEFT -> if (data.results) false else { setZone(0); true }
             KeyEvent.KEYCODE_DPAD_UP -> if (data.results) { setZone(2); true } else false
             else -> false
         }
-        else -> chips.key(code) || (code == KeyEvent.KEYCODE_DPAD_UP).also { if (it) expand() } || (code == KeyEvent.KEYCODE_DPAD_DOWN).also { if (it) setZone(1) }
+        else -> chips.key(code) || (code == KeyEvent.KEYCODE_DPAD_DOWN).also { if (it) setZone(1) }
     }
 
     private fun relayout() = onLayout(true, left, top, right, bottom)

@@ -19,14 +19,14 @@ sealed class Line {
 object Days {
     private fun day(t: Long) = (t + TimeZone.getDefault().getOffset(t)) / 86_400_000L
 
-    fun time(t: Long): String = DateFormat.getTimeInstance(DateFormat.SHORT, Locale(S.cur.code)).format(Date(t))
+    fun time(t: Long): String = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.forLanguageTag(S.cur.code + "-u-nu-latn")).format(Date(t))
 
     private fun label(t: Long): String {
         val d = day(t) ; val now = day(System.currentTimeMillis())
         return when (d) {
             now -> S.t(K.TODAY)
             now - 1 -> S.t(K.YESTERDAY)
-            else -> DateFormat.getDateInstance(DateFormat.FULL, Locale(S.cur.code)).format(Date(t))
+            else -> DateFormat.getDateInstance(DateFormat.FULL, Locale.forLanguageTag(S.cur.code + "-u-nu-latn")).format(Date(t))
         }
     }
 

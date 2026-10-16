@@ -23,7 +23,7 @@ class ChannelPage(c: Context, load: () -> Listing) : ViewGroup(c), Screen {
     init {
         addView(banner); addView(grid)
         banner.note = S.t(K.LOADING)
-        grid.onMore = { paged?.takeIf { it.hasMore }?.let { p -> Bg.io({ p.loadMore() }) { r -> if (!r.isNullOrEmpty()) grid.append(r) } } }
+        grid.onMore = { paged?.takeIf { it.hasMore }?.let { p -> grid.loading = true; Bg.io({ p.loadMore() }) { r -> grid.loading = false; if (!r.isNullOrEmpty()) grid.append(r) } } }
         Bg.io(load) { l ->
             if (l == null) { banner.note = S.t(K.LOAD_FAILED); grid.busy = false; banner.invalidate(); return@io }
             banner.data = l; paged = l.videos; grid.items = l.videos.items; banner.invalidate()

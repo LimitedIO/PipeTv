@@ -53,4 +53,5 @@ val Es = mapOf(
     RETRY to "Reintentar",
     UPD_TITLE to "Actualización disponible", UPD_BODY to "PipeTv %s está listo para descargar.", UPD_NOW to "Actualizar ahora", UPD_LATER to "Más tarde", UPD_INSTALL to "Instalar ahora", UPD_READY_BODY to "La versión %s está descargada y lista para instalar.", UPD_FOUND to "Actualización %s disponible",
     EXIT to "Salir", TOTAL_WATCHED to "Tiempo total visto: %s",
+    A_OPEN to "Abrir reproductor", A_PLAYPAUSE to "Reproducir / pausar", A_CLOSE to "Cerrar vídeo", BACK_HINT to "Usa Salir en el menú para cerrar PipeTv",
 )

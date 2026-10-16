@@ -12,11 +12,18 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem
 object YtMap {
     private val idRegex = Regex("(?:v=|youtu\\.be/|shorts/)([\\w-]{11})")
 
-    fun count(n: Long) = when {
-        n >= 1_000_000_000 -> "%.1fB".format(java.util.Locale.ROOT, n / 1e9)
-        n >= 1_000_000 -> "%.1fM".format(java.util.Locale.ROOT, n / 1e6)
-        n >= 1_000 -> "%.0fK".format(java.util.Locale.ROOT, n / 1e3)
-        else -> "$n"
+    private val suffixes = mapOf(
+        "ar" to listOf(" ألف", " مليون", " مليار"), "es" to listOf(" mil", " M", " mil M"), "fr" to listOf(" k", " M", " Md"),
+        "de" to listOf(" Tsd.", " Mio.", " Mrd."), "ru" to listOf(" тыс.", " млн", " млрд"), "tr" to listOf(" B", " Mn", " Mr"),
+        "pt" to listOf(" mil", " mi", " bi"), "hi" to listOf(" हज़ार", " मिलियन", " अरब"))
+
+    private fun num(v: Double) = (if (v >= 100) "%.0f" else "%.1f").format(java.util.Locale.ROOT, v).removeSuffix(".0")
+
+    /** 250 000 -> "250K" in English, "250 ألف" in Arabic, "25万" in Chinese; always Latin digits. */
+    fun count(n: Long): String {
+        if (S.cur.code == "zh") return if (n >= 100_000_000) num(n / 1e8) + "亿" else if (n >= 10_000) num(n / 1e4) + "万" else "$n"
+        val s = suffixes[S.cur.code] ?: listOf("K", "M", "B")
+        return when { n >= 1_000_000_000 -> num(n / 1e9) + s[2]; n >= 1_000_000 -> num(n / 1e6) + s[1]; n >= 1_000 -> num(n / 1e3) + s[0]; else -> "$n" }
     }
 
     /** "24 videos", or just the infinity sign for endless mixes (the extractor reports a negative count). */
@@ -32,8 +39,8 @@ object YtMap {
         is StreamInfoItem -> idRegex.find(i.url)?.let {
             val views = if (i.viewCount >= 0) S.f(K.VIEWS, count(i.viewCount)) else ""
             val who = i.uploaderName.orEmpty().ifEmpty { by }
-            val meta = listOf(views, Ago.of(i.uploadDate, i.textualUploadDate)).filter { s -> s.isNotEmpty() }.joinToString(" · ")
-            val sub = listOf(who, meta).filter { s -> s.isNotEmpty() }.joinToString(" · ")
+            val meta = listOf(views, Ago.of(i.uploadDate, i.textualUploadDate)).filter { s -> s.isNotEmpty() }.joinToString(S.sep)
+            val sub = listOf(who, meta).filter { s -> s.isNotEmpty() }.joinToString(S.sep)
             Item(it.groupValues[1], i.url, i.name, sub, i.duration, Item.VIDEO, "", who, meta)
         }
         is ChannelInfoItem -> {
@@ -43,7 +50,7 @@ object YtMap {
         }
         is PlaylistInfoItem -> {
             val n = countText(i.streamCount); val who = i.uploaderName.orEmpty()
-            Item("p" + i.url.hashCode(), i.url, i.name, listOf(who, n).filter { s -> s.isNotEmpty() }.joinToString(" · "), 0,
+            Item("p" + i.url.hashCode(), i.url, i.name, listOf(who, n).filter { s -> s.isNotEmpty() }.joinToString(S.sep), 0,
                 Item.PLAYLIST, img(i.thumbnails), who, n)
         }
         else -> null

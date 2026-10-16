@@ -23,7 +23,7 @@ class PopularPage(c: Context) : ViewGroup(c) {
     fun picks(pick: (Item) -> Unit, menu: (Item) -> Unit) { grid.onPick = pick; grid.onMenu = menu }
 
     /** Loads the selected topic once; later visits show the cached list. */
-    fun enter() { if (cache[chips.sel] == null) show(chips.sel) }
+    fun enter() { onChips = true; refresh(); if (cache[chips.sel] == null) show(chips.sel) }
     fun reset() { cache.clear(); show(chips.sel) }
 
     private fun show(i: Int) {

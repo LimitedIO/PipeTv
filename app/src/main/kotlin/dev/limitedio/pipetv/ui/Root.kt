@@ -18,31 +18,30 @@ import dev.limitedio.pipetv.ui.widgets.SubMenu
 /** The screen: owns the pages, the player and the two big motions (dock slide, fullscreen expand). */
 class Root(c: Context) : ViewGroup(c) {
     val nav = Nav(c); val stage = Stage(c); val dock = Dock(c); val hud = Hud(c); val toast = Toast(c); val update = UpdateUi(c)
+    val actions = Actions(c, ::act)
     val menu = RowList(c, { S.t(K.OPTIONS) }, true).apply { visibility = GONE }
     val playerSub = SubMenu(c).apply { visibility = GONE }
     val controls = Controls(this); val screens = ScreenStack(this); val opener = Opener(this)
     val pages = Pages(c, opener::pick, opener::details, { onLanguage() }, toast::show)
     val dockS = Spring(0f, 170f, 24f); val fullS = Spring(0f, 170f, 24f)
-    /** Width of the side player panel in design units: much slimmer on the search page, which needs the room. */
-    val panelW = Spring(580f, 170f, 24f)
+    val panelW = Spring(580f, 170f, 24f); val actS = Spring(0f, 170f, 24f) // actS: width of the shortcut rail (0 when nothing plays)
     var tab = 0; private set
-    var menuOpen = false; private set
-    var askMic: () -> Unit = {}
+    var menuOpen = false; private set; var askMic: () -> Unit = {}
     private val ambient = Ambient(); private var running = false; private var last = 0L
 
     private val frame = object : Choreographer.FrameCallback {
         var last = 0L
         override fun doFrame(t: Long) {
             val dt = if (last == 0L) .016f else minOf((t - last) / 1e9f, .05f); last = t
-            dockS.step(dt); fullS.step(dt); panelW.step(dt); relayout()
-            if (dockS.moving || fullS.moving || panelW.moving || dock.popMoving) Choreographer.getInstance().postFrameCallback(this) else { last = 0; running = false }
+            dockS.step(dt); fullS.step(dt); panelW.step(dt); actS.step(dt); relayout()
+            if (dockS.moving || fullS.moving || panelW.moving || actS.moving || dock.popMoving) Choreographer.getInstance().postFrameCallback(this) else { last = 0; running = false }
         }
     }
 
     init {
         setWillNotDraw(false); clipChildren = false // the dock draws its focus ring and progress over the video
         pages.views.forEach { addView(it); it.visibility = GONE }
-        listOf(nav, stage, dock, hud, menu, playerSub, toast, update).forEach { addView(it) }
+        listOf(nav, actions, stage, dock, hud, menu, playerSub, toast, update).forEach { addView(it) }
         show(0, false)
         Session.onChange = { controls.sessionChanged() }
         Session.onReady = { setFull(true) }
@@ -68,10 +67,21 @@ class Root(c: Context) : ViewGroup(c) {
     fun voice() { show(1); if (Voice.available(context)) askMic() else toast.show(S.t(K.VOICE_NA)) }
     fun onLanguage() { Yt.relocalize(); pages.relocalize(tab); nav.invalidate(); relayout() }
 
+    // The player panel shrinks to a small picture on pages that need the room (search, popular, video info, channels).
+    fun syncDock() { val small = tab == 1 || tab == 2 || screens.any; panelW.target = if (small) 300f else 580f; dock.compact = small; kick() }
+
+    private fun act(i: Int) {
+        when (i) {
+            0 -> setFull(true); 1 -> { Engine.exo.playWhenReady = !Engine.exo.playWhenReady; actions.invalidate(); dock.invalidate() }
+            2 -> Session.next(); 3 -> Session.item?.let(::toggleFav); 4 -> { setFull(true); openMenu() }
+            else -> { Session.stop(); toast.show(S.t(K.PLAYBACK_CLOSED)); controls.focusContent() }
+        }
+    }
+
     fun show(i: Int, animate: Boolean = true) {
         screens.clear()
         pages.views[tab].visibility = GONE
-        tab = i; nav.sel = i; panelW.target = if (i == 1) 300f else 580f; dock.compact = i == 1; kick()
+        tab = i; nav.sel = i; syncDock()
         val v = pages.views[i]; v.visibility = VISIBLE
         if (animate) { v.alpha = 0f; v.translationX = Ui.u(if (Ui.rtl) -60 else 60); v.animate().alpha(1f).translationX(0f).setDuration(260).start() }
         pages.enter(i); pages.lit(i, !controls.onNav)

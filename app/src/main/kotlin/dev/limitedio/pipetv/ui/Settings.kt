@@ -24,8 +24,8 @@ object Settings {
             open(K.MAX_Q, K.MAX_Q_HELP, { Prefs.qualityLabel() }) {
                 sub.choose(S.t(K.MAX_Q), S.t(K.MAX_Q_HELP), Prefs.qualities.map { Prefs.qualityLabel(it) }, Prefs.qualities.indexOf(Prefs.quality).coerceAtLeast(0)) { Prefs.quality = Prefs.qualities[it] }
             },
-            open(K.SPEED, K.SPEED_HELP, { "%.2fx".format(Prefs.speed) }) {
-                sub.slider(S.t(K.SPEED), S.t(K.SPEED_HELP), 0.25f, 3f, 0.25f, { Prefs.speed }, { Prefs.speed = it }) { "%.2fx".format(it) }
+            open(K.SPEED, K.SPEED_HELP, { "%.2fx".format(java.util.Locale.ROOT, Prefs.speed) }) {
+                sub.slider(S.t(K.SPEED), S.t(K.SPEED_HELP), 0.25f, 3f, 0.25f, { Prefs.speed }, { Prefs.speed = it }) { "%.2fx".format(java.util.Locale.ROOT, it) }
             },
             toggle(K.AUTOPLAY, K.AUTOPLAY_HELP, { Prefs.autoplay }) { Prefs.autoplay = it },
             toggle(K.SUBS_DEFAULT, K.SUBS_HELP, { Prefs.subs }) { Prefs.subs = it },

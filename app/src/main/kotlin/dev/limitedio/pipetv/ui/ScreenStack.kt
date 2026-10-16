@@ -16,13 +16,13 @@ class ScreenStack(private val root: Root) {
         root.addView(v, root.indexOfChild(root.nav))
         v.alpha = 0f; v.translationX = Ui.u(if (Ui.rtl) -60 else 60)
         v.animate().alpha(1f).translationX(0f).setDuration(240).start()
-        root.requestLayout()
+        root.syncDock(); root.requestLayout()
     }
 
     fun pop() {
         val v = list.removeLastOrNull() ?: return
         root.removeView(v)
-        (list.lastOrNull() ?: root.pages.views[root.tab]).visibility = View.VISIBLE
+        (list.lastOrNull() ?: root.pages.views[root.tab]).visibility = View.VISIBLE; root.syncDock()
     }
 
     fun clear() { while (any) pop() }

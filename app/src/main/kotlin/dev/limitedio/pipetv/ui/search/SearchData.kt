@@ -27,12 +27,12 @@ class SearchData(private val grid: Grid, private val suggest: SuggestList) {
     fun search(q: String, filter: String) {
         Store.addSearch(q)
         results = true
-        grid.alpha = .4f; grid.message = null
+        grid.loading = true; grid.message = null
         if (grid.items.isEmpty()) { grid.busy = true; grid.message = S.t(K.SEARCHING) }
         val t = ++token
         Bg.io({ Yt.search(q, filter) }) { r ->
             if (t != token) return@io
-            grid.alpha = 1f; paged = r
+            grid.loading = false; paged = r
             grid.message = if (r == null) S.t(K.SEARCH_FAILED) else if (r.items.isEmpty()) S.t(K.NO_RESULTS) else null
             grid.items = r?.items ?: emptyList(); grid.busy = false
         }
@@ -40,7 +40,7 @@ class SearchData(private val grid: Grid, private val suggest: SuggestList) {
 
     fun more() {
         val p = paged?.takeIf { it.hasMore } ?: return
-        val t = token
-        Bg.io({ p.loadMore() }) { r -> if (t == token && !r.isNullOrEmpty()) grid.append(r) }
+        val t = token; grid.loading = true
+        Bg.io({ p.loadMore() }) { r -> if (t == token) { grid.loading = false; if (!r.isNullOrEmpty()) grid.append(r) } }
     }
 }
