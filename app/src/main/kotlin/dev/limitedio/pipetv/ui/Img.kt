@@ -47,7 +47,8 @@ object Img {
         val f = File(dir, url.hashCode().toString())
         if (!f.exists()) {
             val tmp = File(dir, "${f.name}.tmp")
-            URL(url).openStream().use { i -> tmp.outputStream().use { i.copyTo(it) } }
+            val save = { i: java.io.InputStream -> i.use { s -> tmp.outputStream().use { o -> s.copyTo(o) } } }
+            try { save(URL(url).openStream()) } catch (e: java.io.IOException) { dev.limitedio.pipetv.data.Fallback.open(URL(url), {}) { c -> save(c.inputStream) } }
             tmp.renameTo(f)
         }
         val o = BitmapFactory.Options().apply { inJustDecodeBounds = true }

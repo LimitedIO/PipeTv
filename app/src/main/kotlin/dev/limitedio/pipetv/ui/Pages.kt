@@ -7,6 +7,7 @@ import dev.limitedio.pipetv.Bg
 import dev.limitedio.pipetv.data.Favs
 import dev.limitedio.pipetv.data.Feed
 import dev.limitedio.pipetv.data.Item
+import dev.limitedio.pipetv.data.NetCheck
 import dev.limitedio.pipetv.data.Store
 import dev.limitedio.pipetv.i18n.K
 import dev.limitedio.pipetv.i18n.S
@@ -38,7 +39,6 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
         return l
     }
 
-    /** Called whenever a page becomes visible. */
     fun enter(i: Int) {
         when (i) {
             0 -> if (homeAt == 0L || SystemClock.uptimeMillis() - homeAt > 600_000) loadHome()
@@ -51,7 +51,7 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
     /** The language changed: refresh everything that was fetched in the old one. */
     fun relocalize(current: Int) { homeAt = 0; popular.reset(); search.keyboard.refresh(); enter(current) }
 
-    /** The network often comes up a moment after a TV boots: keep trying quietly with a growing pause. */
+    // The network often comes up a moment after a TV boots: keep trying quietly with a growing pause.
     private fun retryHome() {
         retries++
         Bg.main.postDelayed({ if (home.items.isEmpty()) { home.busy = true; home.message = null; home.invalidate(); loadHome() } }, minOf(30_000L, 3_000L * retries))
@@ -62,7 +62,11 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
         Bg.io({ Feed.home() }) { r ->
             if (r.isNullOrEmpty()) {
                 homeAt = 0; home.busy = false
-                if (home.items.isEmpty()) { home.message = S.t(K.NO_CONNECTION) + Bg.lastError.let { e -> if (e.isEmpty()) "" else " ($e)" }; retryHome() }
+                if (home.items.isEmpty()) {
+                    home.message = S.t(K.NO_CONNECTION)
+                    Bg.io({ NetCheck.probe() + (Bg.lastError.takeIf { e -> e.isNotEmpty() }?.let { e -> " · $e" } ?: "") }) { d -> if (home.items.isEmpty()) home.message = S.t(K.NO_CONNECTION) + " · " + d; home.invalidate() }
+                    retryHome()
+                }
             } else { retries = 0; home.message = null; home.items = mark(r); Store.save("feed", r) }
             home.invalidate()
         }
