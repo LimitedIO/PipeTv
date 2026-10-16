@@ -5,6 +5,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import dev.limitedio.pipetv.Bg
+import dev.limitedio.pipetv.data.Favs
 import dev.limitedio.pipetv.data.Item
 import dev.limitedio.pipetv.data.Yt
 import dev.limitedio.pipetv.data.YtMap
@@ -19,19 +20,17 @@ import dev.limitedio.pipetv.ui.Ui
 class DetailsView(c: Context, private val item: Item) : ViewGroup(c), Screen {
     var onPlay: (Item) -> Unit = {}
     var onChannel: (String) -> Unit = {}
-    var onItem: (Item) -> Unit = {}
-    private val head = DetailHead(c, item.title)
+    var onItem: (Item) -> Unit = {}; var onFav: (Item) -> Unit = {}
+    private val head = DetailHead(c, item.title) { Favs.has(item.id) }
     private val hero = Hero(c, item)
-    private val about = TextList(c)
-    private val comments = TextList(c)
+    private val about = TextList(c); private val comments = TextList(c)
     private val related = Grid(c) { "" }.apply { cols = 3; upExit = true }
-    private val bodies: List<View> = listOf(hero, about, comments, related, View(c))
-    private var channelUrl = ""; private var zone = 0; private var commentsLoaded = false
+    private val bodies: List<View> = listOf(hero, about, comments, related, View(c), View(c))
+    private var channelUrl = ""; private var zone = 0; private var commentsLoaded = false; private var on = true
     private var paged: dev.limitedio.pipetv.data.Comments? = null
 
     init {
-        bodies.forEach { addView(it) }; addView(head)
-        head.byline = item.sub
+        bodies.forEach { addView(it) }; addView(head); head.byline = item.sub
         head.onTab = { show(it) }; show(0); related.onPick = { onItem(it) }; related.onMenu = { onItem(it) }
         about.message = S.t(K.LOADING); Bg.io({ Yt.stream(item.url) }) { info ->
             if (info == null) { about.message = S.t(K.LOAD_FAILED); return@io }
@@ -46,6 +45,7 @@ class DetailsView(c: Context, private val item: Item) : ViewGroup(c), Screen {
     }
 
     private fun show(t: Int) {
+        if (t == 5) return
         bodies.forEachIndexed { i, v -> v.visibility = if (i == t) VISIBLE else GONE }
         if (t == 2 && !commentsLoaded) loadComments()
     }
@@ -71,8 +71,10 @@ class DetailsView(c: Context, private val item: Item) : ViewGroup(c), Screen {
         Bg.io({ p.loadMore() }) { r -> if (!r.isNullOrEmpty()) comments.blocks = comments.blocks + r.map(::block) }
     }
 
-    private var on = true; private fun refreshLit() { head.lit = on && zone == 0; about.lit = on && zone == 1; comments.lit = on && zone == 1; related.lit = on && zone == 1 && head.sel == 3; listOf<View>(head, about, comments, related).forEach { it.invalidate() } }
+    private fun refreshLit() { head.lit = on && zone == 0; about.lit = on && zone == 1; comments.lit = on && zone == 1; related.lit = on && zone == 1 && head.sel == 3; listOf<View>(head, about, comments, related).forEach { it.invalidate() } }
     override fun lit(on: Boolean) { this.on = on; refreshLit() }
+
+    override fun focused(): Item? = if (zone == 1 && head.sel == 3) related.focused() else item
 
     override fun key(code: Int, repeat: Int): Boolean {
         val tab = head.sel
@@ -80,7 +82,7 @@ class DetailsView(c: Context, private val item: Item) : ViewGroup(c), Screen {
             if (head.key(code)) return true
             return when (code) {
                 KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> {
-                    when (tab) { 0 -> onPlay(item); 4 -> if (channelUrl.isNotEmpty()) onChannel(channelUrl) else zone = 0; else -> enter() }; true
+                    when (tab) { 0 -> onPlay(item); 4 -> if (channelUrl.isNotEmpty()) onChannel(channelUrl) else zone = 0; 5 -> { onFav(item); head.invalidate() }; else -> enter() }; true
                 }
                 KeyEvent.KEYCODE_DPAD_DOWN -> { enter(); true }
                 else -> false

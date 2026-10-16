@@ -13,13 +13,15 @@ object RootLayout {
         val nw = Ui.u(340).toInt(); if (rtl) root.nav.layout(w - nw, 0, w, h) else root.nav.layout(0, 0, nw, h)
         val mw = Ui.u(580) - Ui.u(48); val mh = mw * 9 / 16
         val mx = if (rtl) Ui.u(24) else w - panel + Ui.u(24); val my = Ui.u(48)
-        val x = mx * (1 - f); val y = my * (1 - f)
-        if (Session.active) root.stage.layout(x.toInt(), y.toInt(), (x + mw + (w - mw) * f).toInt(), (y + mh + (h - mh) * f).toInt())
+        val g = 1f + .06f * root.dock.popValue * (1 - f); val gx = (mw * g - mw) / 2; val gy = (mh * g - mh) / 2
+        val x = (mx - gx) * (1 - f); val y = (my - gy) * (1 - f)
+        if (Session.active) root.stage.layout(x.toInt(), y.toInt(), (x + mw * g + (w - mw * g) * f).toInt(), (y + mh * g + (h - mh * g) * f).toInt())
         else root.stage.layout(0, 0, 1, 1)
         root.dock.videoH = mh
         root.dock.layout(mx.toInt(), (my + mh + Ui.u(20)).toInt(), (mx + mw).toInt(), h - Ui.u(16).toInt())
         root.hud.layout(0, 0, w, h); root.toast.layout(0, 0, w, h)
         val mnw = Ui.u(820).toInt(); val mnx = if (rtl) Ui.u(40).toInt() else w - mnw - Ui.u(40).toInt()
+        root.playerSub.layout(0, 0, w, h)
         root.menu.layout(mnx, Ui.u(110).toInt(), mnx + mnw, h - Ui.u(110).toInt())
         root.stage.alpha = if (Session.active) 1f else 0f
         root.dock.visibility = if (dk > .02f && f < .02f) View.VISIBLE else View.GONE

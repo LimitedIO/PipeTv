@@ -19,6 +19,7 @@ class Controls(private val root: Root) {
         val k = e.keyCode
         if (Voice.active) { if (k == KEYCODE_BACK || k == KEYCODE_DPAD_CENTER || k == KEYCODE_ESCAPE) Voice.stop(); return true }
         if (k == KEYCODE_VOICE_ASSIST || k == KEYCODE_SEARCH) { root.voice(); return true }
+        if (root.playerSub.open) { root.playerSub.key(k, e.repeatCount); root.hud.nudge(); return true }
         if (root.menuOpen) return keys.menu(e)
         if (keys.media(k)) return true
         return if (root.full) keys.full(e) else browse(e)
@@ -52,7 +53,7 @@ class Controls(private val root: Root) {
         if ((k == KEYCODE_MENU || k == KEYCODE_INFO) && zone != 1) { if (Session.active) root.setFull(true); return true }
         return when (zone) {
             0 -> nav(k)
-            2 -> if (k == KEYCODE_DPAD_LEFT) { setZone(1); true } else root.dock.key(k) || k in KEYCODE_DPAD_UP..KEYCODE_DPAD_RIGHT
+            2 -> if (k == KEYCODE_DPAD_LEFT) { setZone(1); true } else if (k == KEYCODE_PROG_RED || k == KEYCODE_BOOKMARK) { Session.item?.let(root::toggleFav); true } else root.dock.key(k) || k in KEYCODE_DPAD_UP..KEYCODE_DPAD_RIGHT
             else -> content(e, k)
         }
     }
@@ -62,7 +63,7 @@ class Controls(private val root: Root) {
 
     private fun back(): Boolean {
         when {
-            zone == 1 && root.tab == 4 && !root.screens.any && root.pages.closeSub() -> {}
+            zone == 1 && root.tab == 5 && !root.screens.any && root.pages.closeSub() -> {}
             zone == 1 && root.screens.any -> root.screens.pop()
             zone != 0 -> setZone(0)
             Session.active -> { Session.stop(); root.toast.show(S.t(K.PLAYBACK_CLOSED)) }
@@ -74,7 +75,7 @@ class Controls(private val root: Root) {
     private fun nav(k: Int): Boolean {
         when (k) {
             KEYCODE_DPAD_UP -> if (root.tab > 0) root.show(root.tab - 1)
-            KEYCODE_DPAD_DOWN -> if (root.tab < 4) root.show(root.tab + 1)
+            KEYCODE_DPAD_DOWN -> if (root.tab < 5) root.show(root.tab + 1)
             KEYCODE_DPAD_RIGHT, KEYCODE_DPAD_CENTER, KEYCODE_ENTER -> setZone(1)
             else -> return false
         }
@@ -83,6 +84,7 @@ class Controls(private val root: Root) {
 
     private fun content(e: KeyEvent, k: Int): Boolean {
         if (root.tab == 1 && !root.screens.any && root.pages.search.typed(e)) return true
+        if (k == KEYCODE_PROG_RED || k == KEYCODE_BOOKMARK) { (root.screens.top?.focused() ?: root.pages.focusedItem(root.tab))?.let(root::toggleFav); return true }
         val used = root.screens.top?.key(k, e.repeatCount) ?: root.pages.key(root.tab, k, e.repeatCount)
         if (used) return true
         when {

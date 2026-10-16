@@ -22,6 +22,6 @@ object Progress {
     fun watchFrames() {
         val t = Session.token; val si = Session.info ?: return
         if (si.videoOnlyStreams.isEmpty() && si.videoStreams.isEmpty()) return
-        Bg.main.postDelayed({ if (t == Session.token && Engine.exo.isPlaying && Engine.exo.videoSize.width == 0) Session.error() }, 5000)
+        Bg.main.postDelayed({ if (t == Session.token && Engine.exo.isPlaying && Engine.exo.videoSize.width == 0) Recovery.onError() }, 5000)
     }
 }

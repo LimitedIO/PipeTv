@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Shader
 import android.os.SystemClock
+import dev.limitedio.pipetv.data.Favs
 import dev.limitedio.pipetv.data.Item
 import dev.limitedio.pipetv.i18n.K
 import dev.limitedio.pipetv.i18n.S
@@ -18,12 +19,9 @@ object Cards {
     private val badge = Ui.paint(0xCC000000.toInt())
     private val live = Ui.paint(0xFFE5254B.toInt())
     private val badgeText = Ui.paint(Ui.TEXT, 17f, true)
-    private val title = Ui.paint(Ui.TEXT, 23f, true)
-    private val by = Ui.paint(0xFFB4B9D2.toInt(), 20f)
-    private val meta = Ui.paint(Ui.DIM, 18f)
-    private val accent = Ui.paint(Ui.ACCENT2, 19f, true)
-    private val bar = Ui.paint(Ui.ACCENT2)
-    private val stack = Ui.paint(Ui.ACCENT)
+    private val title = Ui.paint(Ui.TEXT, 23f, true); private val by = Ui.paint(0xFFB4B9D2.toInt(), 20f); private val meta = Ui.paint(Ui.DIM, 18f)
+    private val accent = Ui.paint(Ui.ACCENT2, 19f, true); private val bar = Ui.paint(Ui.ACCENT2)
+    private val stack = Ui.paint(Ui.ACCENT); private val gold = Ui.paint(0xFFFFC83D.toInt())
     private val tile = Paint(Paint.ANTI_ALIAS_FLAG)
     private val ring = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val m = Matrix()
@@ -72,6 +70,7 @@ object Cards {
         picture(c, it, x, y + Ui.u(16), w, h - Ui.u(16))
         val sw = w * .3f; val sx = if (Ui.rtl) x else x + w - sw
         r.set(sx, y + Ui.u(16), sx + sw, y + h); c.drawRect(r, badge)
+        if (it.meta == "∞") { accent.strokeCap = Paint.Cap.ROUND; Glyphs.infinity(c, r.centerX(), r.centerY(), Ui.u(24), accent); return }
         for (i in 0..2) c.drawRect(r.centerX() - Ui.u(22), r.centerY() - Ui.u(30) + i * Ui.u(14), r.centerX() + Ui.u(22) - (if (i == 2) Ui.u(14) else 0f), r.centerY() - Ui.u(26) + i * Ui.u(14), accent)
         Txt.draw(c, Txt.fit(badgeText, it.meta, sw - Ui.u(8)), r.left, r.centerY() + Ui.u(44), sw, badgeText, true)
     }
@@ -96,5 +95,6 @@ object Cards {
         val h = w * 9 / 16
         when (it.kind) { Item.CHANNEL -> channel(c, it, x, y, w, h); Item.PLAYLIST -> playlist(c, it, x, y, w, h); else -> video(c, it, x, y, w, h) }
         text(c, it, x, y + h, w, lit, it.kind == Item.CHANNEL)
+        if (Favs.has(it.id)) { c.drawCircle(x + Ui.u(30), y + Ui.u(30), Ui.u(19), badge); Glyphs.star(c, x + Ui.u(30), y + Ui.u(30), Ui.u(12), gold, true) }
     }
 }

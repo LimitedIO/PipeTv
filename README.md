@@ -20,6 +20,8 @@ Pure Kotlin · no XML layouts · no Google services · no account · no API key
 - **Never interrupts** – opening a video keeps the current one playing until the new one is ready, with a clear "Opening…" state and the thumbnail while it loads. Cards look different for videos (with time-ago), channels and playlists.
 - **Under the mini player** – animated equaliser, progress, and your next recommended videos (↑/↓, OK to open). Autoplay shows an "Up next in 5…" card.
 - **Settings that stay focused** – every option opens its own pop-up (list, multi-select or big slider) that captures the keys. Content language is separate from the app language.
+- **Favorites** – videos, channels and playlists: red/bookmark key on a card (or the ★ button in details, channel and playlist pages, or `B` in fullscreen).
+- **Always plays** – playback retries by itself (lower quality, fresh links, growing pause); the notice disappears the moment it works. Subtitles load on their own and never touch the video.
 - **Alive** – the background drifts and re-tints from the page and the video you watch; soft synthesised sound effects and an endless, very quiet ambient track while nothing plays (all switchable in Settings).
 - **10 languages** (EN, العربية, ES, FR, DE, RU, TR, PT, हिन्दी, 中文) with full right-to-left mirroring for Arabic.
 - **Auto-update** from GitHub Releases · **FOSS**: [NewPipeExtractor](https://github.com/TeamNewPipe/NewPipeExtractor) + [Media3](https://github.com/androidx/media) · GPL-3.0.
@@ -30,11 +32,12 @@ Pure Kotlin · no XML layouts · no Google services · no account · no API key
 | Anywhere | `←` from first column | Open the nav rail (`→` in RTL languages) |
 | Nav rail | `↑` `↓` / `→` | Switch page / enter page |
 | Grid | arrows, `OK` | Move, play fullscreen |
-| Grid | `Menu` / `Info` | Details: about, comments, up next, channel |
+| Grid | `Menu` / `Info` | Details: about, comments, up next, channel, favorite |
+| Grid / details | red or bookmark key | Add / remove favorite |
 | Grid → edge | `→` | Focus the docked player (`OK` expands) |
 | Fullscreen | `OK` / `Space` / `K` | Play / pause |
 | Fullscreen | `←` `→` (hold to speed up) / `J` `L` | Seek 10 → 30 → 60 s |
-| Fullscreen | `↑` | Player options: quality, speed, subtitles, volume |
+| Fullscreen | `↑` | Player options: quality, speed, subtitles and audio language (pop-up menus) |
 | Fullscreen | `↓` | Video details (player docks, you keep watching) |
 | Fullscreen | `0`–`9` / `M` / `Back` | Jump to 0–90 % / mute / minimise |
 | Search | mic key, remote voice button | Voice search |

@@ -37,6 +37,7 @@ class PlayerKeys(private val root: Root) {
             KEYCODE_DPAD_CENTER, KEYCODE_ENTER, KEYCODE_SPACE, KEYCODE_K -> p.playWhenReady = !p.playWhenReady
             KEYCODE_DPAD_RIGHT, KEYCODE_L -> seek(if (e.repeatCount > 20) 60_000 else if (e.repeatCount > 6) 30_000 else 10_000)
             KEYCODE_DPAD_LEFT, KEYCODE_J -> seek(-(if (e.repeatCount > 20) 60_000L else if (e.repeatCount > 6) 30_000L else 10_000L))
+            KEYCODE_PROG_RED, KEYCODE_BOOKMARK, KEYCODE_B -> Session.item?.let(root::toggleFav)
             KEYCODE_DPAD_UP -> root.openMenu()
             KEYCODE_DPAD_DOWN -> { root.setFull(false); Session.item?.let { root.opener.details(it) } }
             KEYCODE_BACK, KEYCODE_MENU, KEYCODE_ESCAPE, KEYCODE_I -> { Session.noExpand(); root.setFull(false) }

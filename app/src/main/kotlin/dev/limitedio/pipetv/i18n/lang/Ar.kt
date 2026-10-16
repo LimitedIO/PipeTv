@@ -43,4 +43,7 @@ val Ar = mapOf(
     MUSIC to "موسيقى الخلفية", MUSIC_HELP to "موسيقى هادئة عندما لا يعمل أي فيديو",
     AMBIENT to "خلفية حيّة", AMBIENT_HELP to "ألوان تتحرك ببطء وتتغير حسب ما تشاهده",
     UP_NEXT_IN to "التالي بعد %d", HINT_SUB to "موافق اختيار   رجوع إغلاق",
+    CLEAR to "مسح", FAVORITES to "المفضلة", FAV_ADDED to "أُضيف إلى المفضلة", FAV_REMOVED to "أُزيل من المفضلة",
+    NO_FAVS to "لا توجد مفضلات بعد. افتح فيديو أو قناة أو قائمة واختر المفضلة.", FAVORITE to "مفضلة", SAVED to "محفوظ",
+    SUBS_LOADING to "جارٍ تحميل الترجمة…", RETRYING to "تعذر التشغيل الآن. تتم إعادة المحاولة…", AUDIO_DUB to "لغة الصوت",
 )

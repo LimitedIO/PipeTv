@@ -32,6 +32,7 @@ abstract class AnimView(c: Context) : View(c) {
     private var last = 0L
     protected open val animating get() = false
     protected open val ticking get() = false
+    protected open val tickMs get() = 250L
 
     protected fun spring(v: Float = 0f, k: Float = 220f, d: Float = 28f) = Spring(v, k, d).also { springs.add(it) }
 
@@ -44,7 +45,7 @@ abstract class AnimView(c: Context) : View(c) {
         var busy = animating
         for (s in springs) { s.step(dt); if (s.moving) busy = true }
         render(canvas, dt)
-        if (busy) postInvalidateOnAnimation() else { last = 0L; if (ticking) postInvalidateDelayed(250) }
+        if (busy) postInvalidateOnAnimation() else { last = 0L; if (ticking) postInvalidateDelayed(tickMs) }
     }
 
     abstract fun render(c: Canvas, dt: Float)

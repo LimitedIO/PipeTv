@@ -43,4 +43,7 @@ val Pt = mapOf(
     MUSIC to "Música de fundo", MUSIC_HELP to "Música ambiente calma quando nada está tocando",
     AMBIENT to "Fundo vivo", AMBIENT_HELP to "Cores lentas que acompanham o que você assiste",
     UP_NEXT_IN to "Próximo em %d", HINT_SUB to "OK escolher   Voltar fechar",
+    CLEAR to "Limpar", FAVORITES to "Favoritos", FAV_ADDED to "Adicionado aos favoritos", FAV_REMOVED to "Removido dos favoritos",
+    NO_FAVS to "Ainda sem favoritos. Abra um vídeo, canal ou playlist e escolha Favorito.", FAVORITE to "Favorito", SAVED to "Salvo",
+    SUBS_LOADING to "Carregando legendas…", RETRYING to "Não é possível reproduzir agora. Tentando de novo…", AUDIO_DUB to "Idioma do áudio",
 )

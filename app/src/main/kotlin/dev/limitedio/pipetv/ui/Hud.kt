@@ -11,6 +11,7 @@ import dev.limitedio.pipetv.i18n.K
 import dev.limitedio.pipetv.i18n.S
 import dev.limitedio.pipetv.media.Engine
 import dev.limitedio.pipetv.media.Session
+import dev.limitedio.pipetv.media.Subs
 
 /** Fullscreen playback overlay: fades in on any key, out after a few seconds of playback. */
 class Hud(c: Context) : AnimView(c) {
@@ -31,6 +32,7 @@ class Hud(c: Context) : AnimView(c) {
     private val extras = HudExtras()
     override val animating get() = Session.loading || Engine.exo.playbackState == 2
     override val ticking get() = visibility == VISIBLE
+    override val tickMs get() = 120L
 
     fun nudge() { shownAt = SystemClock.uptimeMillis(); alpha.to(1f) }
 
@@ -66,12 +68,13 @@ class Hud(c: Context) : AnimView(c) {
         Txt.draw(c, S.t(K.HINT_PLAYER), 0f, h - Ui.u(48), w, hint, true)
         subtitle(c, w, h, a)
         if (!p.isPlaying && !animating && !Session.failed) Icons.pause(c, w / 2, h / 2, Ui.u(46), dot)
-        if (Session.failed) Txt.draw(c, S.t(K.CANT_PLAY), 0f, h / 2, w, title, true)
+        if (Session.failed) Txt.draw(c, S.t(K.RETRYING), 0f, h / 2, w, title, true)
+        if (Subs.state == 1) Txt.draw(c, S.t(K.SUBS_LOADING), 0f, h - Ui.u(300), w, hint, true)
     }
 
     /** Subtitles are drawn by us (no extra UI library): a dark pill with the current cue. */
     private fun subtitle(c: Canvas, w: Float, h: Float, a: Float) {
-        val text = Engine.cues; if (text.isEmpty()) return
+        val text = Subs.at(Engine.exo.currentPosition); if (text.isEmpty()) return
         val lines = text.split('\n').flatMap { Txt.wrap(cue, it, w * .7f, 2) }.takeLast(3)
         var y = h - (if (a > .05f) Ui.u(250) else Ui.u(110)) - (lines.size - 1) * Ui.u(46)
         for (l in lines) {

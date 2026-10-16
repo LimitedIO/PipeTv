@@ -19,6 +19,9 @@ object YtMap {
         else -> "$n"
     }
 
+    /** "24 videos", or just the infinity sign for endless mixes (the extractor reports a negative count). */
+    fun countText(n: Long) = if (n < 0) "∞" else S.f(K.VIDEOS_N, n.toInt())
+
     /** Picks a thumbnail around 170 px: sharp enough for a card, small enough to decode fast. */
     fun img(list: List<Image>): String =
         (list.sortedBy { it.height }.firstOrNull { it.height >= 160 } ?: list.lastOrNull())?.url.orEmpty()
@@ -39,7 +42,7 @@ object YtMap {
             Item("c" + i.url.hashCode(), i.url, i.name, subs, 0, Item.CHANNEL, img(i.thumbnails), subs, vids)
         }
         is PlaylistInfoItem -> {
-            val n = S.f(K.VIDEOS_N, i.streamCount.toInt()); val who = i.uploaderName.orEmpty()
+            val n = countText(i.streamCount); val who = i.uploaderName.orEmpty()
             Item("p" + i.url.hashCode(), i.url, i.name, listOf(who, n).filter { s -> s.isNotEmpty() }.joinToString(" · "), 0,
                 Item.PLAYLIST, img(i.thumbnails), who, n)
         }

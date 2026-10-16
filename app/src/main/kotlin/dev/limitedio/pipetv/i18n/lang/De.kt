@@ -43,4 +43,7 @@ val De = mapOf(
     MUSIC to "Hintergrundmusik", MUSIC_HELP to "Ruhige Musik, solange nichts läuft",
     AMBIENT to "Lebendiger Hintergrund", AMBIENT_HELP to "Langsam wandernde Farben passend zu deinem Video",
     UP_NEXT_IN to "Weiter in %d", HINT_SUB to "OK wählen   Zurück schließen",
+    CLEAR to "Leeren", FAVORITES to "Favoriten", FAV_ADDED to "Zu Favoriten hinzugefügt", FAV_REMOVED to "Aus Favoriten entfernt",
+    NO_FAVS to "Noch keine Favoriten. Öffne ein Video, einen Kanal oder eine Playlist und wähle Favorit.", FAVORITE to "Favorit", SAVED to "Gespeichert",
+    SUBS_LOADING to "Untertitel werden geladen…", RETRYING to "Wiedergabe gerade nicht möglich. Neuer Versuch…", AUDIO_DUB to "Audiosprache",
 )

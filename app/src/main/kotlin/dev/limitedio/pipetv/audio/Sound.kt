@@ -7,5 +7,5 @@ import dev.limitedio.pipetv.media.Session
 object Sound {
     var foreground = false
 
-    fun update() = Calm.want(foreground && Prefs.music && !Session.active)
+    fun update() { Calm.want(foreground && Prefs.music && !Session.active); if (!Session.active) Level.release() }
 }

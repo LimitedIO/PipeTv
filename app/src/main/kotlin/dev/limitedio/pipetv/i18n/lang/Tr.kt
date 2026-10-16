@@ -43,4 +43,7 @@ val Tr = mapOf(
     MUSIC to "Arka plan müziği", MUSIC_HELP to "Hiçbir şey oynamıyorken sakin müzik",
     AMBIENT to "Canlı arka plan", AMBIENT_HELP to "İzlediğine göre yavaşça değişen renkler",
     UP_NEXT_IN to "%d sn sonra sıradaki", HINT_SUB to "Tamam seç   Geri kapat",
+    CLEAR to "Temizle", FAVORITES to "Favoriler", FAV_ADDED to "Favorilere eklendi", FAV_REMOVED to "Favorilerden kaldırıldı",
+    NO_FAVS to "Henüz favori yok. Bir video, kanal veya oynatma listesi açıp Favori'yi seç.", FAVORITE to "Favori", SAVED to "Kaydedildi",
+    SUBS_LOADING to "Altyazı yükleniyor…", RETRYING to "Şu an oynatılamıyor. Tekrar deneniyor…", AUDIO_DUB to "Ses dili",
 )

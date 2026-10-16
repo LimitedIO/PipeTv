@@ -57,5 +57,8 @@ object Yt {
         return StreamInfo.getInfo(svc, url).also { synchronized(streams) { streams.put(url, it) } }
     }
 
+    /** Forget the cached stream links of [url] (they expire), so the next call fetches fresh ones. */
+    fun invalidate(url: String) { synchronized(streams) { streams.remove(url) } }
+
     fun related(info: StreamInfo) = YtMap.items(info.relatedItems)
 }

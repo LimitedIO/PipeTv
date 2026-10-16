@@ -12,7 +12,7 @@ import dev.limitedio.pipetv.i18n.S
 /** Left rail: icons only while content has focus, glides open with labels when it gets focus. */
 class Nav(c: Context) : AnimView(c) {
     private val tabs get() = listOf(S.t(K.HOME) to Icons.HOME, S.t(K.SEARCH) to Icons.SEARCH, S.t(K.TRENDING) to Icons.TREND,
-        S.t(K.HISTORY) to Icons.HISTORY, S.t(K.SETTINGS) to Icons.SETTINGS)
+        S.t(K.FAVORITES) to Glyphs.FAV, S.t(K.HISTORY) to Icons.HISTORY, S.t(K.SETTINGS) to Icons.SETTINGS)
     var sel = 0
         set(v) { field = v; pill.to(v.toFloat()) }
     var lit = false
@@ -45,7 +45,8 @@ class Nav(c: Context) : AnimView(c) {
             val cy = y0 + i * itemH + (itemH - Ui.u(14)) / 2
             val on = i == sel
             icon.color = if (on) 0xFF0A0B14.toInt() else Ui.DIM
-            Icons.draw(c, t.second, if (Ui.rtl) width - Ui.u(62) else Ui.u(62), cy, Ui.u(18), icon)
+            val ix = if (Ui.rtl) width - Ui.u(62) else Ui.u(62)
+            if (t.second == Glyphs.FAV) Glyphs.star(c, ix, cy, Ui.u(20), icon, on) else Icons.draw(c, t.second, ix, cy, Ui.u(18), icon)
             label.color = if (on) 0xFF0A0B14.toInt() else Ui.TEXT
             label.alpha = (255 * open.value).toInt().coerceIn(0, 255)
             if (open.value > .05f) Txt.draw(c, t.first, ox + if (Ui.rtl) Ui.u(30) else Ui.u(108), cy + Ui.u(10), pw - Ui.u(140), label)

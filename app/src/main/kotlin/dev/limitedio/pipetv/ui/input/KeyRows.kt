@@ -14,8 +14,8 @@ object KeyRows {
         list.add("1234567890".map { Key(it.toString(), it.toString(), 1f, 0) })
         body.forEachIndexed { i, s -> list.add(s.map { Key(it.toString(), it.toString(), 1f, i + 1) }) }
         val b = body.size + 1
-        list.add(listOf(Key("@shift", "", 1.4f, b), Key("@sym", if (sym) "ABC" else "?123", 1.5f, b), Key("@lang", l.code.uppercase(), 1.3f, b),
-            Key("@space", S.t(K.SPACE), 3.6f, b), Key("@mic", "", 1.3f, b), Key("@del", "", 1.3f, b), Key("@go", S.t(K.GO), 1.8f, b)))
+        list.add(listOf(Key("@shift", "", 1.3f, b), Key("@sym", if (sym) "ABC" else "?123", 1.4f, b), Key("@lang", l.code.uppercase(), 1.2f, b),
+            Key("@space", S.t(K.SPACE), 2.8f, b), Key("@mic", "", 1.2f, b), Key("@del", "", 1.2f, b), Key("@clear", S.t(K.CLEAR), 1.6f, b), Key("@go", S.t(K.GO), 1.6f, b)))
         list.forEach { row ->
             var x = (13f - row.sumOf { it.span.toDouble() }.toFloat()) / 2f
             for (k in row) { k.x = x; x += k.span }

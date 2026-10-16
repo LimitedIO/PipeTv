@@ -6,6 +6,7 @@ import android.media.SoundPool
 import dev.limitedio.pipetv.App
 import dev.limitedio.pipetv.Bg
 import dev.limitedio.pipetv.data.Prefs
+import dev.limitedio.pipetv.media.Session
 import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -23,12 +24,12 @@ object Sfx {
         return FloatArray(n) { i ->
             val t = i / Synth.RATE.toFloat()
             when (fx) {
-                Fx.TICK -> .26f * Synth.bell(1568f, t, .03f)
-                Fx.SELECT -> .3f * (Synth.bell(659.25f, t, .16f) + .8f * Synth.bell(987.77f, t - .07f, .2f))
-                Fx.BACK -> .32f * Synth.bell(293.66f, t, .13f)
-                Fx.OPEN -> .26f * (Synth.bell(440f, t, .12f) + Synth.bell(587.33f, t - .06f, .14f) + Synth.bell(880f, t - .12f, .2f))
-                Fx.ON -> .3f * (Synth.bell(523.25f, t, .12f) + Synth.bell(783.99f, t - .08f, .18f))
-                Fx.OFF -> .3f * (Synth.bell(783.99f, t, .12f) + Synth.bell(523.25f, t - .08f, .18f))
+                Fx.TICK -> .16f * Synth.bell(1175f, t, .05f)
+                Fx.SELECT -> .17f * (Synth.bell(523.25f, t, .2f) + .7f * Synth.bell(783.99f, t - .09f, .26f))
+                Fx.BACK -> .2f * Synth.bell(261.63f, t, .18f)
+                Fx.OPEN -> .15f * (Synth.bell(392f, t, .16f) + Synth.bell(523.25f, t - .08f, .18f) + Synth.bell(783.99f, t - .16f, .26f))
+                Fx.ON -> .17f * (Synth.bell(440f, t, .16f) + Synth.bell(659.25f, t - .1f, .22f))
+                Fx.OFF -> .17f * (Synth.bell(659.25f, t, .16f) + Synth.bell(440f, t - .1f, .22f))
             }
         }
     }
@@ -47,7 +48,7 @@ object Sfx {
         val sp = SoundPool.Builder().setMaxStreams(4).setAudioAttributes(AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()).build()
         for (fx in Fx.values()) {
-            val f = File(c.cacheDir, "sfx1_${fx.name}.wav")
+            val f = File(c.cacheDir, "sfx2_${fx.name}.wav")
             if (!f.exists()) f.writeBytes(wav(render(fx)))
             ids[fx] = sp.load(f.path, 1)
         }
@@ -55,10 +56,10 @@ object Sfx {
     }
 
     fun play(fx: Fx) {
-        if (!Prefs.sfx) return
+        if (!Prefs.sfx || Session.active) return
         val now = System.currentTimeMillis()
         if (fx == Fx.TICK && now - last < 55) return
         last = now
-        ids[fx]?.let { pool?.play(it, .55f, .55f, 1, 0, 1f) }
+        ids[fx]?.let { pool?.play(it, .35f, .35f, 1, 0, 1f) }
     }
 }

@@ -29,7 +29,7 @@ class SearchPage(c: Context) : ViewGroup(c) {
         listOf<View>(suggest, chips, grid, keyboard, orb).forEach { addView(it) }
         keyboard.onKey = { k ->
             when (k) {
-                "@space" -> type(" "); "@del" -> backspace(); "@go" -> submit(keyboard.text); "@mic" -> onVoice()
+                "@space" -> type(" "); "@del" -> backspace(); "@clear" -> setText(""); "@go" -> submit(keyboard.text); "@mic" -> onVoice()
                 else -> type(k)
             }
         }

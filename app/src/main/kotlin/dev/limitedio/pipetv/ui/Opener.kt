@@ -22,21 +22,23 @@ class Opener(private val root: Root) {
     fun details(it: Item) {
         if (it.kind != Item.VIDEO) return pick(it)
         val v = DetailsView(root.context, it)
-        v.onPlay = { i -> root.controls.play(i) }; v.onChannel = ::channel; v.onItem = ::pick
+        v.onPlay = { i -> root.controls.play(i) }; v.onChannel = ::channel; v.onItem = ::pick; v.onFav = root::toggleFav
         show(v)
     }
 
     fun channel(url: String) = show(ChannelPage(root.context) {
         val c = YtPages.channel(url)
-        Listing(c.name, if (c.subs >= 0) S.f(K.SUBS, YtMap.count(c.subs)) else "", c.desc, c.avatar, c.videos)
+        val subs = if (c.subs >= 0) S.f(K.SUBS, YtMap.count(c.subs)) else ""
+        Listing(c.name, subs, c.desc, c.avatar, c.videos, Item("c" + url.hashCode(), url, c.name, subs, 0, Item.CHANNEL, c.avatar, subs, ""))
     }.also(::wire))
 
     private fun playlist(url: String) = show(ChannelPage(root.context) {
         val p = YtPages.playlist(url)
-        Listing(p.name, p.by + " · " + S.f(K.VIDEOS_N, p.count.toInt()), "", p.thumb, p.videos)
+        val n = YtMap.countText(p.count)
+        Listing(p.name, p.by + " · " + n, "", p.thumb, p.videos, Item("p" + url.hashCode(), url, p.name, p.by, 0, Item.PLAYLIST, p.thumb, p.by, n))
     }.also(::wire))
 
-    private fun wire(p: ChannelPage) { p.grid.onPick = ::pick; p.grid.onMenu = ::details }
+    private fun wire(p: ChannelPage) { p.grid.onPick = ::pick; p.grid.onMenu = ::details; p.onFav = root::toggleFav }
 
     private fun show(v: android.view.View) { root.screens.push(v); root.controls.focusContent() }
 }

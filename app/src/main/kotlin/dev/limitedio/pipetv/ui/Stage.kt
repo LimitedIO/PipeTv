@@ -43,6 +43,8 @@ class Stage(c: Context) : ViewGroup(c) {
 
     fun refresh() = back.invalidate()
 
+    /** Copies the current video frame (scaled) into [bmp]; false while no frame is available. */
+    fun grab(bmp: android.graphics.Bitmap): Boolean = Engine.frame && texture.isAvailable && runCatching { texture.getBitmap(bmp) }.isSuccess
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         back.layout(0, 0, r - l, b - t); texture.layout(0, 0, r - l, b - t)
     }

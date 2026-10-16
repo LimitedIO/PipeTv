@@ -43,4 +43,7 @@ val Hi = mapOf(
     MUSIC to "बैकग्राउंड संगीत", MUSIC_HELP to "कुछ न चलने पर शांत संगीत",
     AMBIENT to "जीवंत पृष्ठभूमि", AMBIENT_HELP to "आप जो देखते हैं उसके साथ धीरे बदलते रंग",
     UP_NEXT_IN to "%d में अगला", HINT_SUB to "OK चुनें   Back बंद करें",
+    CLEAR to "साफ़ करें", FAVORITES to "पसंदीदा", FAV_ADDED to "पसंदीदा में जोड़ा गया", FAV_REMOVED to "पसंदीदा से हटाया गया",
+    NO_FAVS to "अभी कोई पसंदीदा नहीं। कोई वीडियो, चैनल या प्लेलिस्ट खोलकर पसंदीदा चुनें।", FAVORITE to "पसंदीदा", SAVED to "सहेजा गया",
+    SUBS_LOADING to "उपशीर्षक लोड हो रहे हैं…", RETRYING to "अभी नहीं चल पा रहा। दोबारा कोशिश जारी है…", AUDIO_DUB to "ऑडियो भाषा",
 )

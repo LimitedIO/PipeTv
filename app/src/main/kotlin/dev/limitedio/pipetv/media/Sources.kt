@@ -1,20 +1,16 @@
 package dev.limitedio.pipetv.media
 
-import android.net.Uri
-import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.MergingMediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
-import androidx.media3.exoplayer.source.SingleSampleMediaSource
 import dev.limitedio.pipetv.Config
 import org.schabi.newpipe.extractor.MediaFormat
 import org.schabi.newpipe.extractor.stream.AudioStream
 import org.schabi.newpipe.extractor.stream.StreamInfo
 import org.schabi.newpipe.extractor.stream.StreamType
-import org.schabi.newpipe.extractor.stream.SubtitlesStream
 import org.schabi.newpipe.extractor.stream.VideoStream
 
 /** Turns extractor streams into an ExoPlayer source, preferring widely supported H.264 + AAC. */
@@ -30,14 +26,7 @@ object Sources {
     fun heights(info: StreamInfo): List<Int> =
         (info.videoOnlyStreams + info.videoStreams).map { it.height }.filter { it > 0 }.distinct().sortedDescending()
 
-    private fun text(s: SubtitlesStream): MediaSource {
-        val cfg = MediaItem.SubtitleConfiguration.Builder(Uri.parse(s.content))
-            .setMimeType(s.format?.mimeType ?: "text/vtt").setLanguage(s.languageTag)
-            .setSelectionFlags(C.SELECTION_FLAG_DEFAULT).build()
-        return SingleSampleMediaSource.Factory(http).createMediaSource(cfg, C.TIME_UNSET)
-    }
-
-    fun build(info: StreamInfo, maxH: Int, sub: SubtitlesStream?, pick: AudioStream?): MediaSource {
+    fun build(info: StreamInfo, maxH: Int, pick: AudioStream?): MediaSource {
         val live = info.streamType == StreamType.LIVE_STREAM || info.streamType == StreamType.AUDIO_LIVE_STREAM
         if (live && info.hlsUrl.isNotEmpty())
             return HlsMediaSource.Factory(http).createMediaSource(MediaItem.fromUri(info.hlsUrl))
@@ -52,6 +41,6 @@ object Sources {
             val combined = info.videoStreams.filter { it.isUrl }.sortedByDescending { it.height }
             prog((combined.firstOrNull { it.height <= maxH } ?: combined.last()).content)
         }
-        return if (sub == null) main else MergingMediaSource(main, text(sub))
+        return main
     }
 }

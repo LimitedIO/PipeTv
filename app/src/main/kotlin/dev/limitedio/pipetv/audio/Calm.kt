@@ -34,7 +34,7 @@ object Calm {
             rate, AudioTrack.MODE_STREAM)
         val d1 = FloatArray((rate * .43f).toInt()); val d2 = FloatArray((rate * .29f).toInt()); var i1 = 0; var i2 = 0; var lp = 0f
         val phase = Array(2) { FloatArray(10) }; val bells = ArrayList<Bell>(); var nextBell = 2f
-        var gain = 0f; var t = 0f; val buf = ShortArray(512)
+        var gain = 0f; var t = 0f; var lpo = 0f; var acc = 0f; val buf = ShortArray(512)
         track.play()
         while (true) {
             if (!want && gain < .0005f) {
@@ -52,18 +52,20 @@ object Calm {
                     val ch = chords[idx % chords.size]
                     for ((n, f) in ch.withIndex()) {
                         val p = phase[slot]; p[n * 2] = (p[n * 2] + f * dt) % 1f; p[n * 2 + 1] = (p[n * 2 + 1] + f * 1.004f * dt) % 1f
-                        s += env * .055f * (Synth.sin01(p[n * 2]) + Synth.sin01(p[n * 2 + 1])) * (1f + .2f * Synth.sin01((t * .09f + n * .17f) % 1f))
+                        s += env * .042f * (Synth.sin01(p[n * 2]) + Synth.sin01(p[n * 2 + 1])) * (1f + .2f * Synth.sin01((t * .09f + n * .17f) % 1f))
                     }
                 }
-                if (t > nextBell) { bells.add(Bell(scale[Random.nextInt(scale.size)] * (if (Random.nextInt(4) == 0) .5f else 1f), t)); nextBell = t + 2f + Random.nextFloat() * 3.5f }
+                if (t > nextBell) { bells.add(Bell(scale[Random.nextInt(scale.size)] * (if (Random.nextInt(4) == 0) .5f else 1f), t)); nextBell = t + 4f + Random.nextFloat() * 6f }
                 bells.removeAll { t - it.t0 > 7f }
-                for (b in bells) s += .16f * Synth.bell(b.f, t - b.t0, 1.9f)
+                for (b in bells) s += .085f * Synth.bell(b.f, t - b.t0, 2.4f)
                 val e = d1[i1] * .5f + d2[i2] * .3f; lp += (e - lp) * .35f
                 d1[i1] = s + lp * .62f; d2[i2] = s + lp * .5f
                 i1 = (i1 + 1) % d1.size; i2 = (i2 + 1) % d2.size
                 gain += ((if (want) .55f else 0f) - gain) * (dt / 2.5f)
-                buf[k] = (Synth.clip((s + e) * gain) * 6500).toInt().toShort()
+                lpo += ((s + e) * gain - lpo) * .22f
+                buf[k] = (Synth.clip(lpo) * 3200).toInt().toShort(); acc += lpo * lpo
             }
+            Level.music = (kotlin.math.sqrt(acc / buf.size) * 5f).coerceIn(0f, 1f); acc = 0f
             track.write(buf, 0, buf.size)
         }
     }

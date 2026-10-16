@@ -29,6 +29,8 @@ class TimelineView(c: Context) : AnimView(c) {
 
     init { reload() }
 
+    fun focused(): Item? = (lines.getOrNull(idx) as? Line.Watch)?.e?.item
+
     fun reload() {
         lines = Days.group(Store.entries()); removing = false
         idx = lines.indexOfFirst { it is Line.Watch }.coerceAtLeast(0); scroll.snap(0f); invalidate()

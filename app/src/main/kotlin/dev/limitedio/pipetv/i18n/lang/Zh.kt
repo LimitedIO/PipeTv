@@ -43,4 +43,7 @@ val Zh = mapOf(
     MUSIC to "背景音乐", MUSIC_HELP to "没有播放内容时的舒缓音乐",
     AMBIENT to "动态背景", AMBIENT_HELP to "随观看内容缓缓变化的色彩",
     UP_NEXT_IN to "%d 秒后播放下一个", HINT_SUB to "确定 选择   返回 关闭",
+    CLEAR to "清除", FAVORITES to "收藏", FAV_ADDED to "已加入收藏", FAV_REMOVED to "已取消收藏",
+    NO_FAVS to "还没有收藏。打开视频、频道或播放列表并选择收藏。", FAVORITE to "收藏", SAVED to "已收藏",
+    SUBS_LOADING to "正在加载字幕…", RETRYING to "暂时无法播放，正在重试…", AUDIO_DUB to "音频语言",
 )

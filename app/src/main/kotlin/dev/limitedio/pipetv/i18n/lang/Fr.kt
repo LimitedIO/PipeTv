@@ -43,4 +43,7 @@ val Fr = mapOf(
     MUSIC to "Musique d'ambiance", MUSIC_HELP to "Musique calme quand rien n'est lu",
     AMBIENT to "Fond vivant", AMBIENT_HELP to "Couleurs lentes qui suivent ce que vous regardez",
     UP_NEXT_IN to "Suivante dans %d", HINT_SUB to "OK choisir   Retour fermer",
+    CLEAR to "Effacer", FAVORITES to "Favoris", FAV_ADDED to "Ajouté aux favoris", FAV_REMOVED to "Retiré des favoris",
+    NO_FAVS to "Aucun favori. Ouvrez une vidéo, une chaîne ou une playlist et choisissez Favori.", FAVORITE to "Favori", SAVED to "Enregistré",
+    SUBS_LOADING to "Chargement des sous-titres…", RETRYING to "Lecture impossible pour l'instant. Nouvel essai…", AUDIO_DUB to "Langue audio",
 )

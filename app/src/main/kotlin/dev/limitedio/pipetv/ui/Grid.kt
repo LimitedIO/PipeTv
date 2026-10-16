@@ -46,6 +46,7 @@ class Grid(c: Context, private val title: () -> String) : AnimView(c) {
     }
 
     fun append(more: List<Item>) = put(list + more, false)
+    fun focused(): Item? = list.getOrNull(idx)
 
     override fun onSizeChanged(w: Int, h: Int, ow: Int, oh: Int) = refocus(ow == 0)
 

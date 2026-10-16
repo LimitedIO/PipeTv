@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.SystemClock
 import android.view.View
 import dev.limitedio.pipetv.Bg
+import dev.limitedio.pipetv.data.Favs
 import dev.limitedio.pipetv.data.Feed
 import dev.limitedio.pipetv.data.Item
 import dev.limitedio.pipetv.data.Store
@@ -17,14 +18,15 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
     val home = Grid(c) { S.t(K.RECOMMENDED) }
     val search = SearchPage(c)
     val trending = Grid(c) { S.t(K.TRENDING) }
+    val favs = Grid(c) { S.t(K.FAVORITES) }
     val history = TimelineView(c)
     val settings = SettingsPage(c, onLang, { search.keyboard.refresh() }, toast)
-    val views: List<View> = listOf(home, search, trending, history, settings)
+    val views: List<View> = listOf(home, search, trending, favs, history, settings)
     private var homeAt = 0L
     private var trendingLoaded = false
 
     init {
-        listOf(home, trending).forEach { it.onPick = pick; it.onMenu = menu }
+        listOf(home, trending, favs).forEach { it.onPick = pick; it.onMenu = menu }
         search.picks(pick, menu); history.onPick = pick; history.onMenu = menu
         home.items = mark(Store.load("feed"))
         if (home.items.isEmpty()) home.busy = true
@@ -41,7 +43,8 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
         when (i) {
             0 -> if (homeAt == 0L || SystemClock.uptimeMillis() - homeAt > 600_000) loadHome()
             2 -> if (!trendingLoaded) { trendingLoaded = true; load(trending) { Feed.trending() } }
-            3 -> history.reload()
+            3 -> refreshFavs()
+            4 -> history.reload()
         }
     }
 
@@ -65,7 +68,12 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
     /** Back closes an open settings pop-up first. */
     fun closeSub(): Boolean = settings.closeSub()
 
-    fun setCols(n: Int) { listOf(home, trending).forEach { it.cols = n } }
+    fun setCols(n: Int) { listOf(home, trending, favs).forEach { it.cols = n } }
+
+    fun refreshFavs() { favs.message = S.t(K.NO_FAVS); favs.items = Favs.items(); views.forEach { it.invalidate() } }
+
+    /** The focused card of page [i] (what the favourite key acts on). */
+    fun focusedItem(i: Int): Item? = when (val v = views[i]) { is Grid -> v.focused(); is SearchPage -> v.grid.focused(); is TimelineView -> v.focused(); else -> null }
 
     fun lit(i: Int, on: Boolean) {
         when (val v = views[i]) {

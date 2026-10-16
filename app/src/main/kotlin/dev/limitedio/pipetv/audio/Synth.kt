@@ -19,7 +19,7 @@ object Synth {
     /** Soft bell: sine plus quiet harmonics with a quick attack and exponential decay. Returns the sample at [t] seconds. */
     fun bell(freq: Float, t: Float, decay: Float): Float {
         if (t < 0f) return 0f
-        val env = (1f - exp(-t / 0.004f)) * exp(-t / decay)
+        val env = (1f - exp(-t / 0.014f)) * exp(-t / decay)
         val p = freq * t
         return env * (sin01(p - p.toInt()) + 0.28f * exp(-t / (decay * .5f)) * sin01((2 * p) % 1f) + 0.08f * sin01((3 * p) % 1f))
     }

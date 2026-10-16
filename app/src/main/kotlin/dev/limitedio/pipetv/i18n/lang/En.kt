@@ -43,4 +43,7 @@ val En = mapOf(
     MUSIC to "Background music", MUSIC_HELP to "Calm ambient music while nothing is playing",
     AMBIENT to "Living background", AMBIENT_HELP to "Slowly moving colours that follow what you watch",
     UP_NEXT_IN to "Up next in %d", HINT_SUB to "OK select   Back close",
+    CLEAR to "Clear", FAVORITES to "Favorites", FAV_ADDED to "Added to favorites", FAV_REMOVED to "Removed from favorites",
+    NO_FAVS to "No favorites yet. Open a video, channel or playlist and choose Favorite.", FAVORITE to "Favorite", SAVED to "Saved",
+    SUBS_LOADING to "Loading subtitles…", RETRYING to "Can't play right now. Trying again…", AUDIO_DUB to "Audio language",
 )
