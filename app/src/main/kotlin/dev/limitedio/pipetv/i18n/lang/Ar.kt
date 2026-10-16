@@ -37,4 +37,10 @@ val Ar = mapOf(
     UPD_CHECKING to "جارٍ البحث عن تحديثات…", UPD_OK to "التطبيق محدّث · v%s", UPD_DL to "تنزيل %s… %d%%",
     UPD_READY to "%s جاهز · اضغط موافق للتثبيت", UPD_FAIL to "تعذر البحث عن تحديثات (لا يوجد اتصال؟)",
     UPD_TOAST to "تم تنزيل التحديث %s. افتح الإعدادات للتثبيت.",
+    OPENING to "جارٍ فتح %s…", NOW_PLAYING to "قيد التشغيل", AUDIO to "الصوت", AUDIO_ORIGINAL to "الأصلي",
+    CONTENT_LANG to "لغة المحتوى", CONTENT_HELP to "المنطقة المستخدمة للاقتراحات والرائج والبحث",
+    SAME_AS_APP to "مثل لغة التطبيق", SFX to "المؤثرات الصوتية", SFX_HELP to "أصوات هادئة أثناء التنقل",
+    MUSIC to "موسيقى الخلفية", MUSIC_HELP to "موسيقى هادئة عندما لا يعمل أي فيديو",
+    AMBIENT to "خلفية حيّة", AMBIENT_HELP to "ألوان تتحرك ببطء وتتغير حسب ما تشاهده",
+    UP_NEXT_IN to "التالي بعد %d", HINT_SUB to "موافق اختيار   رجوع إغلاق",
 )

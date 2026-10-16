@@ -26,11 +26,9 @@ class Grid(c: Context, private val title: () -> String) : AnimView(c) {
     private var list: List<Item> = emptyList()
     private var idx = 0; private var asked = -1
     private val scroll = spring(0f, 150f, 24f)
-    private val rx = spring(0f, 300f, 27f); private val ry = spring(0f, 300f, 27f)
-    private val rw = spring(0f, 300f, 27f); private val pop = spring(0f, 420f, 22f)
-    private val appear = spring(0f, 70f, 14f)
-    private val head = Ui.paint(Ui.TEXT, 44f, true)
-    private val fx = GridFx()
+    private val rx = spring(0f, 300f, 27f); private val ry = spring(0f, 300f, 27f); private val rw = spring(0f, 300f, 27f)
+    private val pop = spring(0f, 420f, 22f)
+    private val appear = spring(0f, 70f, 14f); private val head = Ui.paint(Ui.TEXT, 44f, true); private val fx = GridFx()
     override val animating get() = busy && list.isEmpty()
 
     private val pad get() = Ui.u(56)
@@ -96,5 +94,6 @@ class Grid(c: Context, private val title: () -> String) : AnimView(c) {
             c.restore()
         }
         if (lit) fx.ring(c, rx.value, ry.value - s, rw.value, pop.value)
+        Scrollbar.draw(c, width.toFloat(), top, height - Ui.u(20), top + ((list.size + cols - 1) / cols) * rowH, height.toFloat(), s, lit)
     }
 }

@@ -37,4 +37,10 @@ val Hi = mapOf(
     UPD_CHECKING to "अपडेट जाँच रहे हैं…", UPD_OK to "अप-टू-डेट · v%s", UPD_DL to "%s डाउनलोड हो रहा है… %d%%",
     UPD_READY to "%s तैयार · इंस्टॉल के लिए OK", UPD_FAIL to "जाँच नहीं हो सकी (ऑफ़लाइन?)",
     UPD_TOAST to "अपडेट %s डाउनलोड हुआ। सेटिंग्स में इंस्टॉल करें।",
+    OPENING to "%s खुल रहा है…", NOW_PLAYING to "अभी चल रहा है", AUDIO to "ऑडियो", AUDIO_ORIGINAL to "मूल",
+    CONTENT_LANG to "सामग्री की भाषा", CONTENT_HELP to "सुझाव, ट्रेंडिंग और खोज परिणामों का क्षेत्र",
+    SAME_AS_APP to "ऐप की भाषा जैसी", SFX to "ध्वनि प्रभाव", SFX_HELP to "नेविगेट करते समय हल्की आवाज़ें",
+    MUSIC to "बैकग्राउंड संगीत", MUSIC_HELP to "कुछ न चलने पर शांत संगीत",
+    AMBIENT to "जीवंत पृष्ठभूमि", AMBIENT_HELP to "आप जो देखते हैं उसके साथ धीरे बदलते रंग",
+    UP_NEXT_IN to "%d में अगला", HINT_SUB to "OK चुनें   Back बंद करें",
 )

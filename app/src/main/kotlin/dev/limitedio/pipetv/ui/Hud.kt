@@ -28,6 +28,7 @@ class Hud(c: Context) : AnimView(c) {
     private val cue = Ui.paint(Ui.TEXT, 34f, true)
     private val pill = Ui.paint(0xB3000000.toInt())
     private val r = RectF()
+    private val extras = HudExtras()
     override val animating get() = Session.loading || Engine.exo.playbackState == 2
     override val ticking get() = visibility == VISIBLE
 
@@ -41,6 +42,7 @@ class Hud(c: Context) : AnimView(c) {
         val a = alpha.value.coerceIn(0f, 1f)
         if (a > .01f) chrome(c, w, h, a)
         if (animating) spinner(c, w, h)
+        extras.draw(c, w, h)
         if (alpha.moving) postInvalidateOnAnimation()
     }
 

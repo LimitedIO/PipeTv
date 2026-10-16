@@ -31,8 +31,10 @@ class ChoiceRow(
 class ActionRow(label: () -> String, help: () -> String, private val value: () -> String, private val act: () -> Unit) : Row(label, help) {
     override fun draw(c: Canvas, r: RectF, lit: Boolean) {
         frame(c, r)
-        val s = dev.limitedio.pipetv.ui.Txt.fit(RowStyle.value, value(), zone.width())
-        valueText(c, s, zone.right, zone.centerY() + Ui.u(10))
+        val s = dev.limitedio.pipetv.ui.Txt.fit(RowStyle.value, value(), zone.width() - Ui.u(50))
+        valueText(c, s, zone.right - Ui.u(44), zone.centerY() + Ui.u(10))
+        RowStyle.value.alpha = if (lit) 255 else 150
+        c.drawText(if (Ui.rtl) "‹" else "›", zone.right - Ui.u(24), zone.centerY() + Ui.u(11), RowStyle.value); RowStyle.value.alpha = 255
     }
     override fun press() = act()
 }

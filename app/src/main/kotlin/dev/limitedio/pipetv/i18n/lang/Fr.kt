@@ -37,4 +37,10 @@ val Fr = mapOf(
     UPD_CHECKING to "Recherche de mises à jour…", UPD_OK to "À jour · v%s", UPD_DL to "Téléchargement %s… %d%%",
     UPD_READY to "%s prête · OK pour installer", UPD_FAIL to "Vérification impossible (hors ligne ?)",
     UPD_TOAST to "Mise à jour %s téléchargée. Ouvrez les paramètres.",
+    OPENING to "Ouverture de %s…", NOW_PLAYING to "En lecture", AUDIO to "Audio", AUDIO_ORIGINAL to "Original",
+    CONTENT_LANG to "Langue du contenu", CONTENT_HELP to "Région des recommandations, tendances et recherches",
+    SAME_AS_APP to "Comme l'application", SFX to "Effets sonores", SFX_HELP to "Sons doux pendant la navigation",
+    MUSIC to "Musique d'ambiance", MUSIC_HELP to "Musique calme quand rien n'est lu",
+    AMBIENT to "Fond vivant", AMBIENT_HELP to "Couleurs lentes qui suivent ce que vous regardez",
+    UP_NEXT_IN to "Suivante dans %d", HINT_SUB to "OK choisir   Retour fermer",
 )

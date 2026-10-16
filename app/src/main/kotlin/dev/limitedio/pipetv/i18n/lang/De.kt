@@ -37,4 +37,10 @@ val De = mapOf(
     UPD_CHECKING to "Suche nach Updates…", UPD_OK to "Aktuell · v%s", UPD_DL to "Lade %s… %d%%",
     UPD_READY to "%s bereit · OK zum Installieren", UPD_FAIL to "Prüfung fehlgeschlagen (offline?)",
     UPD_TOAST to "Update %s geladen. In den Einstellungen installieren.",
+    OPENING to "%s wird geöffnet…", NOW_PLAYING to "Läuft gerade", AUDIO to "Audio", AUDIO_ORIGINAL to "Original",
+    CONTENT_LANG to "Inhaltssprache", CONTENT_HELP to "Region für Empfehlungen, Trends und Suchergebnisse",
+    SAME_AS_APP to "Wie App-Sprache", SFX to "Soundeffekte", SFX_HELP to "Sanfte Klänge beim Navigieren",
+    MUSIC to "Hintergrundmusik", MUSIC_HELP to "Ruhige Musik, solange nichts läuft",
+    AMBIENT to "Lebendiger Hintergrund", AMBIENT_HELP to "Langsam wandernde Farben passend zu deinem Video",
+    UP_NEXT_IN to "Weiter in %d", HINT_SUB to "OK wählen   Zurück schließen",
 )

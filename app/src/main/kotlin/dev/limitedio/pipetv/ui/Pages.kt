@@ -11,7 +11,6 @@ import dev.limitedio.pipetv.i18n.K
 import dev.limitedio.pipetv.i18n.S
 import dev.limitedio.pipetv.ui.search.SearchPage
 import dev.limitedio.pipetv.ui.timeline.TimelineView
-import dev.limitedio.pipetv.ui.widgets.RowList
 
 /** The five main pages and how each one loads its content. */
 class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -> Unit, toast: (String) -> Unit) {
@@ -19,7 +18,7 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
     val search = SearchPage(c)
     val trending = Grid(c) { S.t(K.TRENDING) }
     val history = TimelineView(c)
-    val settings = RowList(c, { S.t(K.SETTINGS) })
+    val settings = SettingsPage(c, onLang, { search.keyboard.refresh() }, toast)
     val views: List<View> = listOf(home, search, trending, history, settings)
     private var homeAt = 0L
     private var trendingLoaded = false
@@ -27,7 +26,6 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
     init {
         listOf(home, trending).forEach { it.onPick = pick; it.onMenu = menu }
         search.picks(pick, menu); history.onPick = pick; history.onMenu = menu
-        settings.rows = Settings.rows(onLang, { search.keyboard.refresh() }, toast)
         home.items = mark(Store.load("feed"))
         if (home.items.isEmpty()) home.busy = true
     }
@@ -64,6 +62,9 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
         g.items = mark(r ?: emptyList()); g.busy = false
     }
 
+    /** Back closes an open settings pop-up first. */
+    fun closeSub(): Boolean = settings.closeSub()
+
     fun setCols(n: Int) { listOf(home, trending).forEach { it.cols = n } }
 
     fun lit(i: Int, on: Boolean) {
@@ -71,12 +72,12 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
             is Grid -> { v.lit = on; v.invalidate() }
             is SearchPage -> v.lit(on)
             is TimelineView -> { v.lit = on; v.invalidate() }
-            is RowList -> { v.lit = on; v.invalidate() }
+            is SettingsPage -> v.lit(on)
         }
     }
 
     fun key(i: Int, code: Int, repeat: Int): Boolean = when (val v = views[i]) {
         is Grid -> v.key(code); is SearchPage -> v.key(code); is TimelineView -> v.key(code)
-        is RowList -> v.key(code, repeat); else -> false
+        is SettingsPage -> v.key(code, repeat); else -> false
     }
 }

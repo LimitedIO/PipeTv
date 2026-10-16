@@ -37,4 +37,10 @@ val Pt = mapOf(
     UPD_CHECKING to "Procurando atualizações…", UPD_OK to "Atualizado · v%s", UPD_DL to "Baixando %s… %d%%",
     UPD_READY to "%s pronto · OK para instalar", UPD_FAIL to "Não foi possível verificar (offline?)",
     UPD_TOAST to "Atualização %s baixada. Instale em Configurações.",
+    OPENING to "Abrindo %s…", NOW_PLAYING to "Tocando agora", AUDIO to "Áudio", AUDIO_ORIGINAL to "Original",
+    CONTENT_LANG to "Idioma do conteúdo", CONTENT_HELP to "Região das recomendações, em alta e buscas",
+    SAME_AS_APP to "Igual ao app", SFX to "Efeitos sonoros", SFX_HELP to "Sons suaves ao navegar",
+    MUSIC to "Música de fundo", MUSIC_HELP to "Música ambiente calma quando nada está tocando",
+    AMBIENT to "Fundo vivo", AMBIENT_HELP to "Cores lentas que acompanham o que você assiste",
+    UP_NEXT_IN to "Próximo em %d", HINT_SUB to "OK escolher   Voltar fechar",
 )

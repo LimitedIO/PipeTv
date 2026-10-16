@@ -29,13 +29,20 @@ object YtMap {
         is StreamInfoItem -> idRegex.find(i.url)?.let {
             val views = if (i.viewCount >= 0) S.f(K.VIEWS, count(i.viewCount)) else ""
             val who = i.uploaderName.orEmpty().ifEmpty { by }
-            Item(it.groupValues[1], i.url, i.name, listOf(who, views).filter { s -> s.isNotEmpty() }.joinToString(" · "), i.duration)
+            val meta = listOf(views, i.textualUploadDate.orEmpty()).filter { s -> s.isNotEmpty() }.joinToString(" · ")
+            val sub = listOf(who, meta).filter { s -> s.isNotEmpty() }.joinToString(" · ")
+            Item(it.groupValues[1], i.url, i.name, sub, i.duration, Item.VIDEO, "", who, meta)
         }
-        is ChannelInfoItem -> Item("c" + i.url.hashCode(), i.url, i.name,
-            if (i.subscriberCount >= 0) S.f(K.SUBS, count(i.subscriberCount)) else "", 0, Item.CHANNEL, img(i.thumbnails))
-        is PlaylistInfoItem -> Item("p" + i.url.hashCode(), i.url, i.name,
-            listOf(i.uploaderName.orEmpty(), S.f(K.VIDEOS_N, i.streamCount.toInt())).filter { s -> s.isNotEmpty() }.joinToString(" · "),
-            0, Item.PLAYLIST, img(i.thumbnails))
+        is ChannelInfoItem -> {
+            val subs = if (i.subscriberCount >= 0) S.f(K.SUBS, count(i.subscriberCount)) else ""
+            val vids = if (i.streamCount >= 0) S.f(K.VIDEOS_N, i.streamCount.toInt()) else ""
+            Item("c" + i.url.hashCode(), i.url, i.name, subs, 0, Item.CHANNEL, img(i.thumbnails), subs, vids)
+        }
+        is PlaylistInfoItem -> {
+            val n = S.f(K.VIDEOS_N, i.streamCount.toInt()); val who = i.uploaderName.orEmpty()
+            Item("p" + i.url.hashCode(), i.url, i.name, listOf(who, n).filter { s -> s.isNotEmpty() }.joinToString(" · "), 0,
+                Item.PLAYLIST, img(i.thumbnails), who, n)
+        }
         else -> null
     }
 }

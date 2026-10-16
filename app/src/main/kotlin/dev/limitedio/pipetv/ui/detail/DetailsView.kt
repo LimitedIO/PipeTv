@@ -33,8 +33,7 @@ class DetailsView(c: Context, private val item: Item) : ViewGroup(c), Screen {
         bodies.forEach { addView(it) }; addView(head)
         head.byline = item.sub
         head.onTab = { show(it) }; show(0); related.onPick = { onItem(it) }; related.onMenu = { onItem(it) }
-        about.message = S.t(K.LOADING)
-        Bg.io({ Yt.stream(item.url) }) { info ->
+        about.message = S.t(K.LOADING); Bg.io({ Yt.stream(item.url) }) { info ->
             if (info == null) { about.message = S.t(K.LOAD_FAILED); return@io }
             channelUrl = info.uploaderUrl.orEmpty()
             val subs = if (info.uploaderSubscriberCount >= 0) " · " + S.f(K.SUBS, YtMap.count(info.uploaderSubscriberCount)) else ""
@@ -72,7 +71,8 @@ class DetailsView(c: Context, private val item: Item) : ViewGroup(c), Screen {
         Bg.io({ p.loadMore() }) { r -> if (!r.isNullOrEmpty()) comments.blocks = comments.blocks + r.map(::block) }
     }
 
-    override fun lit(on: Boolean) { head.lit = on; related.lit = on && zone == 1; head.invalidate() }
+    private var on = true; private fun refreshLit() { head.lit = on && zone == 0; about.lit = on && zone == 1; comments.lit = on && zone == 1; related.lit = on && zone == 1 && head.sel == 3; listOf<View>(head, about, comments, related).forEach { it.invalidate() } }
+    override fun lit(on: Boolean) { this.on = on; refreshLit() }
 
     override fun key(code: Int, repeat: Int): Boolean {
         val tab = head.sel
@@ -87,11 +87,11 @@ class DetailsView(c: Context, private val item: Item) : ViewGroup(c), Screen {
             }
         }
         val used = when (tab) { 1 -> about.key(code); 2 -> comments.key(code); 3 -> related.key(code); else -> false }
-        if (!used && code == KeyEvent.KEYCODE_DPAD_UP) { zone = 0; related.lit = false; related.invalidate(); return true }
+        if (!used && code == KeyEvent.KEYCODE_DPAD_UP) { zone = 0; refreshLit(); return true }
         return used
     }
 
-    private fun enter() { if (head.sel in 1..3) { zone = 1; related.lit = head.sel == 3; related.invalidate() } }
+    private fun enter() { if (head.sel in 1..3) { zone = 1; refreshLit() } }
 
     override fun onLayout(ch: Boolean, l: Int, t: Int, r: Int, b: Int) {
         val hh = Ui.u(280).toInt(); head.layout(0, 0, r - l, hh)

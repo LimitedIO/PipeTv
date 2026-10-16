@@ -17,17 +17,18 @@ object Yt {
     private val streams = LruCache<String, StreamInfo>(8)
     private var ready = false
 
-    private fun country() = Locale.getDefault().country.ifEmpty { "US" }
+    private fun country() = Regions.saved()?.country ?: Locale.getDefault().country.ifEmpty { "US" }
+    private fun lang() = Regions.saved()?.lang ?: S.cur.code
 
     @Synchronized fun init() {
         if (ready) return
-        NewPipe.init(Http, Localization(S.cur.code, country()), ContentCountry(country()))
+        NewPipe.init(Http, Localization(lang(), country()), ContentCountry(country()))
         ready = true
     }
 
     /** Call after the app language changed so results and recommendations switch language. */
     @Synchronized fun relocalize() {
-        if (ready) NewPipe.setupLocalization(Localization(S.cur.code, country()), ContentCountry(country()))
+        if (ready) NewPipe.setupLocalization(Localization(lang(), country()), ContentCountry(country()))
         synchronized(streams) { streams.evictAll() }
     }
 

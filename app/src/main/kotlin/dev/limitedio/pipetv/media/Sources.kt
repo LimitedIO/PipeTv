@@ -37,7 +37,7 @@ object Sources {
         return SingleSampleMediaSource.Factory(http).createMediaSource(cfg, C.TIME_UNSET)
     }
 
-    fun build(info: StreamInfo, maxH: Int, sub: SubtitlesStream?): MediaSource {
+    fun build(info: StreamInfo, maxH: Int, sub: SubtitlesStream?, pick: AudioStream?): MediaSource {
         val live = info.streamType == StreamType.LIVE_STREAM || info.streamType == StreamType.AUDIO_LIVE_STREAM
         if (live && info.hlsUrl.isNotEmpty())
             return HlsMediaSource.Factory(http).createMediaSource(MediaItem.fromUri(info.hlsUrl))
@@ -47,7 +47,7 @@ object Sources {
             .sortedWith(compareByDescending<AudioStream> { it.format == MediaFormat.M4A }.thenByDescending { it.averageBitrate })
         val best = video.firstOrNull { it.format == MediaFormat.MPEG_4 } ?: video.firstOrNull()
         val main: MediaSource = if (best != null && audio.isNotEmpty()) {
-            MergingMediaSource(prog(best.content), prog(audio[0].content))
+            MergingMediaSource(prog(best.content), prog((pick ?: audio[0]).content))
         } else {
             val combined = info.videoStreams.filter { it.isUrl }.sortedByDescending { it.height }
             prog((combined.firstOrNull { it.height <= maxH } ?: combined.last()).content)

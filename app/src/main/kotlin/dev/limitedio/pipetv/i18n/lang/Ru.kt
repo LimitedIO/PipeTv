@@ -37,4 +37,10 @@ val Ru = mapOf(
     UPD_CHECKING to "Проверка обновлений…", UPD_OK to "Актуальная версия · v%s", UPD_DL to "Загрузка %s… %d%%",
     UPD_READY to "%s готово · OK для установки", UPD_FAIL to "Не удалось проверить (нет сети?)",
     UPD_TOAST to "Обновление %s загружено. Установите в настройках.",
+    OPENING to "Открываем %s…", NOW_PLAYING to "Сейчас играет", AUDIO to "Звук", AUDIO_ORIGINAL to "Оригинал",
+    CONTENT_LANG to "Язык контента", CONTENT_HELP to "Регион рекомендаций, трендов и результатов поиска",
+    SAME_AS_APP to "Как в приложении", SFX to "Звуковые эффекты", SFX_HELP to "Мягкие звуки при навигации",
+    MUSIC to "Фоновая музыка", MUSIC_HELP to "Спокойная музыка, пока ничего не играет",
+    AMBIENT to "Живой фон", AMBIENT_HELP to "Медленные цвета, меняющиеся вместе с видео",
+    UP_NEXT_IN to "Далее через %d", HINT_SUB to "OK выбрать   Назад закрыть",
 )

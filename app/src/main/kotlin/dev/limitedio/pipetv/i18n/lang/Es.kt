@@ -37,4 +37,10 @@ val Es = mapOf(
     UPD_CHECKING to "Buscando actualizaciones…", UPD_OK to "Al día · v%s", UPD_DL to "Descargando %s… %d%%",
     UPD_READY to "%s listo · pulsa OK para instalar", UPD_FAIL to "No se pudo comprobar (¿sin conexión?)",
     UPD_TOAST to "Actualización %s descargada. Ábrela en Ajustes.",
+    OPENING to "Abriendo %s…", NOW_PLAYING to "Reproduciendo", AUDIO to "Audio", AUDIO_ORIGINAL to "Original",
+    CONTENT_LANG to "Idioma del contenido", CONTENT_HELP to "Región de recomendaciones, tendencias y búsquedas",
+    SAME_AS_APP to "Igual que la app", SFX to "Efectos de sonido", SFX_HELP to "Sonidos suaves al navegar",
+    MUSIC to "Música de fondo", MUSIC_HELP to "Música ambiental tranquila cuando no hay nada en reproducción",
+    AMBIENT to "Fondo vivo", AMBIENT_HELP to "Colores en movimiento lento que siguen lo que ves",
+    UP_NEXT_IN to "Siguiente en %d", HINT_SUB to "OK elegir   Atrás cerrar",
 )

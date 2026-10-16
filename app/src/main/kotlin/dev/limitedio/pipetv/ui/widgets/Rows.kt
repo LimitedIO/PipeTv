@@ -83,6 +83,5 @@ class ToggleRow(label: () -> String, help: () -> String, private val get: () -> 
         valueText(c, S.t(if (on) K.ON else K.OFF), x1 - w - Ui.u(24), y + Ui.u(10))
     }
 
-    override fun adjust(dir: Int, fast: Boolean): Boolean { set(dir > 0); return true }
     override fun press() = set(!get())
 }

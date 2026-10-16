@@ -37,4 +37,10 @@ val Tr = mapOf(
     UPD_CHECKING to "Güncellemeler denetleniyor…", UPD_OK to "Güncel · v%s", UPD_DL to "%s indiriliyor… %%%d",
     UPD_READY to "%s hazır · kurmak için Tamam", UPD_FAIL to "Denetlenemedi (çevrimdışı mı?)",
     UPD_TOAST to "%s güncellemesi indirildi. Ayarlardan kur.",
+    OPENING to "%s açılıyor…", NOW_PLAYING to "Şimdi oynatılıyor", AUDIO to "Ses", AUDIO_ORIGINAL to "Orijinal",
+    CONTENT_LANG to "İçerik dili", CONTENT_HELP to "Öneriler, trendler ve arama sonuçları için bölge",
+    SAME_AS_APP to "Uygulama diliyle aynı", SFX to "Ses efektleri", SFX_HELP to "Gezinirken yumuşak sesler",
+    MUSIC to "Arka plan müziği", MUSIC_HELP to "Hiçbir şey oynamıyorken sakin müzik",
+    AMBIENT to "Canlı arka plan", AMBIENT_HELP to "İzlediğine göre yavaşça değişen renkler",
+    UP_NEXT_IN to "%d sn sonra sıradaki", HINT_SUB to "Tamam seç   Geri kapat",
 )

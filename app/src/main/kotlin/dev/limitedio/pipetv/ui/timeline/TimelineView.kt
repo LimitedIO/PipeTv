@@ -8,6 +8,7 @@ import dev.limitedio.pipetv.data.Store
 import dev.limitedio.pipetv.i18n.K
 import dev.limitedio.pipetv.i18n.S
 import dev.limitedio.pipetv.ui.AnimView
+import dev.limitedio.pipetv.ui.Scrollbar
 import dev.limitedio.pipetv.ui.Txt
 import dev.limitedio.pipetv.ui.Ui
 
@@ -66,5 +67,6 @@ class TimelineView(c: Context) : AnimView(c) {
             if (y + h > 0 && y < height) if (l is Line.Day) paint.day(c, l, y, ax) else paint.entry(c, (l as Line.Watch).e, y, ax, lit && i == idx, removing)
             y += h
         }
+        Scrollbar.draw(c, width.toFloat(), top, height - Ui.u(20), yOf(lines.size), height.toFloat(), scroll.value, lit)
     }
 }

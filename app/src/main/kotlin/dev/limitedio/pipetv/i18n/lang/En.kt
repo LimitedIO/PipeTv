@@ -37,4 +37,10 @@ val En = mapOf(
     UPD_CHECKING to "Checking for updates…", UPD_OK to "Up to date · v%s", UPD_DL to "Downloading %s… %d%%",
     UPD_READY to "%s ready · press OK to install", UPD_FAIL to "Couldn't check for updates (offline?)",
     UPD_TOAST to "Update %s downloaded. Open Settings to install.",
+    OPENING to "Opening %s…", NOW_PLAYING to "Now playing", AUDIO to "Audio", AUDIO_ORIGINAL to "Original",
+    CONTENT_LANG to "Content language", CONTENT_HELP to "Region for recommendations, trending and search results",
+    SAME_AS_APP to "Same as app language", SFX to "Sound effects", SFX_HELP to "Soft sounds when you move around",
+    MUSIC to "Background music", MUSIC_HELP to "Calm ambient music while nothing is playing",
+    AMBIENT to "Living background", AMBIENT_HELP to "Slowly moving colours that follow what you watch",
+    UP_NEXT_IN to "Up next in %d", HINT_SUB to "OK select   Back close",
 )

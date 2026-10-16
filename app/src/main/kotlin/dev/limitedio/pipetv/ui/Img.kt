@@ -27,6 +27,9 @@ object Img {
 
     fun listen(l: () -> Unit) { listeners.add(l) }
 
+    /** The cached image if it is already loaded (never starts a download). */
+    fun peek(url: String): Pic? = cache.get(url)
+
     /** Returns the image if ready, otherwise starts loading and returns null. */
     fun get(url: String, w: Int): Pic? {
         cache.get(url)?.let { return it }

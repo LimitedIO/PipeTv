@@ -2,6 +2,7 @@ package dev.limitedio.pipetv.ui
 
 import android.view.KeyEvent
 import android.view.KeyEvent.*
+import dev.limitedio.pipetv.audio.Sound
 import dev.limitedio.pipetv.i18n.K
 import dev.limitedio.pipetv.i18n.S
 import dev.limitedio.pipetv.media.Session
@@ -23,9 +24,11 @@ class Controls(private val root: Root) {
         return if (root.full) keys.full(e) else browse(e)
     }
 
+    /** Opens a video. The current one keeps playing until the new one is ready (then it goes fullscreen). */
     fun play(item: dev.limitedio.pipetv.data.Item) {
-        if (Session.item?.id != item.id) Session.open(item)
-        root.setFull(true)
+        if (Session.item?.id == item.id) { root.setFull(true); return }
+        if (Session.pending?.id != item.id) Session.open(item, true)
+        if (Session.item == null) root.setFull(true)
     }
 
     fun focusContent() = setZone(1)
@@ -33,7 +36,8 @@ class Controls(private val root: Root) {
     fun sessionChanged() {
         if (Session.active && root.dockS.target == 0f) root.setDock(true)
         if (!Session.active) { root.setDock(false); root.setFull(false); if (zone == 2) setZone(1) }
-        root.dock.invalidate(); root.hud.invalidate(); root.stage.requestLayout()
+        Sound.update()
+        root.dock.invalidate(); root.hud.invalidate(); root.stage.refresh(); root.stage.requestLayout()
     }
 
     private fun setZone(z: Int) {
@@ -48,11 +52,7 @@ class Controls(private val root: Root) {
         if ((k == KEYCODE_MENU || k == KEYCODE_INFO) && zone != 1) { if (Session.active) root.setFull(true); return true }
         return when (zone) {
             0 -> nav(k)
-            2 -> when (k) {
-                KEYCODE_DPAD_CENTER, KEYCODE_ENTER -> { root.setFull(true); true }
-                KEYCODE_DPAD_LEFT -> { setZone(1); true }
-                else -> k in KEYCODE_DPAD_UP..KEYCODE_DPAD_RIGHT
-            }
+            2 -> if (k == KEYCODE_DPAD_LEFT) { setZone(1); true } else root.dock.key(k) || k in KEYCODE_DPAD_UP..KEYCODE_DPAD_RIGHT
             else -> content(e, k)
         }
     }
@@ -62,6 +62,7 @@ class Controls(private val root: Root) {
 
     private fun back(): Boolean {
         when {
+            zone == 1 && root.tab == 4 && !root.screens.any && root.pages.closeSub() -> {}
             zone == 1 && root.screens.any -> root.screens.pop()
             zone != 0 -> setZone(0)
             Session.active -> { Session.stop(); root.toast.show(S.t(K.PLAYBACK_CLOSED)) }

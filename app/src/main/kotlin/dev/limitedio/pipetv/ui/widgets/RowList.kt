@@ -8,6 +8,7 @@ import android.graphics.RectF
 import android.graphics.Shader
 import android.view.KeyEvent
 import dev.limitedio.pipetv.ui.AnimView
+import dev.limitedio.pipetv.ui.Scrollbar
 import dev.limitedio.pipetv.ui.Txt
 import dev.limitedio.pipetv.ui.Ui
 
@@ -77,5 +78,6 @@ class RowList(c: Context, private val title: () -> String, private val panel: Bo
             c.drawRoundRect(r, Ui.u(18), Ui.u(18), ring)
         }
         c.restore()
+        Scrollbar.draw(c, width.toFloat(), top, height - Ui.u(24), yOf(rows.size), height.toFloat(), scroll.value, lit)
     }
 }
