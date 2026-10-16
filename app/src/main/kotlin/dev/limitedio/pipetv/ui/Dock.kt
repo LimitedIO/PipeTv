@@ -10,17 +10,17 @@ import dev.limitedio.pipetv.i18n.S
 import dev.limitedio.pipetv.media.Engine
 import dev.limitedio.pipetv.media.Session
 
-/** The menu player: video, playback progress, and one row of familiar actions. */
+/** Separate player menu, revealed only while it has focus. */
 class Dock(c: Context) : AnimView(c) {
     var lit = false
         set(v) { field = v; invalidate() }
     var videoH = 0f
     var onAction: (Int) -> Unit = {}
     var onNav: () -> Unit = {}
-    var onContent: () -> Unit = {}
     var drawIcon: (Canvas, Int, Float, Float, Float) -> Unit = { _, _, _, _, _ -> }
     private var sel = 0
     private val title = Ui.paint(Ui.TEXT, 26f, true)
+    private val heading = Ui.paint(Ui.TEXT, 34f, true)
     private val dim = Ui.paint(Ui.DIM, 26f)
     private val track = Ui.paint(0x33FFFFFF)
     private val accent = Ui.paint(Ui.ACCENT2)
@@ -31,10 +31,10 @@ class Dock(c: Context) : AnimView(c) {
 
     fun key(code: Int): Boolean {
         when (code) {
-            KeyEvent.KEYCODE_DPAD_UP -> if (sel == 0) onNav() else sel = 0
+            KeyEvent.KEYCODE_DPAD_UP -> sel = 0
             KeyEvent.KEYCODE_DPAD_DOWN -> if (sel == 0) sel = 1
             KeyEvent.KEYCODE_DPAD_LEFT -> if (sel > 1) sel-- else return false
-            KeyEvent.KEYCODE_DPAD_RIGHT -> if (sel in 1..4) sel++ else onContent()
+            KeyEvent.KEYCODE_DPAD_RIGHT -> if (sel in 1..4) sel++ else onNav()
             KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> onAction(sel)
             else -> return false
         }
@@ -43,9 +43,14 @@ class Dock(c: Context) : AnimView(c) {
 
     override fun render(c: Canvas, dt: Float) {
         val item = Session.item ?: return
-        val w = width.toFloat(); val p = Engine.exo
+        val pad = Ui.u(24); val w = width - pad * 2; val p = Engine.exo
+        Txt.draw(c, S.t(K.NOW_PLAYING), pad, Ui.u(72), w, heading)
+        c.save(); c.translate(pad, Ui.u(120) + videoH + Ui.u(24))
         val frac = if (p.duration > 0) (p.currentPosition.toFloat() / p.duration).coerceIn(0f, 1f) else 0f
-        Txt.draw(c, Txt.fit(title, item.title, w), 0f, Ui.u(26), w, title)
+        val lines = Txt.wrap(title, item.title, w, 2)
+        lines.forEachIndexed { i, line -> Txt.draw(c, line, 0f, Ui.u(26 + i * 34), w, title) }
+        if (lit && sel == 0) { r.set(0f, -videoH - Ui.u(24), w, -Ui.u(24)); c.drawRoundRect(r, Ui.u(10), Ui.u(10), ring) }
+        c.translate(0f, (lines.size - 1).coerceAtLeast(0) * Ui.u(34))
         r.set(0f, Ui.u(40), w, Ui.u(46)); c.drawRoundRect(r, Ui.u(3), Ui.u(3), track)
         r.right = w * frac; c.drawRoundRect(r, Ui.u(3), Ui.u(3), accent)
         val time = Ui.fmt(p.currentPosition.coerceAtLeast(0)) + " / " + if (p.duration > 0) Ui.fmt(p.duration) else item.meta
@@ -58,8 +63,8 @@ class Dock(c: Context) : AnimView(c) {
         }
         if (lit) {
             Txt.draw(c, Txt.fit(dim, S.t(names[sel]), w), 0f, Ui.u(174), w, dim, true)
-            if (sel == 0) { r.set(0f, -videoH - Ui.u(10), w, -Ui.u(10)); c.drawRoundRect(r, Ui.u(10), Ui.u(10), ring) }
         }
+        c.restore()
         if (p.isPlaying) postInvalidateDelayed(500)
     }
 }

@@ -18,6 +18,7 @@ import dev.limitedio.pipetv.ui.widgets.SubMenu
 /** The screen: owns the pages, the player and the two big motions (dock slide, fullscreen expand). */
 class Root(c: Context) : ViewGroup(c) {
     val nav = Nav(c); val stage = Stage(c); val dock = Dock(c); val hud = Hud(c); val toast = Toast(c); val update = UpdateUi(c)
+    val playerPanel = android.view.View(c).apply { setBackgroundColor(0xFF101322.toInt()); visibility = GONE }
     val menuShade = android.view.View(c).apply { setBackgroundColor(0xB807080F.toInt()); visibility = GONE }
     val menu = RowList(c, { S.t(K.OPTIONS) }, true).apply { visibility = GONE }
     val playerSub = SubMenu(c).apply { visibility = GONE }
@@ -41,20 +42,29 @@ class Root(c: Context) : ViewGroup(c) {
     init {
         setWillNotDraw(false); clipChildren = false // the dock draws its focus ring and progress over the video
         pages.views.forEach { addView(it); it.visibility = GONE }
-        listOf(nav, stage, dock, hud, menuShade, menu, playerSub, toast, update).forEach { addView(it) }
+        listOf(playerPanel, nav, stage, dock, hud, menuShade, menu, playerSub, toast, update).forEach { addView(it) }
         show(0, false)
         Session.onChange = { controls.sessionChanged() }
         Session.onReady = { setFull(true) }
         Session.onOpenFailed = { toast.show(S.t(K.CANT_PLAY).substringBefore(".")) }
         dock.onAction = ::act; dock.drawIcon = Actions::icon
-        dock.onNav = { controls.focusNav() }; dock.onContent = { controls.focusContent() }
+        dock.onNav = { controls.focusNav() }
         pages.search.onVoice = { voice() }
         Voice.onFail = { quiet -> toast.show(S.t(if (quiet) K.NO_SPEECH else K.VOICE_NA)) }
     }
 
     fun kick() { if (!running) { running = true; Choreographer.getInstance().postFrameCallback(frame) } }
-    fun setDock(on: Boolean) { dockS.target = if (on) 1f else 0f; pages.setCols(if (on) 3 else 4); kick() }
-    fun setFull(on: Boolean) { fullS.target = if (on) 1f else 0f; if (on) hud.nudge() else closeMenu(); kick() }
+    fun setDock(on: Boolean) {
+        val show = on && Session.item != null && !full
+        val target = if (show) 1f else 0f
+        if (dockS.target == target) return
+        dockS.target = target; pages.setCols(if (show) 3 else 4); kick()
+    }
+    fun setFull(on: Boolean) {
+        fullS.target = if (on) 1f else 0f
+        if (on) { setDock(false); hud.nudge() } else { controls.focusContent(); closeMenu() }
+        kick()
+    }
     val full get() = fullS.target == 1f
 
     fun openMenu() { menu.rows = PlayerMenu.rows(playerSub); menuOpen = true; menuShade.visibility = VISIBLE; menu.visibility = VISIBLE; hud.nudge(); relayout() }

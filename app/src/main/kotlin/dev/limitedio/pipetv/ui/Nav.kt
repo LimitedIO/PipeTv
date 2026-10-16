@@ -30,17 +30,16 @@ class Nav(c: Context) : AnimView(c) {
     private val fill = Paint(Paint.ANTI_ALIAS_FLAG)
     private val r = RectF()
 
-    private val itemH get() = Ui.u(if (dev.limitedio.pipetv.media.Session.active) 58 else 90)
-    private val y0 get() = Ui.u(if (dev.limitedio.pipetv.media.Session.active) 88 else 190)
+    private val itemH get() = Ui.u(90)
+    private val y0 get() = Ui.u(190)
 
     override fun render(c: Canvas, dt: Float) {
-        val active = dev.limitedio.pipetv.media.Session.active
-        val expanded = if (active) 1f else open.value.coerceIn(0f, 1f)
+        val expanded = open.value.coerceIn(0f, 1f)
         val pw = Ui.u(104) + expanded * Ui.u(236)
         val ox = if (Ui.rtl) width - pw else 0f
         c.drawRect(ox, 0f, ox + pw, height.toFloat(), bg)
         brand.alpha = (255 * expanded).toInt().coerceIn(0, 255)
-        Txt.draw(c, "PipeTv", ox + Ui.u(40), Ui.u(if (active) 58 else 130), pw - Ui.u(80), brand)
+        Txt.draw(c, "PipeTv", ox + Ui.u(40), Ui.u(130), pw - Ui.u(80), brand)
         val py = y0 + pill.value * itemH
         r.set(ox + Ui.u(20), py, ox + pw - Ui.u(20), py + itemH - Ui.u(14))
         fill.shader = LinearGradient(r.left, 0f, r.right, 0f, Ui.ACCENT, Ui.ACCENT2, Shader.TileMode.CLAMP)
