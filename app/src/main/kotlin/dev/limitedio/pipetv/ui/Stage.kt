@@ -42,8 +42,6 @@ class Stage(c: Context) : ViewGroup(c) {
 
     fun refresh() = back.invalidate()
 
-    /** Copies the current video frame (scaled) into [bmp]; false while no frame is available. */
-    fun grab(bmp: android.graphics.Bitmap): Boolean = Engine.frame && texture.isAvailable && runCatching { texture.getBitmap(bmp) }.isSuccess
     /** Re-fits the picture (e.g. when the video's aspect ratio became known) without the parent re-measuring. */
     fun refit() = onLayout(true, left, top, right, bottom)
 

@@ -9,7 +9,6 @@ import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import dev.limitedio.pipetv.App
-import dev.limitedio.pipetv.audio.Level
 
 /** The single ExoPlayer instance, created lazily and tuned for weak TV hardware. */
 object Engine {
@@ -28,9 +27,7 @@ object Engine {
         ExoPlayer.Builder(App.ctx, renderers).setLoadControl(load)
             .setAudioAttributes(AudioAttributes.Builder().setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
                 .setUsage(C.USAGE_MEDIA).build(), true)
-            .setHandleAudioBecomingNoisy(true).build().also { it.addListener(Events); it.addAnalyticsListener(object : androidx.media3.exoplayer.analytics.AnalyticsListener {
-                override fun onAudioSessionIdChanged(t: androidx.media3.exoplayer.analytics.AnalyticsListener.EventTime, id: Int) = Level.attach(id)
-            }); surface?.let(it::setVideoTextureView) }
+            .setHandleAudioBecomingNoisy(true).build().also { it.addListener(Events); surface?.let(it::setVideoTextureView) }
     }
 
     private object Events : Player.Listener {

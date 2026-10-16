@@ -14,9 +14,8 @@ import dev.limitedio.pipetv.ui.input.Voice
 /** Keyboard + live suggestions, then filterable, endlessly scrolling results. */
 class SearchPage(c: Context) : ViewGroup(c) {
     val keyboard = Keyboard(c)
-    val grid = Grid(c) { "" }.apply { cols = 2; upExit = true; busy = false }
-    private val suggest = SuggestList(c)
-    private val chips = Chips(c)
+    val grid = Grid(c) { "" }.apply { cols = 3; upExit = true; busy = false }
+    private val suggest = SuggestList(c); private val chips = Chips(c)
     private val orb = VoiceOrb(c).apply { visibility = GONE }
     private val data = SearchData(grid, suggest)
     var onVoice: () -> Unit = {}
@@ -59,15 +58,21 @@ class SearchPage(c: Context) : ViewGroup(c) {
 
     private fun setText(t: String) {
         keyboard.text = t; keyboard.invalidate()
-        data.typing(); showList(true); Bg.main.removeCallbacks(ask)
+        data.typing(); showList(true); relayout(); Bg.main.removeCallbacks(ask)
         if (t.isBlank()) data.showRecents() else Bg.main.postDelayed(ask, 250)
     }
+
+    /** Results show a slim query bar instead of the keyboard; Left or Up on them brings the keyboard back. */
+    private fun expand() { data.typing(); showList(true); setZone(0); relayout(); data.suggestions(keyboard.text.trim()) }
+
+    /** Back on results: clear the search and open the keyboard again. */
+    fun back(): Boolean { if (!data.results) return false; setText(""); setZone(0); relayout(); return true }
 
     fun submit(q: String) {
         val query = q.trim(); if (query.isEmpty()) return
         keyboard.text = query; keyboard.invalidate()
         Bg.main.removeCallbacks(ask); showList(false)
-        data.search(query, chips.values[chips.sel]); setZone(1)
+        data.search(query, chips.values[chips.sel]); setZone(1); relayout()
     }
 
     private fun setZone(z: Int) {
@@ -81,19 +86,14 @@ class SearchPage(c: Context) : ViewGroup(c) {
     fun key(code: Int): Boolean = when (zone) {
         0 -> keyboard.key(code) || (code == KeyEvent.KEYCODE_DPAD_RIGHT && (data.results || suggest.items.isNotEmpty())).also { if (it) setZone(1) }
         1 -> (if (data.results) grid.key(code) else suggest.key(code)) || when (code) {
-            KeyEvent.KEYCODE_DPAD_LEFT -> { setZone(0); true }
+            KeyEvent.KEYCODE_DPAD_LEFT -> { if (data.results) expand() else setZone(0); true }
             KeyEvent.KEYCODE_DPAD_UP -> if (data.results) { setZone(2); true } else false
             else -> false
         }
-        else -> chips.key(code) || (code == KeyEvent.KEYCODE_DPAD_DOWN).also { if (it) setZone(1) }
+        else -> chips.key(code) || (code == KeyEvent.KEYCODE_DPAD_UP).also { if (it) expand() } || (code == KeyEvent.KEYCODE_DPAD_DOWN).also { if (it) setZone(1) }
     }
 
-    override fun onLayout(ch: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        val w = r - l; val h = b - t; val kw = (w * .46f).toInt()
-        val kx = if (Ui.rtl) w - kw else 0; val rx = if (Ui.rtl) 0 else kw
-        val ch0 = Ui.u(96).toInt()
-        keyboard.layout(kx, 0, kx + kw, h)
-        chips.layout(rx, 0, rx + w - kw, ch0); grid.layout(rx, ch0, rx + w - kw, h)
-        suggest.layout(rx, 0, rx + w - kw, h); orb.layout(rx, 0, rx + w - kw, h)
-    }
+    private fun relayout() = onLayout(true, left, top, right, bottom)
+    override fun onLayout(ch: Boolean, l: Int, t: Int, r: Int, b: Int) =
+        SearchLayout.apply(r - l, b - t, data.results, keyboard, suggest, chips, grid, orb)
 }

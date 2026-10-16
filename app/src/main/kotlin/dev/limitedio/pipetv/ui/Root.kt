@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.view.Choreographer
 import android.view.ViewGroup
-import dev.limitedio.pipetv.audio.Level
 import dev.limitedio.pipetv.data.Favs
 import dev.limitedio.pipetv.data.Prefs
 import dev.limitedio.pipetv.data.Yt
@@ -24,17 +23,19 @@ class Root(c: Context) : ViewGroup(c) {
     val controls = Controls(this); val screens = ScreenStack(this); val opener = Opener(this)
     val pages = Pages(c, opener::pick, opener::details, { onLanguage() }, toast::show)
     val dockS = Spring(0f, 170f, 24f); val fullS = Spring(0f, 170f, 24f)
+    /** Width of the side player panel in design units: much slimmer on the search page, which needs the room. */
+    val panelW = Spring(580f, 170f, 24f)
     var tab = 0; private set
     var menuOpen = false; private set
     var askMic: () -> Unit = {}
-    private val ambient = Ambient(); private val glow = VideoGlow(); private var running = false; private var last = 0L
+    private val ambient = Ambient(); private var running = false; private var last = 0L
 
     private val frame = object : Choreographer.FrameCallback {
         var last = 0L
         override fun doFrame(t: Long) {
             val dt = if (last == 0L) .016f else minOf((t - last) / 1e9f, .05f); last = t
-            dockS.step(dt); fullS.step(dt); relayout()
-            if (dockS.moving || fullS.moving || dock.popMoving) Choreographer.getInstance().postFrameCallback(this) else { last = 0; running = false }
+            dockS.step(dt); fullS.step(dt); panelW.step(dt); relayout()
+            if (dockS.moving || fullS.moving || panelW.moving || dock.popMoving) Choreographer.getInstance().postFrameCallback(this) else { last = 0; running = false }
         }
     }
 
@@ -70,7 +71,7 @@ class Root(c: Context) : ViewGroup(c) {
     fun show(i: Int, animate: Boolean = true) {
         screens.clear()
         pages.views[tab].visibility = GONE
-        tab = i; nav.sel = i
+        tab = i; nav.sel = i; panelW.target = if (i == 1) 340f else 580f; kick()
         val v = pages.views[i]; v.visibility = VISIBLE
         if (animate) { v.alpha = 0f; v.translationX = Ui.u(if (Ui.rtl) -60 else 60); v.animate().alpha(1f).translationX(0f).setDuration(260).start() }
         pages.enter(i); pages.lit(i, !controls.onNav)
@@ -79,13 +80,9 @@ class Root(c: Context) : ViewGroup(c) {
     override fun onDraw(c: Canvas) {
         c.drawColor(Ui.BG)
         if (!Prefs.ambient || fullS.value > .98f) return
-        val now = System.nanoTime(); val dt = if (last == 0L) .04f else minOf((now - last) / 1e9f, .1f); last = now
-        val t = now / 1e9f; val it = Session.shown; val level = Level.now(t)
-        val playing = Session.item != null
-        if (playing) { glow.tick(stage, Engine.exo.isPlaying); glow.draw(c, width.toFloat(), height.toFloat(), t, level, 1f - fullS.value) } else glow.reset()
-        ambient.mood(tab, ambient.tintOf(it), Session.active, playing && !Engine.exo.playWhenReady, Session.loading, if (Voice.active) Voice.level else 0f, level, if (glow.ready && playing) glow.colors else null)
-        ambient.draw(c, width.toFloat(), height.toFloat(), dt, t)
-        postInvalidateDelayed(if (playing) 33 else 40)
+        val now = System.nanoTime(); val dt = if (last == 0L) .05f else minOf((now - last) / 1e9f, .1f); last = now
+        ambient.draw(c, width.toFloat(), height.toFloat(), dt, now / 1e9f, tab)
+        postInvalidateDelayed(50)
     }
 
     override fun onLayout(ch: Boolean, l: Int, t: Int, r: Int, b: Int) = relayout()

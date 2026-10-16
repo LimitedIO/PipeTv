@@ -12,5 +12,5 @@ object Sound {
     fun videoPlaying() = Session.item != null && Engine.exo.isPlaying
 
     /** Music and effects are allowed whenever no video is actually playing. */
-    fun update() { Calm.want(foreground && Prefs.music && !videoPlaying()); if (!Session.active) Level.release() }
+    fun update() { Calm.want(foreground && Prefs.music && !videoPlaying()) }
 }

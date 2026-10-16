@@ -41,7 +41,7 @@ val En = mapOf(
     CONTENT_LANG to "Content language", CONTENT_HELP to "Region for recommendations, trending and search results",
     SAME_AS_APP to "Same as app language", SFX to "Sound effects", SFX_HELP to "Soft sounds when you move around",
     MUSIC to "Background music", MUSIC_HELP to "Calm ambient music while nothing is playing",
-    AMBIENT to "Living background", AMBIENT_HELP to "Slowly moving colours that follow what you watch",
+    AMBIENT to "Living background", AMBIENT_HELP to "Slowly drifting, calm background colours",
     UP_NEXT_IN to "Up next in %d", HINT_SUB to "OK select   Back close",
     CLEAR to "Clear", FAVORITES to "Favorites", FAV_ADDED to "Added to favorites", FAV_REMOVED to "Removed from favorites",
     NO_FAVS to "No favorites yet. Open a video, channel or playlist and choose Favorite.", FAVORITE to "Favorite", SAVED to "Saved",

@@ -11,7 +11,7 @@ object Ui {
     const val ACCENT = 0xFF7C5CFF.toInt()
     const val ACCENT2 = 0xFF00E0C6.toInt()
     const val TEXT = 0xFFF2F3FA.toInt()
-    const val DIM = 0xFF8A8FA8.toInt()
+    const val DIM = 0xFFAEB3CC.toInt()
     private var scale = 1f
     /** Right-to-left layout (Arabic etc.): the whole screen mirrors. */
     @JvmField var rtl = false
@@ -21,7 +21,7 @@ object Ui {
 
     fun init(c: Context) {
         val m = c.resources.displayMetrics
-        scale = minOf(m.widthPixels, m.heightPixels) / 1080f
+        scale = minOf(m.widthPixels, m.heightPixels) / 1080f * 1.2f // 20% larger than the base design: easier to read from the couch
     }
 
     fun u(n: Float) = n * scale
@@ -29,7 +29,7 @@ object Ui {
 
     fun paint(color: Int = TEXT, size: Float = 0f, bold: Boolean = false) = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         this.color = color
-        if (size > 0) textSize = u(size)
+        if (size > 0) textSize = u(maxOf(size, 26f)) // nothing smaller than 26 design units: readable from the couch
         if (bold) typeface = Typeface.DEFAULT_BOLD
     }
 

@@ -7,11 +7,11 @@ import dev.limitedio.pipetv.media.Session
 object RootLayout {
     fun apply(root: Root, dk: Float, f: Float) {
         val w = root.width; val h = root.height; if (w == 0) return
-        val panel = Ui.u(580) * dk; val rail = Ui.u(104); val rtl = Ui.rtl
+        val pw = Ui.u(root.panelW.value); val panel = pw * dk; val rail = Ui.u(104); val rtl = Ui.rtl
         val l = if (rtl) panel else rail; val r = if (rtl) w - rail else w - panel
         (root.pages.views + root.screens.views).forEach { it.layout(l.toInt(), 0, r.toInt(), h) }
         val nw = Ui.u(340).toInt(); if (rtl) root.nav.layout(w - nw, 0, w, h) else root.nav.layout(0, 0, nw, h)
-        val mw = Ui.u(580) - Ui.u(48); val mh = mw * 9 / 16
+        val mw = pw - Ui.u(48); val mh = mw * 9 / 16
         val mx = if (rtl) Ui.u(24) else w - panel + Ui.u(24); val my = Ui.u(48)
         val g = 1f + .06f * root.dock.popValue * (1 - f); val gx = (mw * g - mw) / 2; val gy = (mh * g - mh) / 2
         val x = (mx - gx) * (1 - f); val y = (my - gy) * (1 - f)

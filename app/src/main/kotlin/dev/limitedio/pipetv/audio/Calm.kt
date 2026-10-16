@@ -65,7 +65,6 @@ object Calm {
                 lpo += ((s + e) * gain - lpo) * .22f
                 buf[k] = (Synth.clip(lpo) * 3200).toInt().toShort(); acc += lpo * lpo
             }
-            Level.music = (kotlin.math.sqrt(acc / buf.size) * 5f).coerceIn(0f, 1f); acc = 0f
             track.write(buf, 0, buf.size)
         }
     }
