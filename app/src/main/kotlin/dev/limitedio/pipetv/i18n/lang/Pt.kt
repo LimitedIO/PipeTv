@@ -51,4 +51,5 @@ val Pt = mapOf(
     KEEP_LTR to "Não, manter esquerda para a direita", USE_RTL to "Sim, direita para a esquerda",
     POPULAR to "Popular", T_MUSIC to "Música", T_GAMING to "Jogos", T_NEWS to "Notícias", T_SPORTS to "Esportes", T_MOVIES to "Filmes", T_LEARN to "Aprender", T_COMEDY to "Comédia", T_LIVE to "Ao vivo",
     RETRY to "Tentar novamente",
+    UPD_TITLE to "Atualização disponível", UPD_BODY to "O PipeTv %s está pronto para baixar.", UPD_NOW to "Atualizar agora", UPD_LATER to "Depois", UPD_INSTALL to "Instalar agora", UPD_READY_BODY to "A versão %s foi baixada e está pronta para instalar.", UPD_FOUND to "Atualização %s disponível",
 )

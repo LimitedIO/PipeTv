@@ -19,7 +19,7 @@ object RootLayout {
         else root.stage.layout(0, 0, 1, 1)
         root.dock.videoH = mh
         root.dock.layout(mx.toInt(), (my + mh + Ui.u(20)).toInt(), (mx + mw).toInt(), h - Ui.u(16).toInt())
-        root.hud.layout(0, 0, w, h); root.toast.layout(0, 0, w, h)
+        root.hud.layout(0, 0, w, h); root.toast.layout(0, 0, w, h); root.update.layout(0, 0, w, h)
         val mnw = Ui.u(820).toInt(); val mnx = if (rtl) Ui.u(40).toInt() else w - mnw - Ui.u(40).toInt()
         root.playerSub.layout(0, 0, w, h)
         root.menu.layout(mnx, Ui.u(110).toInt(), mnx + mnw, h - Ui.u(110).toInt())

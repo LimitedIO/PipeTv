@@ -27,11 +27,12 @@ class SearchData(private val grid: Grid, private val suggest: SuggestList) {
     fun search(q: String, filter: String) {
         Store.addSearch(q)
         results = true
-        grid.items = emptyList(); grid.busy = true; grid.message = S.t(K.SEARCHING)
+        grid.alpha = .4f; grid.message = null
+        if (grid.items.isEmpty()) { grid.busy = true; grid.message = S.t(K.SEARCHING) }
         val t = ++token
         Bg.io({ Yt.search(q, filter) }) { r ->
             if (t != token) return@io
-            paged = r
+            grid.alpha = 1f; paged = r
             grid.message = if (r == null) S.t(K.SEARCH_FAILED) else if (r.items.isEmpty()) S.t(K.NO_RESULTS) else null
             grid.items = r?.items ?: emptyList(); grid.busy = false
         }

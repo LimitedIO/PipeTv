@@ -13,56 +13,57 @@ import dev.limitedio.pipetv.ui.AnimView
 import dev.limitedio.pipetv.ui.Icons
 import dev.limitedio.pipetv.ui.Txt
 import dev.limitedio.pipetv.ui.Ui
+import kotlin.math.abs
 
-/** Custom on-screen keyboard: real letter layouts, shift, symbols, language switch and a mic key. */
+/** Custom on-screen keyboard: a grid of big equal blocks that uses the whole height. Shift, symbols, languages, mic. */
 class Keyboard(c: Context) : AnimView(c) {
-    var text = ""
-    var lit = true
-    var listening = false
+    var text = ""; var lit = true; var listening = false
     var onKey: (String) -> Unit = {}
-    private var rows = listOf<List<Key>>()
+    private var pad = Pad(emptyList(), 1, 1)
+    private var cur: Key? = null
     private var lang = 0; private var shift = false; private var sym = false
-    private var cr = 1; private var cc = 0
     private val fx = spring(0f, 400f, 28f); private val fy = spring(0f, 400f, 28f); private val press = spring(0f, 500f, 18f)
-    private val face = Ui.paint(Ui.SURFACE); private val glyph = Ui.paint(Ui.TEXT, 34f, true); private val ico = Ui.paint(Ui.TEXT)
-    private val query = Ui.paint(Ui.TEXT, 40f, true); private val hint = Ui.paint(Ui.DIM, 34f); private val ring = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val face = Ui.paint(Ui.SURFACE); private val glyph = Ui.paint(Ui.TEXT, 40f, true); private val ico = Ui.paint(Ui.TEXT)
+    private val query = Ui.paint(Ui.TEXT, 48f, true); private val hint = Ui.paint(Ui.DIM, 42f); private val ring = Paint(Paint.ANTI_ALIAS_FLAG)
     private val r = RectF()
-    private val unit get() = (width - Ui.u(48)) / 13f
-    private val top get() = Ui.u(150)
-    private val kh get() = unit * .86f
+    private val top get() = Ui.u(170); private val side get() = Ui.u(24); private val cw get() = (width - side * 2) / pad.cols
+    private val ch get() = (height - top - side) / pad.rows
+    private val compact get() = height < Ui.u(420) // only the query bar shows (search results)
 
     init { build() }
 
     private fun build() {
         val layouts = Layouts.enabled(); lang = lang.coerceIn(0, layouts.size - 1)
-        rows = KeyRows.build(layouts[lang], shift, sym)
-        cr = cr.coerceIn(0, rows.size - 1); cc = cc.coerceIn(0, rows[cr].size - 1)
+        pad = KeyRows.build(layouts[lang], shift, sym)
+        cur = pad.keys.firstOrNull { it.token == cur?.token } ?: pad.keys[0]
         snapFocus(); invalidate()
     }
 
-    private fun kx(k: Key) = Ui.u(24) + k.x * unit
-    private fun ky(k: Key) = top + k.row * (kh + Ui.u(4))
-    private fun snapFocus() { val k = rows[cr][cc]; fx.snap(kx(k)); fy.snap(ky(k)) }
+    private fun kx(k: Key) = Ui.mx(side + k.col * cw, k.cs * cw, width.toFloat())
+    private fun ky(k: Key) = top + k.row * ch
+    private fun snapFocus() { cur?.let { fx.snap(kx(it)); fy.snap(ky(it)) } }
     override fun onSizeChanged(w: Int, h: Int, ow: Int, oh: Int) = snapFocus()
-
     fun refresh() = build()
 
-    /** Moves focus; returns false when an edge is hit so the parent can take over. */
+    /** The neighbouring block in a direction (the nearest one, straight lines preferred), or null at an edge. */
+    private fun neighbour(dx: Int, dy: Int): Key? {
+        val k = cur ?: return null; val mx = k.col + k.cs / 2f; val my = k.row + k.rs / 2f
+        return pad.keys.filter { it !== k && when {
+            dx > 0 -> it.col >= k.col + k.cs; dx < 0 -> it.col + it.cs <= k.col
+            dy > 0 -> it.row >= k.row + k.rs; else -> it.row + it.rs <= k.row } }
+            .minByOrNull { val ox = abs(it.col + it.cs / 2f - mx); val oy = abs(it.row + it.rs / 2f - my); if (dx != 0) ox + 3 * oy else oy + 3 * ox }
+    }
+
+    /** Moves focus; returns false when a side edge is hit so the parent can take over. */
     fun key(code: Int): Boolean {
-        val row = rows[cr]; val k = row[cc]
-        when (code) {
-            KeyEvent.KEYCODE_DPAD_LEFT -> if (cc > 0) cc-- else return false
-            KeyEvent.KEYCODE_DPAD_RIGHT -> if (cc < row.size - 1) cc++ else return false
-            KeyEvent.KEYCODE_DPAD_UP, KeyEvent.KEYCODE_DPAD_DOWN -> {
-                val nr = cr + if (code == KeyEvent.KEYCODE_DPAD_UP) -1 else 1
-                if (nr !in rows.indices) return true
-                val mid = k.x + k.span / 2
-                cc = rows[nr].indices.minByOrNull { Math.abs(rows[nr][it].x + rows[nr][it].span / 2 - mid) } ?: 0; cr = nr
-            }
-            KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> { tap(k); return true }
+        val (dx, dy) = when (code) {
+            KeyEvent.KEYCODE_DPAD_LEFT -> -1 to 0; KeyEvent.KEYCODE_DPAD_RIGHT -> 1 to 0
+            KeyEvent.KEYCODE_DPAD_UP -> 0 to -1; KeyEvent.KEYCODE_DPAD_DOWN -> 0 to 1
+            KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> { cur?.let(::tap); return true }
             else -> return false
         }
-        val n = rows[cr][cc]; fx.to(kx(n)); fy.to(ky(n)); return true
+        val n = neighbour(dx, dy) ?: return dx == 0
+        cur = n; fx.to(kx(n)); fy.to(ky(n)); return true
     }
 
     private fun tap(k: Key) {
@@ -76,25 +77,24 @@ class Keyboard(c: Context) : AnimView(c) {
     }
 
     private fun label(c: Canvas, k: Key, on: Boolean) {
-        r.set(kx(k) + Ui.u(4), ky(k) + Ui.u(2), kx(k) + k.span * unit - Ui.u(4), ky(k) + kh - Ui.u(2))
-        if (!on) c.drawRoundRect(r, Ui.u(14), Ui.u(14), face)
-        val ink = if (on) 0xFF0A0B14.toInt() else if (k.token == "@go") Ui.ACCENT2 else if (k.token == "@mic" && listening) Ui.ACCENT2 else Ui.TEXT
-        glyph.color = ink; ico.color = ink
+        r.set(kx(k) + Ui.u(5), ky(k) + Ui.u(5), kx(k) + k.cs * cw - Ui.u(5), ky(k) + k.rs * ch - Ui.u(5))
+        if (!on) { face.alpha = if (k.token.startsWith("@")) 255 else 200; c.drawRoundRect(r, Ui.u(18), Ui.u(18), face) }
+        val ink = if (on) 0xFF0A0B14.toInt() else if (k.token == "@go" || (k.token == "@mic" && listening)) Ui.ACCENT2 else Ui.TEXT
+        glyph.color = ink; ico.color = ink; glyph.textSize = minOf(ch * .42f, Ui.u(54))
         val icon = when (k.token) { "@mic" -> Icons.MIC; "@del" -> Icons.DEL; "@shift" -> Icons.SHIFT; else -> -1 }
-        if (icon >= 0) Icons.draw(c, icon, r.centerX(), r.centerY(), kh * .26f, ico)
-        else Txt.draw(c, Txt.fit(glyph, k.label, r.width()), r.left, r.centerY() + Ui.u(12), r.width(), glyph, true)
+        if (icon >= 0) Icons.draw(c, icon, r.centerX(), r.centerY(), minOf(cw, ch) * .24f, ico)
+        else Txt.draw(c, Txt.fit(glyph, k.label, r.width()), r.left, r.centerY() + glyph.textSize * .35f, r.width(), glyph, true)
     }
 
     override fun render(c: Canvas, dt: Float) {
-        r.set(Ui.u(24), Ui.u(24), width - Ui.u(24), Ui.u(120)); c.drawRoundRect(r, Ui.u(20), Ui.u(20), face)
-        val q = text.ifEmpty { S.t(K.SEARCH_HINT) }; val p = if (text.isEmpty()) hint else query
-        Txt.draw(c, Txt.fit(p, if (text.isEmpty()) q else text + "▏", r.width() - Ui.u(48)), r.left + Ui.u(24), r.centerY() + Ui.u(14), r.width() - Ui.u(48), p)
-        for (row in rows) for (k in row) if (!(lit && rows[cr][cc] === k)) label(c, k, false)
-        if (!lit) return
-        val k = rows[cr][cc]; val s = 1f + .08f * press.value
-        r.set(fx.value + Ui.u(4), fy.value + Ui.u(2), fx.value + k.span * unit - Ui.u(4), fy.value + kh - Ui.u(2))
+        r.set(side, Ui.u(24), width - side, Ui.u(140)); c.drawRoundRect(r, Ui.u(24), Ui.u(24), face)
+        val p = if (text.isEmpty()) hint else query; val w = r.width() - Ui.u(56)
+        Txt.draw(c, Txt.fit(p, if (text.isEmpty()) S.t(K.SEARCH_HINT) else text + "▏", w), r.left + Ui.u(28), r.centerY() + Ui.u(16), w, p)
+        if (compact) return else for (k in pad.keys) if (!(lit && cur === k)) label(c, k, false)
+        val k = cur ?: return; if (!lit) return
+        val s = 1f + .06f * press.value; r.set(fx.value + Ui.u(5), fy.value + Ui.u(5), fx.value + k.cs * cw - Ui.u(5), fy.value + k.rs * ch - Ui.u(5))
         r.inset(-r.width() * (s - 1) / 2, -r.height() * (s - 1) / 2)
         ring.shader = LinearGradient(r.left, r.top, r.right, r.bottom, Ui.ACCENT, Ui.ACCENT2, Shader.TileMode.CLAMP)
-        c.drawRoundRect(r, Ui.u(16), Ui.u(16), ring); label(c, k, true)
+        c.drawRoundRect(r, Ui.u(20), Ui.u(20), ring); label(c, k, true)
     }
 }

@@ -58,7 +58,7 @@ object Settings {
             toggle(K.AMBIENT, K.AMBIENT_HELP, { Prefs.ambient }) { Prefs.ambient = it },
             HeaderRow { S.t(K.S_DATA) },
             ActionRow({ S.t(K.CLEAR_HISTORY) }, { S.t(K.CLEAR_HELP) }, { "OK" }) { Store.clearHistory(); toast(S.t(K.NOTHING_WATCHED)) },
-            ActionRow({ S.t(K.UPDATES) }, { S.t(K.UPDATES_HELP) }, { Updater.status }) { if (Updater.ready != null) Updater.install() else Updater.check() },
+            ActionRow({ S.t(K.UPDATES) }, { S.t(K.UPDATES_HELP) }, { Updater.status }) { Updater.check(true) },
             ActionRow({ S.t(K.ABOUT_APP) }, { S.t(K.ABOUT_HELP) }, { "PipeTv ${Updater.current} · LimitedIO" }) {},
         )
     }

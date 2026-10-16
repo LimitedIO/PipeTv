@@ -26,7 +26,7 @@ class Hero(c: Context, private val item: Item) : AnimView(c) {
     private fun facts(i: StreamInfo?): List<Pair<String, String>> {
         if (i == null) return emptyList()
         val list = ArrayList<Pair<String, String>>()
-        val date = i.textualUploadDate ?: ""
+        val date = dev.limitedio.pipetv.data.Ago.of(i.uploadDate, i.textualUploadDate)
         if (date.isNotEmpty()) list.add(S.t(K.PUBLISHED) to date)
         list.add(S.t(K.DURATION) to if (i.duration > 0) Ui.fmt(i.duration * 1000) else S.t(K.LIVE))
         if (i.viewCount >= 0) list.add(S.t(K.VIEWS).replace("%s", "") .trim().ifEmpty { "Views" } to YtMap.count(i.viewCount))

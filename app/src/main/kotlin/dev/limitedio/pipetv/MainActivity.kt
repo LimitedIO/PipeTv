@@ -34,11 +34,10 @@ class MainActivity : Activity() {
         setContentView(root)
         immersive()
         Looper.myQueue().addIdleHandler { Engine.exo; false } // build the player only once the first frame is out
-        Updater.status = S.f(K.UPD_OK, Updater.current)
         Sfx.init()
-        Updater.onReady = { root.toast.show(S.f(K.UPD_TOAST, it)) }
+        Updater.onChange = { root.update.refresh() }
         root.askMic = ::startVoice
-        Bg.main.postDelayed({ Updater.check() }, 5000)
+        Bg.main.postDelayed({ Updater.check() }, 4000) // quietly looks for a new version shortly after launch
     }
 
     private fun immersive() {

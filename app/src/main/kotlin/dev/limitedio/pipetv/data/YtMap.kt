@@ -32,7 +32,7 @@ object YtMap {
         is StreamInfoItem -> idRegex.find(i.url)?.let {
             val views = if (i.viewCount >= 0) S.f(K.VIEWS, count(i.viewCount)) else ""
             val who = i.uploaderName.orEmpty().ifEmpty { by }
-            val meta = listOf(views, i.textualUploadDate.orEmpty()).filter { s -> s.isNotEmpty() }.joinToString(" · ")
+            val meta = listOf(views, Ago.of(i.uploadDate, i.textualUploadDate)).filter { s -> s.isNotEmpty() }.joinToString(" · ")
             val sub = listOf(who, meta).filter { s -> s.isNotEmpty() }.joinToString(" · ")
             Item(it.groupValues[1], i.url, i.name, sub, i.duration, Item.VIDEO, "", who, meta)
         }

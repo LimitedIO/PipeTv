@@ -17,6 +17,7 @@ class Controls(private val root: Root) {
 
     fun key(e: KeyEvent): Boolean {
         val k = e.keyCode
+        if (root.update.modal) return root.update.key(k)
         if (Voice.active) { if (k == KEYCODE_BACK || k == KEYCODE_DPAD_CENTER || k == KEYCODE_ESCAPE) Voice.stop(); return true }
         if (k == KEYCODE_VOICE_ASSIST || k == KEYCODE_SEARCH) { root.voice(); return true }
         if (root.playerSub.open) { root.playerSub.key(k, e.repeatCount); root.hud.nudge(); return true }

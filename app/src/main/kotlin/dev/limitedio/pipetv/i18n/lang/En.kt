@@ -51,4 +51,5 @@ val En = mapOf(
     KEEP_LTR to "No, keep left-to-right", USE_RTL to "Yes, mirror to right-to-left",
     POPULAR to "Popular", T_MUSIC to "Music", T_GAMING to "Gaming", T_NEWS to "News", T_SPORTS to "Sports", T_MOVIES to "Movies", T_LEARN to "Learning", T_COMEDY to "Comedy", T_LIVE to "Live",
     RETRY to "Retry",
+    UPD_TITLE to "Update available", UPD_BODY to "PipeTv %s is ready to download.", UPD_NOW to "Update now", UPD_LATER to "Later", UPD_INSTALL to "Install now", UPD_READY_BODY to "Version %s is downloaded and ready to install.", UPD_FOUND to "Update %s available",
 )

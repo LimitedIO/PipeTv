@@ -51,7 +51,7 @@ object YtPages {
     }
 
     private fun comment(c: org.schabi.newpipe.extractor.comments.CommentsInfoItem) = Comment(
-        c.uploaderName.orEmpty(), plain(c.commentText), c.textualUploadDate.orEmpty(),
+        c.uploaderName.orEmpty(), plain(c.commentText), Ago.of(c.uploadDate, c.textualUploadDate),
         c.textualLikeCount.orEmpty().ifEmpty { if (c.likeCount > 0) c.likeCount.toString() else "" },
         c.isPinned, c.isHeartedByUploader, c.replyCount.coerceAtLeast(0),
     )

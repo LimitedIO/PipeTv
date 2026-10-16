@@ -17,7 +17,7 @@ import dev.limitedio.pipetv.ui.widgets.SubMenu
 
 /** The screen: owns the pages, the player and the two big motions (dock slide, fullscreen expand). */
 class Root(c: Context) : ViewGroup(c) {
-    val nav = Nav(c); val stage = Stage(c); val dock = Dock(c); val hud = Hud(c); val toast = Toast(c)
+    val nav = Nav(c); val stage = Stage(c); val dock = Dock(c); val hud = Hud(c); val toast = Toast(c); val update = UpdateUi(c)
     val menu = RowList(c, { S.t(K.OPTIONS) }, true).apply { visibility = GONE }
     val playerSub = SubMenu(c).apply { visibility = GONE }
     val controls = Controls(this); val screens = ScreenStack(this); val opener = Opener(this)
@@ -42,7 +42,7 @@ class Root(c: Context) : ViewGroup(c) {
     init {
         setWillNotDraw(false)
         pages.views.forEach { addView(it); it.visibility = GONE }
-        listOf(nav, stage, dock, hud, menu, playerSub, toast).forEach { addView(it) }
+        listOf(nav, stage, dock, hud, menu, playerSub, toast, update).forEach { addView(it) }
         show(0, false)
         Session.onChange = { controls.sessionChanged() }
         Session.onReady = { setFull(true) }

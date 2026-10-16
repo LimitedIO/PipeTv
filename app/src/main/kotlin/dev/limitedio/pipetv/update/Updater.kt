@@ -10,53 +10,73 @@ import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
 
-/** Self-update from GitHub Releases (FOSS, no store): check, download in background, install on request. */
+/** Self-update from GitHub Releases (FOSS, no store). Checks on its own, asks first, shows progress, then installs. */
 object Updater {
-    @Volatile var status = ""
-    @Volatile var ready: File? = null
+    enum class St { IDLE, CHECKING, FOUND, DOWNLOADING, READY, FAILED }
+    @Volatile var st = St.IDLE; private set
+    @Volatile var tag = ""; private set
+    @Volatile var size = 0L; private set
+    @Volatile var progress = 0f; private set
+    /** The user said "Later" for this version: no dialog until the next manual check. */
+    @Volatile var snoozed = false
     var onChange: () -> Unit = {}
-    var onReady: (String) -> Unit = {}
+    private var url = ""
+    private var file: File? = null
 
     val current: String get() = App.ctx.packageManager.getPackageInfo(App.ctx.packageName, 0).versionName ?: "0"
+    val status get() = when (st) {
+        St.CHECKING -> S.t(K.UPD_CHECKING); St.FOUND -> S.f(K.UPD_FOUND, tag); St.DOWNLOADING -> S.f(K.UPD_DL, tag, (progress * 100).toInt())
+        St.READY -> S.f(K.UPD_READY, tag); St.FAILED -> S.t(K.UPD_FAIL); St.IDLE -> S.f(K.UPD_OK, current)
+    }
 
-    private fun say(s: String) { status = s; Bg.main.post { onChange() } }
-    private fun open(url: String) = (URL(url).openConnection() as HttpURLConnection).apply {
+    private fun set(s: St) { st = s; Bg.main.post { onChange() } }
+    private fun open(u: String) = (URL(u).openConnection() as HttpURLConnection).apply {
         connectTimeout = 15_000; readTimeout = 30_000; setRequestProperty("Accept", "application/vnd.github+json")
     }
 
-    fun check() = Bg.io { runCatching { run() }.onFailure { say(S.t(K.UPD_FAIL)) } }
+    /** Looks for a newer release; a found one opens the update dialog (unless [manual] is false and it was snoozed). */
+    fun check(manual: Boolean = false) {
+        if (st == St.CHECKING || st == St.DOWNLOADING) return
+        if (manual) snoozed = false
+        if (st == St.FOUND || st == St.READY) return set(st)
+        Bg.io { runCatching { look() }.onFailure { set(St.FAILED) } }
+    }
 
-    private fun run() {
-        say(S.t(K.UPD_CHECKING))
+    private fun look() {
+        set(St.CHECKING)
         val rel = JSONObject(open("https://api.github.com/repos/${Config.REPO}/releases/latest").inputStream.use { it.readBytes().decodeToString() })
-        val tag = rel.getString("tag_name")
         val assets = rel.getJSONArray("assets")
         val apk = (0 until assets.length()).map { assets.getJSONObject(it) }.firstOrNull { it.getString("name").endsWith(".apk") }
-        if (apk == null || !newer(tag, current)) return say(S.f(K.UPD_OK, current))
-        download(tag, apk.getString("browser_download_url"))
+        tag = rel.getString("tag_name")
+        if (apk == null || !newer(tag, current)) return set(St.IDLE)
+        url = apk.getString("browser_download_url"); size = apk.optLong("size")
+        file = File(App.ctx.cacheDir, "update-$tag.apk")
+        set(if (file!!.exists()) St.READY else St.FOUND)
     }
 
-    private fun download(tag: String, url: String) {
-        val file = File(App.ctx.cacheDir, "update-$tag.apk")
-        if (!file.exists()) {
-            val c = open(url); val total = c.contentLengthLong.coerceAtLeast(1)
-            val tmp = File(file.path + ".part"); var done = 0L; var last = -1
-            c.inputStream.use { i -> tmp.outputStream().use { o ->
-                val buf = ByteArray(64 * 1024)
-                while (true) {
-                    val n = i.read(buf); if (n < 0) break
-                    o.write(buf, 0, n); done += n
-                    val pct = (done * 100 / total).toInt(); if (pct != last) { last = pct; say(S.f(K.UPD_DL, tag, pct)) }
-                }
-            } }
-            tmp.renameTo(file)
-        }
-        ready = file
-        say(S.f(K.UPD_READY, tag))
-        Bg.main.post { onReady(tag) }
+    /** Starts the download (progress is published as it goes). */
+    fun download() {
+        if (st != St.FOUND && st != St.FAILED) return
+        progress = 0f; set(St.DOWNLOADING)
+        Bg.io { runCatching { fetch() }.onFailure { set(St.FAILED) } }
     }
 
-    fun install() { ready?.let { Installer.install(it) } ?: check() }
+    private fun fetch() {
+        val out = file ?: return; val c = open(url); val total = c.contentLengthLong.takeIf { it > 0 } ?: size.coerceAtLeast(1)
+        val tmp = File(out.path + ".part"); var done = 0L; var last = -1
+        c.inputStream.use { i -> tmp.outputStream().use { o ->
+            val buf = ByteArray(64 * 1024)
+            while (true) {
+                val n = i.read(buf); if (n < 0) break
+                o.write(buf, 0, n); done += n
+                progress = (done.toFloat() / total).coerceIn(0f, 1f); val pct = (progress * 100).toInt()
+                if (pct != last) { last = pct; Bg.main.post { onChange() } }
+            }
+        } }
+        tmp.renameTo(out); snoozed = false; set(St.READY)
+    }
+
+    fun install() { file?.takeIf { st == St.READY }?.let { Installer.install(it) } }
 
     private fun newer(tag: String, cur: String): Boolean {
         val a = Regex("\\d+").findAll(tag).map { it.value.toInt() }.toList()
