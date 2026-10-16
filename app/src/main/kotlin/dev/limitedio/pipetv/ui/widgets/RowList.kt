@@ -13,9 +13,9 @@ import dev.limitedio.pipetv.ui.Txt
 import dev.limitedio.pipetv.ui.Ui
 
 /** Scrollable list of [Row]s with one gliding focus ring. Used by Settings and the player options. */
-class RowList(c: Context, private val title: () -> String, private val panel: Boolean = false) : AnimView(c) {
+class RowList(c: Context, private val title: () -> String, private val panel: Boolean = false, private val centerFocus: Boolean = false) : AnimView(c) {
     var rows: List<Row> = emptyList()
-        set(v) { field = v; idx = v.indexOfFirst { it.focusable }.coerceAtLeast(0); if (width > 0) { refocus(); ry.snap(ry.target); rh.snap(rh.target); scroll.snap(0f) }; invalidate() }
+        set(v) { field = v; idx = v.indexOfFirst { it.focusable }.coerceAtLeast(0); if (width > 0) { refocus(); ry.snap(ry.target); rh.snap(rh.target); scroll.snap(if (centerFocus) scroll.target else 0f) }; invalidate() }
     var lit = true
     private var idx = 0
     private val scroll = spring(0f, 180f, 26f)
@@ -35,12 +35,13 @@ class RowList(c: Context, private val title: () -> String, private val panel: Bo
         if (rows.isEmpty()) return
         ry.target = yOf(idx); rh.target = rows[idx].h
         val vis = height - top - Ui.u(30); val y = yOf(idx) - top
+        if (centerFocus) { scroll.target = y + rows[idx].h / 2 - vis / 2; invalidate(); return }
         if (y + rows[idx].h > scroll.target + vis) scroll.target = y + rows[idx].h - vis
         if (y < scroll.target) scroll.target = y
         invalidate()
     }
 
-    override fun onSizeChanged(w: Int, h: Int, ow: Int, oh: Int) { refocus(); ry.snap(ry.target); rh.snap(rh.target) }
+    override fun onSizeChanged(w: Int, h: Int, ow: Int, oh: Int) { refocus(); ry.snap(ry.target); rh.snap(rh.target); if (centerFocus) scroll.snap(scroll.target) }
 
     fun key(code: Int, repeat: Int = 0): Boolean {
         if (rows.isEmpty()) return false

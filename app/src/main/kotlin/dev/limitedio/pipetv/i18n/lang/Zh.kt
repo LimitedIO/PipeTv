@@ -55,4 +55,7 @@ val Zh = mapOf(
     A_OPEN to "打开播放器", A_PLAYPAUSE to "播放 / 暂停", A_CLOSE to "关闭视频", BACK_HINT to "请在菜单中选择“退出”来离开 PipeTv",
     OPEN to "打开", VIDEO_INFO to "视频信息", FAV_ADD to "加入收藏", FAV_DEL to "取消收藏", OPEN_CHANNEL to "打开频道",
     REPLIES_HINT to "确定：查看回复",
+    LICENSES to "开源许可证", DEVELOPER to "开发者", REPOSITORY to "源代码仓库",
+    SCAN_REPO to "扫描二维码打开仓库", APP_DESCRIPTION to "注重隐私的 Android TV YouTube 客户端。无需账号或 API 密钥。",
+    PLAYER_MENU_HINT to "%s 播放控制", LICENSE_HINT to "确定：阅读许可证 · 返回：返回上一页",
 )

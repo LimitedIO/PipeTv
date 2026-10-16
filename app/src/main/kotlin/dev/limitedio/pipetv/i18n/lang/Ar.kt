@@ -55,4 +55,7 @@ val Ar = mapOf(
     A_OPEN to "فتح المشغّل", A_PLAYPAUSE to "تشغيل / إيقاف مؤقت", A_CLOSE to "إغلاق الفيديو", BACK_HINT to "استخدم «خروج» في القائمة لمغادرة PipeTv",
     OPEN to "فتح", VIDEO_INFO to "معلومات الفيديو", FAV_ADD to "إضافة إلى المفضلة", FAV_DEL to "إزالة من المفضلة", OPEN_CHANNEL to "فتح القناة",
     REPLIES_HINT to "موافق: عرض الردود",
+    LICENSES to "تراخيص المصادر المفتوحة", DEVELOPER to "المطور", REPOSITORY to "مستودع المصدر",
+    SCAN_REPO to "امسح الرمز لفتح المستودع", APP_DESCRIPTION to "تطبيق YouTube يحترم الخصوصية لأجهزة Android TV. لا يتطلب حسابًا أو مفتاح API.",
+    PLAYER_MENU_HINT to "%s أدوات المشغل", LICENSE_HINT to "موافق: قراءة الترخيص · رجوع: العودة",
 )

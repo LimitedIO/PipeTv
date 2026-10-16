@@ -14,7 +14,7 @@ import dev.limitedio.pipetv.update.Updater
 /** Settings content. Anything with more than on/off opens its own focused pop-up ([SubMenu]). */
 object Settings {
     /** [onLang] runs after the app or content language changed, [onKb] after the keyboard layouts changed. */
-    fun rows(sub: SubMenu, onLang: () -> Unit, onKb: () -> Unit, toast: (String) -> Unit): List<Row> {
+    fun rows(sub: SubMenu, onLang: () -> Unit, onKb: () -> Unit, toast: (String) -> Unit, onAbout: () -> Unit): List<Row> {
         fun open(label: K, help: K, value: () -> String, act: () -> Unit) = ActionRow({ S.t(label) }, { S.t(help) }, value, act)
         fun toggle(label: K, help: K, get: () -> Boolean, set: (Boolean) -> Unit) = ToggleRow({ S.t(label) }, { S.t(help) }, get, set)
         return listOf(
@@ -55,7 +55,7 @@ object Settings {
             HeaderRow { S.t(K.S_DATA) },
             ActionRow({ S.t(K.CLEAR_HISTORY) }, { S.t(K.CLEAR_HELP) }, { "OK" }) { Store.clearHistory(); toast(S.t(K.NOTHING_WATCHED)) },
             ActionRow({ S.t(K.UPDATES) }, { S.t(K.UPDATES_HELP) }, { Updater.status }) { Updater.check(true) },
-            ActionRow({ S.t(K.ABOUT_APP) }, { S.t(K.ABOUT_HELP) }, { "PipeTv ${Updater.current} · LimitedIO" }) {},
+            ActionRow({ S.t(K.ABOUT_APP) }, { S.t(K.ABOUT_HELP) }, { "PipeTv ${Updater.current} · LimitedIO" }, onAbout),
         )
     }
 

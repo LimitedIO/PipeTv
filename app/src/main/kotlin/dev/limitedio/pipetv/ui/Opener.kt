@@ -11,6 +11,7 @@ import dev.limitedio.pipetv.ui.detail.Listing
 
 /** Decides what a pick means: play a video, open a channel or a playlist, show details. */
 class Opener(private val root: Root) {
+    fun about() = show(AboutPage(root.context))
     fun pick(it: Item) {
         when (it.kind) {
             Item.CHANNEL -> channel(it.url)

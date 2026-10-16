@@ -55,4 +55,7 @@ val En = mapOf(
     A_OPEN to "Open player", A_PLAYPAUSE to "Play / pause", A_CLOSE to "Close video", BACK_HINT to "Use Exit in the menu to leave PipeTv",
     OPEN to "Open", VIDEO_INFO to "Video info", FAV_ADD to "Add to favorites", FAV_DEL to "Remove from favorites", OPEN_CHANNEL to "Open channel",
     REPLIES_HINT to "OK: show replies",
+    LICENSES to "Open-source licenses", DEVELOPER to "Developer", REPOSITORY to "Source repository",
+    SCAN_REPO to "Scan to open the repository", APP_DESCRIPTION to "A private YouTube client for Android TV. No account or API key required.",
+    PLAYER_MENU_HINT to "%s Player controls", LICENSE_HINT to "OK: read license · Back: return",
 )

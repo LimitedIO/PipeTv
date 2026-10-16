@@ -55,4 +55,7 @@ val Ru = mapOf(
     A_OPEN to "Открыть плеер", A_PLAYPAUSE to "Пуск / пауза", A_CLOSE to "Закрыть видео", BACK_HINT to "Чтобы выйти, выберите «Выход» в меню",
     OPEN to "Открыть", VIDEO_INFO to "О видео", FAV_ADD to "В избранное", FAV_DEL to "Убрать из избранного", OPEN_CHANNEL to "Открыть канал",
     REPLIES_HINT to "OK: показать ответы",
+    LICENSES to "Лицензии открытого ПО", DEVELOPER to "Разработчик", REPOSITORY to "Репозиторий исходного кода",
+    SCAN_REPO to "Сканируйте, чтобы открыть репозиторий", APP_DESCRIPTION to "Приватный клиент YouTube для Android TV. Не требует аккаунта или ключа API.",
+    PLAYER_MENU_HINT to "%s Управление плеером", LICENSE_HINT to "OK: читать лицензию · Назад: вернуться",
 )

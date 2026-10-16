@@ -8,13 +8,13 @@ import dev.limitedio.pipetv.ui.widgets.RowList
 import dev.limitedio.pipetv.ui.widgets.SubMenu
 
 /** The settings list with its pop-up menu on top. Keys go to the pop-up while it is open. */
-class SettingsPage(c: Context, onLang: () -> Unit, onKb: () -> Unit, toast: (String) -> Unit) : ViewGroup(c) {
-    private val list = RowList(c, { S.t(K.SETTINGS) })
+class SettingsPage(c: Context, onLang: () -> Unit, onKb: () -> Unit, toast: (String) -> Unit, onAbout: () -> Unit) : ViewGroup(c) {
+    private val list = RowList(c, { S.t(K.SETTINGS) }, centerFocus = true)
     private val sub = SubMenu(c).apply { visibility = GONE }
 
     init {
         addView(list); addView(sub)
-        list.rows = Settings.rows(sub, onLang, onKb, toast)
+        list.rows = Settings.rows(sub, onLang, onKb, toast, onAbout)
     }
 
     fun key(code: Int, repeat: Int): Boolean = if (sub.open) sub.key(code, repeat).also { list.invalidate() } else list.key(code, repeat)

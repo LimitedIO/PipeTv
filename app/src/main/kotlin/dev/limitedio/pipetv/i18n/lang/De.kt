@@ -55,4 +55,7 @@ val De = mapOf(
     A_OPEN to "Player öffnen", A_PLAYPAUSE to "Wiedergabe / Pause", A_CLOSE to "Video schließen", BACK_HINT to "Zum Beenden im Menü „Beenden“ wählen",
     OPEN to "Öffnen", VIDEO_INFO to "Videoinfo", FAV_ADD to "Zu Favoriten hinzufügen", FAV_DEL to "Aus Favoriten entfernen", OPEN_CHANNEL to "Kanal öffnen",
     REPLIES_HINT to "OK: Antworten anzeigen",
+    LICENSES to "Open-Source-Lizenzen", DEVELOPER to "Entwickler", REPOSITORY to "Quellcode-Repository",
+    SCAN_REPO to "Scannen, um das Repository zu öffnen", APP_DESCRIPTION to "Ein datenschutzfreundlicher YouTube-Client für Android TV. Kein Konto und kein API-Schlüssel erforderlich.",
+    PLAYER_MENU_HINT to "%s Player-Steuerung", LICENSE_HINT to "OK: Lizenz lesen · Zurück: zurückkehren",
 )

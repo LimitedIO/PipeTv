@@ -13,7 +13,7 @@ class ScreenStack(private val root: Root) {
         list.lastOrNull()?.visibility = View.GONE
         root.pages.views[root.tab].visibility = View.GONE
         list.add(v)
-        root.addView(v, root.indexOfChild(root.nav))
+        root.addView(v, root.indexOfChild(root.navigationShade))
         v.alpha = 0f; v.translationX = Ui.u(if (Ui.rtl) -60 else 60)
         v.animate().alpha(1f).translationX(0f).setDuration(240).start()
         root.syncDock(); root.requestLayout()

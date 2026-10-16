@@ -55,4 +55,7 @@ val Hi = mapOf(
     A_OPEN to "प्लेयर खोलें", A_PLAYPAUSE to "चलाएँ / रोकें", A_CLOSE to "वीडियो बंद करें", BACK_HINT to "PipeTv से बाहर निकलने के लिए मेनू में बाहर निकलें चुनें",
     OPEN to "खोलें", VIDEO_INFO to "वीडियो की जानकारी", FAV_ADD to "पसंदीदा में जोड़ें", FAV_DEL to "पसंदीदा से हटाएँ", OPEN_CHANNEL to "चैनल खोलें",
     REPLIES_HINT to "ओके: जवाब देखें",
+    LICENSES to "ओपन-सोर्स लाइसेंस", DEVELOPER to "डेवलपर", REPOSITORY to "सोर्स रिपॉज़िटरी",
+    SCAN_REPO to "रिपॉज़िटरी खोलने के लिए स्कैन करें", APP_DESCRIPTION to "Android TV के लिए गोपनीयता का सम्मान करने वाला YouTube क्लाइंट। खाते या API कुंजी की आवश्यकता नहीं।",
+    PLAYER_MENU_HINT to "%s प्लेयर नियंत्रण", LICENSE_HINT to "OK: लाइसेंस पढ़ें · वापस: लौटें",
 )

@@ -55,4 +55,7 @@ val Tr = mapOf(
     A_OPEN to "Oynatıcıyı aç", A_PLAYPAUSE to "Oynat / duraklat", A_CLOSE to "Videoyu kapat", BACK_HINT to "PipeTv'den çıkmak için menüde Çıkış'ı kullanın",
     OPEN to "Aç", VIDEO_INFO to "Video bilgisi", FAV_ADD to "Favorilere ekle", FAV_DEL to "Favorilerden kaldır", OPEN_CHANNEL to "Kanalı aç",
     REPLIES_HINT to "Tamam: yanıtları göster",
+    LICENSES to "Açık kaynak lisansları", DEVELOPER to "Geliştirici", REPOSITORY to "Kaynak kod deposu",
+    SCAN_REPO to "Depoyu açmak için tarayın", APP_DESCRIPTION to "Android TV için gizliliğe önem veren bir YouTube istemcisi. Hesap veya API anahtarı gerektirmez.",
+    PLAYER_MENU_HINT to "%s Oynatıcı kontrolleri", LICENSE_HINT to "Tamam: lisansı oku · Geri: dön",
 )

@@ -8,6 +8,8 @@ import android.graphics.RectF
 import android.graphics.Shader
 import dev.limitedio.pipetv.i18n.K
 import dev.limitedio.pipetv.i18n.S
+import dev.limitedio.pipetv.media.Session
+import dev.limitedio.pipetv.media.Engine
 
 /** Left rail: icons only while content has focus, glides open with labels when it gets focus. */
 class Nav(c: Context) : AnimView(c) {
@@ -29,9 +31,13 @@ class Nav(c: Context) : AnimView(c) {
     private val brand = Ui.paint(Ui.TEXT, 38f, true)
     private val fill = Paint(Paint.ANTI_ALIAS_FLAG)
     private val r = RectF()
+    private val status = Ui.paint(Ui.ACCENT2, 26f, true)
+    private val playingTitle = Ui.paint(Ui.TEXT, 26f, true)
+    private val playerHint = Ui.paint(Ui.DIM, 26f)
+    private val playerCard = Ui.paint(Ui.SURFACE)
 
     private val itemH get() = Ui.u(90)
-    private val y0 get() = Ui.u(190)
+    private val y0 get() = Ui.u(if (Session.item != null) 230 else 190)
 
     override fun render(c: Canvas, dt: Float) {
         val expanded = open.value.coerceIn(0f, 1f)
@@ -39,7 +45,21 @@ class Nav(c: Context) : AnimView(c) {
         val ox = if (Ui.rtl) width - pw else 0f
         c.drawRect(ox, 0f, ox + pw, height.toFloat(), bg)
         brand.alpha = (255 * expanded).toInt().coerceIn(0, 255)
-        Txt.draw(c, "PipeTv", ox + Ui.u(40), Ui.u(130), pw - Ui.u(80), brand)
+        Txt.draw(c, "PipeTv", ox + Ui.u(40), Ui.u(if (Session.item != null) 64 else 130), pw - Ui.u(80), brand)
+        Session.item?.let { item ->
+            if (expanded > .15f) {
+                val x = ox + Ui.u(20); val cw = pw - Ui.u(40)
+                r.set(x, Ui.u(88), x + cw, Ui.u(208)); c.drawRoundRect(r, Ui.u(18), Ui.u(18), playerCard)
+                val tx = x + Ui.u(16); val tw = cw - Ui.u(32)
+                Txt.draw(c, Txt.fit(status, S.t(if (Engine.exo.playWhenReady) K.NOW_PLAYING else K.PAUSED), tw), tx, Ui.u(118), tw, status)
+                Txt.draw(c, Txt.fit(playingTitle, item.title, tw), tx, Ui.u(154), tw, playingTitle)
+                val cue = S.f(K.PLAYER_MENU_HINT, if (Ui.rtl) "→" else "←")
+                Txt.draw(c, Txt.fit(playerHint, cue, tw), tx, Ui.u(188), tw, playerHint)
+            } else {
+                val cx = if (Ui.rtl) width - Ui.u(52) else Ui.u(52)
+                c.drawCircle(cx, Ui.u(134), Ui.u(8), status)
+            }
+        }
         val py = y0 + pill.value * itemH
         r.set(ox + Ui.u(20), py, ox + pw - Ui.u(20), py + itemH - Ui.u(14))
         fill.shader = LinearGradient(r.left, 0f, r.right, 0f, Ui.ACCENT, Ui.ACCENT2, Shader.TileMode.CLAMP)

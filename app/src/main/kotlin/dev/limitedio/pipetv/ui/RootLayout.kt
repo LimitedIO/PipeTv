@@ -8,9 +8,8 @@ object RootLayout {
     fun apply(root: Root, dk: Float, f: Float) {
         val w = root.width; val h = root.height; if (w == 0) return
         val rail = Ui.u(104); val rtl = Ui.rtl
-        val playerW = Ui.u(460); val panel = playerW * dk
-        val sidebar = rail + panel
-        val l = if (rtl) 0f else sidebar; val r = if (rtl) w - sidebar else w.toFloat()
+        val playerW = minOf(Ui.u(760), w * .58f); val panel = playerW * dk
+        val l = if (rtl) 0f else rail; val r = if (rtl) w - rail else w.toFloat()
         (root.pages.views + root.screens.views).forEach { it.layout(l.toInt(), 0, r.toInt(), h) }
         val nw = Ui.u(340).toInt()
         if (rtl) root.nav.layout((w - panel - nw).toInt(), 0, (w - panel).toInt(), h)
@@ -27,6 +26,8 @@ object RootLayout {
         root.hud.layout(0, 0, w, h); root.toast.layout(0, 0, w, h); root.update.layout(0, 0, w, h)
         val mnw = minOf(Ui.u(820).toInt(), w - Ui.u(80).toInt()); val mnx = (w - mnw) / 2
         root.playerSub.layout(0, 0, w, h)
+        root.navigationShade.layout(0, 0, w, h)
+        root.navigationShade.visibility = if (f < .98f && (root.controls.onNav || root.dock.lit || dk > .001f)) View.VISIBLE else View.GONE
         root.menuShade.layout(0, 0, w, h)
         root.menu.layout(mnx, Ui.u(64).toInt(), mnx + mnw, h - Ui.u(64).toInt())
         root.stage.alpha = if (Session.active) maxOf(dk, f) else 0f

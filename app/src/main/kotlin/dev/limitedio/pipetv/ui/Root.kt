@@ -18,12 +18,13 @@ import dev.limitedio.pipetv.ui.widgets.SubMenu
 /** The screen: owns the pages, the player and the two big motions (dock slide, fullscreen expand). */
 class Root(c: Context) : ViewGroup(c) {
     val nav = Nav(c); val stage = Stage(c); val dock = Dock(c); val hud = Hud(c); val toast = Toast(c); val update = UpdateUi(c)
+    val navigationShade = android.view.View(c).apply { setBackgroundColor(0x70050810); visibility = GONE }
     val playerPanel = android.view.View(c).apply { setBackgroundColor(0xFF101322.toInt()); visibility = GONE }
     val menuShade = android.view.View(c).apply { setBackgroundColor(0xB807080F.toInt()); visibility = GONE }
     val menu = RowList(c, { S.t(K.OPTIONS) }, true).apply { visibility = GONE }
     val playerSub = SubMenu(c).apply { visibility = GONE }
     val controls = Controls(this); val screens = ScreenStack(this); val opener = Opener(this)
-    val pages = Pages(c, opener::pick, opener::details, { onLanguage() }, toast::show)
+    val pages = Pages(c, opener::pick, opener::details, { onLanguage() }, toast::show, opener::about)
     val dockS = Spring(0f, 170f, 24f); val fullS = Spring(0f, 170f, 24f)
     var tab = 0; private set
     var menuOpen = false; private set; var askMic: () -> Unit = {}
@@ -42,7 +43,7 @@ class Root(c: Context) : ViewGroup(c) {
     init {
         setWillNotDraw(false); clipChildren = false // the dock draws its focus ring and progress over the video
         pages.views.forEach { addView(it); it.visibility = GONE }
-        listOf(playerPanel, nav, stage, dock, hud, menuShade, menu, playerSub, toast, update).forEach { addView(it) }
+        listOf(navigationShade, playerPanel, nav, stage, dock, hud, menuShade, menu, playerSub, toast, update).forEach { addView(it) }
         show(0, false)
         Session.onChange = { controls.sessionChanged() }
         Session.onReady = { setFull(true) }
@@ -58,7 +59,7 @@ class Root(c: Context) : ViewGroup(c) {
         val show = on && Session.item != null && !full
         val target = if (show) 1f else 0f
         if (dockS.target == target) return
-        dockS.target = target; pages.setCols(if (show) 3 else 4); kick()
+        dockS.target = target; kick()
     }
     fun setFull(on: Boolean) {
         fullS.target = if (on) 1f else 0f

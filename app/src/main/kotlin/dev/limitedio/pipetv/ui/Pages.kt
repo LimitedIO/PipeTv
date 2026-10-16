@@ -15,13 +15,13 @@ import dev.limitedio.pipetv.ui.search.SearchPage
 import dev.limitedio.pipetv.ui.timeline.TimelineView
 
 /** The five main pages and how each one loads its content. */
-class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -> Unit, toast: (String) -> Unit) {
+class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -> Unit, toast: (String) -> Unit, onAbout: () -> Unit) {
     val home = Grid(c) { S.t(K.RECOMMENDED) }
     val search = SearchPage(c)
     val popular = PopularPage(c)
     val favs = FavsPage(c)
     val history = TimelineView(c)
-    val settings = SettingsPage(c, onLang, { search.keyboard.refresh() }, toast)
+    val settings = SettingsPage(c, onLang, { search.keyboard.refresh() }, toast, onAbout)
     val views: List<View> = listOf(home, search, popular, favs, history, settings)
     private var homeAt = 0L; private var retries = 0
 

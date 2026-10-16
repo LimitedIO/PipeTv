@@ -20,7 +20,7 @@ class Dock(c: Context) : AnimView(c) {
     var onNav: () -> Unit = {}
     var drawIcon: (Canvas, Int, Float, Float, Float) -> Unit = { _, _, _, _, _ -> }
     private var sel = 0
-    private val title = Ui.paint(Ui.TEXT, 26f, true)
+    private val title = Ui.paint(Ui.TEXT, 30f, true)
     private val heading = Ui.paint(Ui.TEXT, 34f, true)
     private val dim = Ui.paint(Ui.DIM, 26f)
     private val track = Ui.paint(0x33FFFFFF)
@@ -61,11 +61,11 @@ class Dock(c: Context) : AnimView(c) {
         val cell = w / 5
         for (i in 1..5) {
             val x = Ui.mx((i - 1) * cell, cell, w)
-            if (lit && sel == i) c.drawRoundRect(x + Ui.u(2), Ui.u(92), x + cell - Ui.u(2), Ui.u(142), Ui.u(12), Ui.u(12), face)
-            drawIcon(c, i, x + cell / 2, Ui.u(117), Ui.u(14))
+            if (lit && sel == i) c.drawRoundRect(x + Ui.u(6), Ui.u(100), x + cell - Ui.u(6), Ui.u(172), Ui.u(18), Ui.u(18), face)
+            drawIcon(c, i, x + cell / 2, Ui.u(136), Ui.u(24))
         }
         if (lit) {
-            Txt.draw(c, Txt.fit(dim, S.t(names[sel]), w), 0f, Ui.u(174), w, dim, true)
+            Txt.draw(c, Txt.fit(dim, S.t(names[sel]), w), 0f, Ui.u(214), w, dim, true)
         }
         c.restore()
         if (p.isPlaying) postInvalidateDelayed(500)
