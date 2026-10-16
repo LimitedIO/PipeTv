@@ -10,7 +10,10 @@ import java.net.URL
 
 /** HttpURLConnection backed downloader for NewPipeExtractor (no extra deps). */
 object Http : Downloader() {
-    override fun execute(request: Request): Response {
+    /** One retry: a TV that has just woken up often fails the very first request. */
+    override fun execute(request: Request): Response = try { once(request) } catch (e: java.io.IOException) { Thread.sleep(600); once(request) }
+
+    private fun once(request: Request): Response {
         val c = URL(request.url()).openConnection() as HttpURLConnection
         c.requestMethod = request.httpMethod()
         c.connectTimeout = 15_000

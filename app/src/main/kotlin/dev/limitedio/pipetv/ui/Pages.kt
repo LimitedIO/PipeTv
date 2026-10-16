@@ -22,7 +22,7 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
     val history = TimelineView(c)
     val settings = SettingsPage(c, onLang, { search.keyboard.refresh() }, toast)
     val views: List<View> = listOf(home, search, popular, favs, history, settings)
-    private var homeAt = 0L
+    private var homeAt = 0L; private var retries = 0
 
     init {
         home.onPick = pick; home.onMenu = menu; popular.picks(pick, menu)
@@ -51,11 +51,19 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
     /** The language changed: refresh everything that was fetched in the old one. */
     fun relocalize(current: Int) { homeAt = 0; popular.reset(); search.keyboard.refresh(); enter(current) }
 
+    /** The network often comes up a moment after a TV boots: keep trying quietly with a growing pause. */
+    private fun retryHome() {
+        retries++
+        Bg.main.postDelayed({ if (home.items.isEmpty()) { home.busy = true; home.message = null; home.invalidate(); loadHome() } }, minOf(30_000L, 3_000L * retries))
+    }
+
     private fun loadHome() {
         homeAt = SystemClock.uptimeMillis()
         Bg.io({ Feed.home() }) { r ->
-            if (r.isNullOrEmpty()) { homeAt = 0; home.busy = false; if (home.items.isEmpty()) home.message = S.t(K.NO_CONNECTION) }
-            else { home.items = mark(r); Store.save("feed", r) }
+            if (r.isNullOrEmpty()) {
+                homeAt = 0; home.busy = false
+                if (home.items.isEmpty()) { home.message = S.t(K.NO_CONNECTION) + Bg.lastError.let { e -> if (e.isEmpty()) "" else " ($e)" }; retryHome() }
+            } else { retries = 0; home.message = null; home.items = mark(r); Store.save("feed", r) }
             home.invalidate()
         }
     }
