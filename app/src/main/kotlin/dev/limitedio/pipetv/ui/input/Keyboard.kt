@@ -78,8 +78,8 @@ class Keyboard(c: Context) : AnimView(c) {
 
     private fun label(c: Canvas, k: Key, on: Boolean) {
         r.set(kx(k) + Ui.u(5), ky(k) + Ui.u(5), kx(k) + k.cs * cw - Ui.u(5), ky(k) + k.rs * ch - Ui.u(5))
-        if (!on) { face.alpha = if (k.token.startsWith("@")) 255 else 200; c.drawRoundRect(r, Ui.u(18), Ui.u(18), face) }
-        val ink = if (on) 0xFF0A0B14.toInt() else if (k.token == "@go" || (k.token == "@mic" && listening)) Ui.ACCENT2 else Ui.TEXT
+        if (!on) { face.color = KeyRows.face(k.token); c.drawRoundRect(r, Ui.u(18), Ui.u(18), face) }
+        val ink = if (on) 0xFF0A0B14.toInt() else if (k.token == "@mic" && listening) Ui.ACCENT2 else KeyRows.ink(k.token)
         glyph.color = ink; ico.color = ink; glyph.textSize = minOf(ch * .42f, Ui.u(54))
         val icon = when (k.token) { "@mic" -> Icons.MIC; "@del" -> Icons.DEL; "@shift" -> Icons.SHIFT; else -> -1 }
         if (icon >= 0) Icons.draw(c, icon, r.centerX(), r.centerY(), minOf(cw, ch) * .24f, ico)

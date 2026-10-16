@@ -8,24 +8,16 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Shader
 import android.view.KeyEvent
-import dev.limitedio.pipetv.ui.AnimView
-import dev.limitedio.pipetv.ui.Scrollbar
-import dev.limitedio.pipetv.ui.Spring
-import dev.limitedio.pipetv.ui.Txt
-import dev.limitedio.pipetv.ui.Ui
-
-/** A block of text with a heading (a comment with its author, or the video description). */
-class Block(val head: String, val tag: String, val body: String, val max: Int = 400) {
-    var lines: List<String> = emptyList(); var w = 0
-}
+import dev.limitedio.pipetv.ui.*
 
 /** Card-style reader: every block is a card with an avatar, the focused one is centred, framed and bright. */
 class TextList(c: Context) : AnimView(c) {
     var blocks: List<Block> = emptyList()
         set(v) { field = v; if (idx >= v.size) idx = 0; invalidate() }
-    var message: String? = null
+    var message: String? = null; var hint = "" // shown at the bottom while the focused block can be opened
     var lit = false
     var onEnd: () -> Unit = {}
+    var onSelect: (Int) -> Unit = {} // OK on a block (comments: open its replies)
     private var idx = 0; private var asked = -1
     private val scroll = spring(0f, 150f, 24f)
     private val head = Ui.paint(Ui.TEXT, 27f, true); private val tag = Ui.paint(Ui.DIM, 21f)
@@ -61,9 +53,15 @@ class TextList(c: Context) : AnimView(c) {
                 if (idx >= blocks.size - 3 && asked != blocks.size) { asked = blocks.size; onEnd() }
             }
             KeyEvent.KEYCODE_DPAD_UP -> if (scroll.target > t + Ui.u(10) - Ui.u(30)) scroll.go(maxOf(scroll.target - Ui.u(200), t - Ui.u(30))) else if (idx > 0) { idx--; centre() } else return false
+            KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> onSelect(idx)
             else -> return false
         }
         return true
+    }
+
+    fun focusAt(i: Int) {
+        if (blocks.isEmpty()) return
+        idx = i.coerceIn(0, blocks.size - 1); blocks.forEach { wrap(it, width - pad * 2 - Ui.u(96)) }; centre(); scroll.snap(scroll.target)
     }
 
     override fun render(c: Canvas, dt: Float) {
@@ -77,6 +75,7 @@ class TextList(c: Context) : AnimView(c) {
         }
         Scrollbar.draw(c, width.toFloat(), Ui.u(12), height - Ui.u(12), y + scroll.value, height.toFloat(), scroll.value, lit)
         if (lit && blocks.size > 1) Txt.draw(c, "${idx + 1} / ${blocks.size}", pad, height - Ui.u(14), cw, count)
+        if (lit && blocks.getOrNull(idx)?.more == true) Txt.draw(c, hint, pad, height - Ui.u(14), cw, count, true)
     }
 
     private fun item(c: Canvas, b: Block, x: Float, y: Float, w: Float, h: Float, on: Boolean, dim: Boolean) {

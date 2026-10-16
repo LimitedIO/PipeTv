@@ -48,6 +48,7 @@ class MainActivity : Activity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) { super.onWindowFocusChanged(hasFocus); if (hasFocus) immersive() }
 
     override fun dispatchKeyEvent(e: KeyEvent): Boolean {
+        when (root.controls.hold.handle(e)) { 1 -> return true; 2 -> { click(e.keyCode); return true } }
         if (e.action == KeyEvent.ACTION_DOWN && root.controls.key(e)) { click(e.keyCode); return true }
         if (e.action == KeyEvent.ACTION_UP && e.keyCode == KeyEvent.KEYCODE_BACK) return true
         return super.dispatchKeyEvent(e)

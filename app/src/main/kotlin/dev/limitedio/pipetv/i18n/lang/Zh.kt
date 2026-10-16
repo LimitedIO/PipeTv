@@ -54,4 +54,6 @@ val Zh = mapOf(
     UPD_TITLE to "有可用更新", UPD_BODY to "PipeTv %s 可供下载。", UPD_NOW to "立即更新", UPD_LATER to "稍后", UPD_INSTALL to "立即安装", UPD_READY_BODY to "版本 %s 已下载，可以安装。", UPD_FOUND to "有新版本 %s",
     EXIT to "退出", TOTAL_WATCHED to "总观看时长：%s",
     A_OPEN to "打开播放器", A_PLAYPAUSE to "播放 / 暂停", A_CLOSE to "关闭视频", BACK_HINT to "请在菜单中选择“退出”来离开 PipeTv",
+    OPEN to "打开", VIDEO_INFO to "视频信息", FAV_ADD to "加入收藏", FAV_DEL to "取消收藏", OPEN_CHANNEL to "打开频道",
+    REPLIES_HINT to "确定：查看回复",
 )

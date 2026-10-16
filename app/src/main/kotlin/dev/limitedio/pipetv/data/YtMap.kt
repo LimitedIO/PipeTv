@@ -41,7 +41,7 @@ object YtMap {
             val who = i.uploaderName.orEmpty().ifEmpty { by }
             val meta = listOf(views, Ago.of(i.uploadDate, i.textualUploadDate)).filter { s -> s.isNotEmpty() }.joinToString(S.sep)
             val sub = listOf(who, meta).filter { s -> s.isNotEmpty() }.joinToString(S.sep)
-            Item(it.groupValues[1], i.url, i.name, sub, i.duration, Item.VIDEO, "", who, meta)
+            Item(it.groupValues[1], i.url, i.name, sub, i.duration, Item.VIDEO, "", who, meta, i.uploaderUrl.orEmpty())
         }
         is ChannelInfoItem -> {
             val subs = if (i.subscriberCount >= 0) S.f(K.SUBS, count(i.subscriberCount)) else ""

@@ -26,8 +26,8 @@ class DetailsView(c: Context, private val item: Item) : ViewGroup(c), Screen {
     private val about = TextList(c); private val comments = TextList(c)
     private val related = Grid(c) { "" }.apply { cols = 3; upExit = true }
     private val bodies: List<View> = listOf(hero, about, comments, related, View(c), View(c))
-    private var channelUrl = ""; private var zone = 0; private var commentsLoaded = false; private var on = true
-    private var paged: dev.limitedio.pipetv.data.Comments? = null
+    private val thread = CommentsPane(item.url, comments)
+    private var channelUrl = ""; private var zone = 0; private var on = true
 
     init {
         bodies.forEach { addView(it) }; addView(head); head.byline = item.sub
@@ -47,33 +47,12 @@ class DetailsView(c: Context, private val item: Item) : ViewGroup(c), Screen {
     private fun show(t: Int) {
         if (t == 5) return
         bodies.forEachIndexed { i, v -> v.visibility = if (i == t) VISIBLE else GONE }
-        if (t == 2 && !commentsLoaded) loadComments()
-    }
-
-    private fun loadComments() {
-        commentsLoaded = true; comments.message = S.t(K.LOADING)
-        Bg.io({ YtPages.comments(item.url) }) { r ->
-            if (r == null) { comments.message = S.t(K.LOAD_FAILED); return@io }
-            paged = r
-            comments.message = if (r.disabled) S.t(K.COMMENTS_OFF) else if (r.list.items.isEmpty()) S.t(K.NO_COMMENTS) else null
-            comments.blocks = r.list.items.map(::block)
-            comments.onEnd = { more() }
-        }
-    }
-
-    private fun block(c: dev.limitedio.pipetv.data.Comment) = Block(
-        c.author + if (c.pinned) " · " + S.t(K.PINNED) else "",
-        listOf(c.date, c.likes, if (c.replies > 0) S.f(K.REPLIES, c.replies) else "").filter { it.isNotEmpty() }.joinToString(" · "), c.text, 8)
-
-    private fun more() {
-        val p = paged?.list ?: return
-        if (!p.hasMore) return
-        Bg.io({ p.loadMore() }) { r -> if (!r.isNullOrEmpty()) comments.blocks = comments.blocks + r.map(::block) }
+        if (t == 2) thread.load()
     }
 
     private fun refreshLit() { head.lit = on && zone == 0; about.lit = on && zone == 1; comments.lit = on && zone == 1; related.lit = on && zone == 1 && head.sel == 3; listOf<View>(head, about, comments, related).forEach { it.invalidate() } }
     override fun lit(on: Boolean) { this.on = on; refreshLit() }
-    override fun back(): Boolean { if (zone == 0) return false; zone = 0; refreshLit(); return true }
+    override fun back(): Boolean { if (thread.back()) return true; if (zone == 0) return false; zone = 0; refreshLit(); return true }
     override fun focused(): Item? = if (zone == 1 && head.sel == 3) related.focused() else item
 
     override fun key(code: Int, repeat: Int): Boolean {

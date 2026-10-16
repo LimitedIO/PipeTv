@@ -28,8 +28,8 @@ class Grid(c: Context, private val title: () -> String) : AnimView(c) {
     private val appear = spring(0f, 70f, 14f); private val head = Ui.paint(Ui.TEXT, 44f, true); private val fx = GridFx()
     override val animating get() = (busy && list.isEmpty()) || loading || dev.limitedio.pipetv.media.Session.pending != null
 
-    private val pad get() = Ui.u(56)
-    private val gap get() = Ui.u(30); private val top get() = if (title().isEmpty()) Ui.u(28) else Ui.u(130)
+    private val pad get() = Ui.u(32)
+    private val gap get() = Ui.u(20); private val top get() = if (title().isEmpty()) Ui.u(28) else Ui.u(130)
     private val cw get() = (width - pad * 2 - gap * (cols - 1)) / cols
     private val rowH get() = Cards.height(cw) + gap * .5f
     private fun xOf(i: Int) = Ui.mx(pad + (i % cols) * (cw + gap), cw, width.toFloat())

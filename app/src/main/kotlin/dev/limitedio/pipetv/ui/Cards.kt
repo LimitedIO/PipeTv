@@ -17,13 +17,13 @@ object Cards {
     private val badge = Ui.paint(0xCC000000.toInt())
     private val live = Ui.paint(0xFFE5254B.toInt())
     private val badgeText = Ui.paint(Ui.TEXT, 17f, true)
-    private val title = Ui.paint(Ui.TEXT, 23f, true); private val by = Ui.paint(0xFFB4B9D2.toInt(), 20f); private val meta = Ui.paint(Ui.DIM, 18f)
+    private val title = Ui.paint(Ui.TEXT, 27f, true); private val meta = Ui.paint(Ui.DIM, 22f)
     private val accent = Ui.paint(Ui.ACCENT2, 19f, true); private val bar = Ui.paint(Ui.ACCENT2)
     private val stack = Ui.paint(Ui.ACCENT); private val gold = Ui.paint(0xFFFFC83D.toInt())
     private val big = Ui.paint(Ui.TEXT, 30f, true); private val shade = Ui.paint(0xB3000000.toInt()); private val m = Matrix()
     private val r = RectF()
 
-    fun height(w: Float) = w * 9 / 16 + Ui.u(150)
+    fun height(w: Float) = w * 9 / 16 + Ui.u(116)
 
     private fun fade(p: Pic) = (255 * ((SystemClock.uptimeMillis() - p.born) / 250f).coerceIn(0f, 1f)).toInt()
 
@@ -44,13 +44,13 @@ object Cards {
         c.drawText(text, r.left + Ui.u(8), r.bottom - Ui.u(6), badgeText)
     }
 
-    /** Title (2 lines), then the channel line and the stats line (views · time ago). */
+    /** Title (2 lines, big) and one quiet line under it: channel · views · time ago. Channels show name and subscribers. */
     private fun text(c: Canvas, it: Item, x: Float, y: Float, w: Float, lit: Boolean, center: Boolean = false) {
-        title.color = if (lit) Ui.TEXT else 0xFFD5D8E8.toInt()
-        var ty = y + Ui.u(32)
-        for (l in Txt.lines(it, title, w - Ui.u(8), 2)) { Txt.draw(c, l, x + Ui.u(4), ty, w - Ui.u(8), title, center); ty += Ui.u(28) }
-        Txt.draw(c, Txt.fit(by, it.by.ifEmpty { it.sub }, w - Ui.u(8)), x + Ui.u(4), y + Ui.u(98), w - Ui.u(8), by, center)
-        Txt.draw(c, Txt.fit(if (it.kind == Item.VIDEO) meta else accent, it.meta, w - Ui.u(8)), x + Ui.u(4), y + Ui.u(126), w - Ui.u(8), if (it.kind == Item.VIDEO) meta else accent, center)
+        title.color = if (lit) Ui.TEXT else 0xFFDADDEC.toInt()
+        var ty = y + Ui.u(34)
+        for (l in Txt.lines(it, title, w - Ui.u(8), 2)) { Txt.draw(c, l, x + Ui.u(4), ty, w - Ui.u(8), title, center); ty += Ui.u(32) }
+        val line = if (it.kind == Item.CHANNEL) it.sub else it.sub.ifEmpty { it.meta }
+        Txt.draw(c, Txt.fit(meta, line, w - Ui.u(8)), x + Ui.u(4), y + Ui.u(104), w - Ui.u(8), meta, center)
     }
 
     private fun video(c: Canvas, it: Item, x: Float, y: Float, w: Float, h: Float) {

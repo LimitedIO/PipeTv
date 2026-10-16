@@ -19,6 +19,9 @@ class Actions(c: Context, private val run: (Int) -> Unit) : AnimView(c) {
     var lit = false
         set(v) { field = v; invalidate() }
     private var sel = 0
+    /** 0..1: how far the rail is out. It only shows while the main menu (or the rail itself) has focus. */
+    val rail = Spring(0f, 170f, 24f)
+    fun focus(zone: Int, active: Boolean) { lit = zone == 3; rail.target = if (active && (zone == 0 || zone == 3)) 1f else 0f }
     private val pill = spring(0f, 320f, 26f)
     private val names = listOf(K.A_OPEN, K.A_PLAYPAUSE, K.NEXT, K.FAVORITE, K.OPTIONS, K.A_CLOSE)
     private val bg = Ui.paint(0xF2101322.toInt()); private val ink = Paint(Paint.ANTI_ALIAS_FLAG); private val fill = Paint(Paint.ANTI_ALIAS_FLAG)

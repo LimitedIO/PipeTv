@@ -23,18 +23,18 @@ class Root(c: Context) : ViewGroup(c) {
     val playerSub = SubMenu(c).apply { visibility = GONE }
     val controls = Controls(this); val screens = ScreenStack(this); val opener = Opener(this)
     val pages = Pages(c, opener::pick, opener::details, { onLanguage() }, toast::show)
-    val dockS = Spring(0f, 170f, 24f); val fullS = Spring(0f, 170f, 24f)
-    val panelW = Spring(580f, 170f, 24f); val actS = Spring(0f, 170f, 24f) // actS: width of the shortcut rail (0 when nothing plays)
+    val dockS = Spring(0f, 170f, 24f); val fullS = Spring(0f, 170f, 24f); val panelW = Spring(580f, 170f, 24f)
     var tab = 0; private set
     var menuOpen = false; private set; var askMic: () -> Unit = {}
+    var fromPlayer = false // a video-info page opened from fullscreen is up: Back returns to the video
     private val ambient = Ambient(); private var running = false; private var last = 0L
 
     private val frame = object : Choreographer.FrameCallback {
         var last = 0L
         override fun doFrame(t: Long) {
             val dt = if (last == 0L) .016f else minOf((t - last) / 1e9f, .05f); last = t
-            dockS.step(dt); fullS.step(dt); panelW.step(dt); actS.step(dt); relayout()
-            if (dockS.moving || fullS.moving || panelW.moving || actS.moving || dock.popMoving) Choreographer.getInstance().postFrameCallback(this) else { last = 0; running = false }
+            dockS.step(dt); fullS.step(dt); panelW.step(dt); actions.rail.step(dt); relayout()
+            if (dockS.moving || fullS.moving || panelW.moving || actions.rail.moving || dock.popMoving) Choreographer.getInstance().postFrameCallback(this) else { last = 0; running = false }
         }
     }
 
@@ -67,8 +67,7 @@ class Root(c: Context) : ViewGroup(c) {
     fun voice() { show(1); if (Voice.available(context)) askMic() else toast.show(S.t(K.VOICE_NA)) }
     fun onLanguage() { Yt.relocalize(); pages.relocalize(tab); nav.invalidate(); relayout() }
 
-    // The player panel shrinks to a small picture on pages that need the room (search, popular, video info, channels).
-    fun syncDock() { val small = tab == 1 || tab == 2 || screens.any; panelW.target = if (small) 300f else 580f; dock.compact = small; kick() }
+    fun syncDock() { val small = tab <= 2 || screens.any; panelW.target = if (small) 300f else 580f; dock.compact = small; kick() }
 
     private fun act(i: Int) {
         when (i) {
@@ -79,6 +78,7 @@ class Root(c: Context) : ViewGroup(c) {
     }
 
     fun show(i: Int, animate: Boolean = true) {
+        fromPlayer = false
         screens.clear()
         pages.views[tab].visibility = GONE
         tab = i; nav.sel = i; syncDock()

@@ -53,6 +53,16 @@ object YtPages {
     private fun comment(c: org.schabi.newpipe.extractor.comments.CommentsInfoItem) = Comment(
         c.uploaderName.orEmpty(), plain(c.commentText), Ago.of(c.uploadDate, c.textualUploadDate),
         c.textualLikeCount.orEmpty().ifEmpty { if (c.likeCount > 0) c.likeCount.toString() else "" },
-        c.isPinned, c.isHeartedByUploader, c.replyCount.coerceAtLeast(0),
+        c.isPinned, c.isHeartedByUploader, c.replyCount.coerceAtLeast(0), c.replies,
     )
+
+    /** The replies to one comment ([page] comes from the comment itself). */
+    fun replies(url: String, page: org.schabi.newpipe.extractor.Page): Paged<Comment> {
+        Yt.init()
+        val first = CommentsInfo.getMoreItems(svc, url, page)
+        return Paged(first.items.map(::comment), first.nextPage) { p ->
+            val r = CommentsInfo.getMoreItems(svc, url, p)
+            r.items.map(::comment) to r.nextPage
+        }
+    }
 }

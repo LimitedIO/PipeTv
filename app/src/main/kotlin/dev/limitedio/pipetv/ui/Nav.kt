@@ -48,7 +48,7 @@ class Nav(c: Context) : AnimView(c) {
             val cy = y0 + i * itemH + (itemH - Ui.u(14)) / 2
             val on = if (exit) i == 6 else i == sel
             icon.color = if (on) 0xFF0A0B14.toInt() else Ui.DIM
-            val ix = if (Ui.rtl) width - Ui.u(62) else Ui.u(62)
+            val ix = if (Ui.rtl) width - Ui.u(52) else Ui.u(52) // centre of the 104-wide collapsed rail (same as the highlight)
             if (t.second == Glyphs.FAV) Glyphs.star(c, ix, cy, Ui.u(20), icon, on) else if (t.second == Glyphs.EXIT) Glyphs.power(c, ix, cy, Ui.u(18), icon) else Icons.draw(c, t.second, ix, cy, Ui.u(18), icon)
             label.color = if (on) 0xFF0A0B14.toInt() else Ui.TEXT
             label.alpha = (255 * open.value).toInt().coerceIn(0, 255)

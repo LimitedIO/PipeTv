@@ -23,6 +23,7 @@ class ScreenStack(private val root: Root) {
         val v = list.removeLastOrNull() ?: return
         root.removeView(v)
         (list.lastOrNull() ?: root.pages.views[root.tab]).visibility = View.VISIBLE; root.syncDock()
+        if (root.fromPlayer && list.isEmpty()) { root.fromPlayer = false; root.setFull(true) } // info opened from the player: Back returns to it
     }
 
     fun clear() { while (any) pop() }

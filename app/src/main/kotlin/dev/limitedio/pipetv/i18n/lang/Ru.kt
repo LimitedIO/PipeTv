@@ -54,4 +54,6 @@ val Ru = mapOf(
     UPD_TITLE to "Доступно обновление", UPD_BODY to "PipeTv %s готов к загрузке.", UPD_NOW to "Обновить сейчас", UPD_LATER to "Позже", UPD_INSTALL to "Установить", UPD_READY_BODY to "Версия %s загружена и готова к установке.", UPD_FOUND to "Доступно обновление %s",
     EXIT to "Выход", TOTAL_WATCHED to "Всего просмотрено: %s",
     A_OPEN to "Открыть плеер", A_PLAYPAUSE to "Пуск / пауза", A_CLOSE to "Закрыть видео", BACK_HINT to "Чтобы выйти, выберите «Выход» в меню",
+    OPEN to "Открыть", VIDEO_INFO to "О видео", FAV_ADD to "В избранное", FAV_DEL to "Убрать из избранного", OPEN_CHANNEL to "Открыть канал",
+    REPLIES_HINT to "OK: показать ответы",
 )

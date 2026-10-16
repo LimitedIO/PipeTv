@@ -54,4 +54,6 @@ val Tr = mapOf(
     UPD_TITLE to "Güncelleme mevcut", UPD_BODY to "PipeTv %s indirilmeye hazır.", UPD_NOW to "Şimdi güncelle", UPD_LATER to "Sonra", UPD_INSTALL to "Şimdi yükle", UPD_READY_BODY to "%s sürümü indirildi ve yüklenmeye hazır.", UPD_FOUND to "Güncelleme %s mevcut",
     EXIT to "Çıkış", TOTAL_WATCHED to "Toplam izleme süresi: %s",
     A_OPEN to "Oynatıcıyı aç", A_PLAYPAUSE to "Oynat / duraklat", A_CLOSE to "Videoyu kapat", BACK_HINT to "PipeTv'den çıkmak için menüde Çıkış'ı kullanın",
+    OPEN to "Aç", VIDEO_INFO to "Video bilgisi", FAV_ADD to "Favorilere ekle", FAV_DEL to "Favorilerden kaldır", OPEN_CHANNEL to "Kanalı aç",
+    REPLIES_HINT to "Tamam: yanıtları göster",
 )

@@ -8,7 +8,7 @@ object RootLayout {
     fun apply(root: Root, dk: Float, f: Float) {
         val w = root.width; val h = root.height; if (w == 0) return
         val pw = Ui.u(root.panelW.value); val panel = pw * dk; val rail = Ui.u(104); val rtl = Ui.rtl
-        val ar = Ui.u(96) * root.actS.value.coerceIn(0f, 1f); val l = if (rtl) panel else rail + ar; val r = if (rtl) w - rail - ar else w - panel
+        val ar = Ui.u(96) * root.actions.rail.value.coerceIn(0f, 1f); val l = if (rtl) panel else rail; val r = if (rtl) w - rail else w - panel
         (root.pages.views + root.screens.views).forEach { it.layout(l.toInt(), 0, r.toInt(), h) }
         val nw = Ui.u(340).toInt(); if (rtl) root.nav.layout((w - nw - ar).toInt(), 0, (w - ar).toInt(), h) else root.nav.layout(ar.toInt(), 0, (ar + nw).toInt(), h)
         if (rtl) root.actions.layout((w - ar).toInt(), 0, w, h) else root.actions.layout(0, 0, ar.toInt(), h)

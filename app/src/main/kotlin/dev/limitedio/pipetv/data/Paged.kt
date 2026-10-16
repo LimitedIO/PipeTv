@@ -20,7 +20,7 @@ class Playlist(val name: String, val by: String, val count: Long, val thumb: Str
 
 class Comment(
     val author: String, val text: String, val date: String, val likes: String,
-    val pinned: Boolean, val hearted: Boolean, val replies: Int,
+    val pinned: Boolean, val hearted: Boolean, val replies: Int, val page: Page? = null,
 )
 
 class Comments(val total: Int, val disabled: Boolean, val list: Paged<Comment>)

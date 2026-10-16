@@ -54,4 +54,6 @@ val Fr = mapOf(
     UPD_TITLE to "Mise à jour disponible", UPD_BODY to "PipeTv %s est prêt à être téléchargé.", UPD_NOW to "Mettre à jour", UPD_LATER to "Plus tard", UPD_INSTALL to "Installer maintenant", UPD_READY_BODY to "La version %s est téléchargée et prête à être installée.", UPD_FOUND to "Mise à jour %s disponible",
     EXIT to "Quitter", TOTAL_WATCHED to "Temps de visionnage total : %s",
     A_OPEN to "Ouvrir le lecteur", A_PLAYPAUSE to "Lecture / pause", A_CLOSE to "Fermer la vidéo", BACK_HINT to "Utilisez Quitter dans le menu pour fermer PipeTv",
+    OPEN to "Ouvrir", VIDEO_INFO to "Infos de la vidéo", FAV_ADD to "Ajouter aux favoris", FAV_DEL to "Retirer des favoris", OPEN_CHANNEL to "Ouvrir la chaîne",
+    REPLIES_HINT to "OK : voir les réponses",
 )

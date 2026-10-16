@@ -11,6 +11,7 @@ import dev.limitedio.pipetv.ui.input.Voice
 /** All keyboard / remote handling. Focus zones: 0 nav rail, 1 content, 2 player dock, 3 shortcut rail. */
 class Controls(private val root: Root) {
     var onNav = false; private set
+    val inContent get() = zone == 1; val hold = LongPress(root)
     private var zone = 1
     var onExit: () -> Unit = {}; private val keys = PlayerKeys(root)
 
@@ -25,7 +26,6 @@ class Controls(private val root: Root) {
         return if (root.full) keys.full(e) else browse(e)
     }
 
-    // Opens a video; the current one keeps playing until the new one is ready (then it goes fullscreen).
     fun play(item: dev.limitedio.pipetv.data.Item) {
         if (Session.item?.id == item.id) { root.setFull(true); return }
         if (Session.pending?.id != item.id) Session.open(item, true)
@@ -37,13 +37,13 @@ class Controls(private val root: Root) {
     fun sessionChanged() {
         if (Session.active && root.dockS.target == 0f) root.setDock(true)
         if (!Session.active) { root.setDock(false); root.setFull(false); if (zone == 2 || zone == 3) setZone(1) }
-        Sound.update(); root.actS.target = if (Session.active) 1f else 0f; root.kick()
+        Sound.update(); root.actions.focus(zone, Session.active); root.kick()
         root.pages.repaint(); root.dock.invalidate(); root.hud.invalidate(); root.stage.refresh(); root.stage.refit()
     }
 
     private fun setZone(z: Int) {
         zone = z; onNav = z == 0; if (z != 0) root.nav.exit = false
-        root.nav.lit = z == 0; root.dock.lit = z == 2; root.actions.lit = z == 3
+        root.nav.lit = z == 0; root.dock.lit = z == 2; root.actions.focus(z, Session.active); root.kick()
         root.pages.lit(root.tab, z == 1); root.screens.top?.lit(z == 1)
     }
 
@@ -67,7 +67,7 @@ class Controls(private val root: Root) {
             zone == 1 && root.screens.any -> if (root.screens.top?.back() != true) root.screens.pop()
             zone == 1 && root.tab == 1 && !root.screens.any && root.pages.search.back() -> {}
             zone != 0 -> setZone(0)
-            Session.active -> root.toast.show(S.t(K.BACK_HINT)) // Back never closes the video; Close is in the shortcut rail
+            Session.active -> root.toast.show(S.t(K.BACK_HINT))
             else -> onExit()
         }
         return true
