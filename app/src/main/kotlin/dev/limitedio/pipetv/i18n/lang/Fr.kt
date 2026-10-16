@@ -50,4 +50,5 @@ val Fr = mapOf(
     LTR to "De gauche à droite", RTL to "De droite à gauche", RTL_ASK to "Inverser l'interface pour cette langue ?",
     KEEP_LTR to "Non, garder de gauche à droite", USE_RTL to "Oui, de droite à gauche",
     POPULAR to "Populaire", T_MUSIC to "Musique", T_GAMING to "Jeux", T_NEWS to "Actualités", T_SPORTS to "Sport", T_MOVIES to "Films", T_LEARN to "Apprendre", T_COMEDY to "Humour", T_LIVE to "En direct",
+    RETRY to "Réessayer",
 )

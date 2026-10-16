@@ -50,4 +50,5 @@ val De = mapOf(
     LTR to "Links nach rechts", RTL to "Rechts nach links", RTL_ASK to "Layout für diese Sprache spiegeln?",
     KEEP_LTR to "Nein, links nach rechts lassen", USE_RTL to "Ja, rechts nach links",
     POPULAR to "Beliebt", T_MUSIC to "Musik", T_GAMING to "Gaming", T_NEWS to "Nachrichten", T_SPORTS to "Sport", T_MOVIES to "Filme", T_LEARN to "Lernen", T_COMEDY to "Comedy", T_LIVE to "Live",
+    RETRY to "Erneut versuchen",
 )

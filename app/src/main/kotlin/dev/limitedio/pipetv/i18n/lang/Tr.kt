@@ -50,4 +50,5 @@ val Tr = mapOf(
     LTR to "Soldan sağa", RTL to "Sağdan sola", RTL_ASK to "Bu dil için düzen yansıtılsın mı?",
     KEEP_LTR to "Hayır, soldan sağa kalsın", USE_RTL to "Evet, sağdan sola",
     POPULAR to "Popüler", T_MUSIC to "Müzik", T_GAMING to "Oyun", T_NEWS to "Haberler", T_SPORTS to "Spor", T_MOVIES to "Filmler", T_LEARN to "Öğren", T_COMEDY to "Komedi", T_LIVE to "Canlı",
+    RETRY to "Tekrar dene",
 )

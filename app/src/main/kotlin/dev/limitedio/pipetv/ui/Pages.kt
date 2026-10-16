@@ -25,7 +25,7 @@ class Pages(c: Context, pick: (Item) -> Unit, menu: (Item) -> Unit, onLang: () -
     private var homeAt = 0L; private var retries = 0
 
     init {
-        home.onPick = pick; home.onMenu = menu; popular.picks(pick, menu)
+        home.onRetry = { homeAt = 0; retries = 0; loadHome() }; home.onPick = pick; home.onMenu = menu; popular.picks(pick, menu)
         favs.picks(pick, menu)
         search.picks(pick, menu); history.onPick = pick; history.onMenu = menu
         home.items = mark(Store.load("feed"))

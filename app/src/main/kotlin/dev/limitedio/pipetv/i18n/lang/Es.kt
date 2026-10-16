@@ -50,4 +50,5 @@ val Es = mapOf(
     LTR to "De izquierda a derecha", RTL to "De derecha a izquierda", RTL_ASK to "¿Reflejar el diseño para este idioma?",
     KEEP_LTR to "No, mantener izquierda a derecha", USE_RTL to "Sí, de derecha a izquierda",
     POPULAR to "Popular", T_MUSIC to "Música", T_GAMING to "Juegos", T_NEWS to "Noticias", T_SPORTS to "Deportes", T_MOVIES to "Películas", T_LEARN to "Aprender", T_COMEDY to "Comedia", T_LIVE to "En vivo",
+    RETRY to "Reintentar",
 )

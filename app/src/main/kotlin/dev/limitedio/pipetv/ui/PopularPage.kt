@@ -18,7 +18,7 @@ class PopularPage(c: Context) : ViewGroup(c) {
     private val cache = HashMap<Int, List<Item>>()
     private var onChips = false; private var on = true; private var ask = 0
 
-    init { addView(grid); addView(chips); chips.onChange = { show(it) } }
+    init { addView(grid); addView(chips); chips.onChange = { show(it) }; grid.onRetry = { show(chips.sel) } }
 
     fun picks(pick: (Item) -> Unit, menu: (Item) -> Unit) { grid.onPick = pick; grid.onMenu = menu }
 

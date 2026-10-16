@@ -9,9 +9,8 @@ import kotlin.math.min
 
 /** A virtualised, spring-scrolled card grid with a gliding focus ring. Mirrors itself in RTL languages. */
 class Grid(c: Context, private val title: () -> String) : AnimView(c) {
-    var onPick: (Item) -> Unit = {}
-    var onMenu: (Item) -> Unit = {}
-    var onMore: () -> Unit = {}
+    var onPick: (Item) -> Unit = {}; var onMenu: (Item) -> Unit = {}
+    var onMore: () -> Unit = {}; var onRetry: (() -> Unit)? = null // onRetry: shows a Retry button on a failed, empty grid
     var busy = true
     var message: String? = null
     var lit = true
@@ -25,9 +24,8 @@ class Grid(c: Context, private val title: () -> String) : AnimView(c) {
 
     private var list: List<Item> = emptyList()
     private var idx = 0; private var asked = -1
-    private val scroll = spring(0f, 150f, 24f)
+    private val scroll = spring(0f, 150f, 24f); private val pop = spring(0f, 420f, 22f)
     private val rx = spring(0f, 300f, 27f); private val ry = spring(0f, 300f, 27f); private val rw = spring(0f, 300f, 27f)
-    private val pop = spring(0f, 420f, 22f)
     private val appear = spring(0f, 70f, 14f); private val head = Ui.paint(Ui.TEXT, 44f, true); private val fx = GridFx()
     override val animating get() = busy && list.isEmpty()
 
@@ -47,6 +45,7 @@ class Grid(c: Context, private val title: () -> String) : AnimView(c) {
 
     fun append(more: List<Item>) = put(list + more, false)
     fun focused(): Item? = list.getOrNull(idx)
+    private fun retry() { if (!busy) onRetry?.let { busy = true; message = null; invalidate(); it() } }
 
     override fun onSizeChanged(w: Int, h: Int, ow: Int, oh: Int) = refocus(ow == 0)
 
@@ -67,7 +66,7 @@ class Grid(c: Context, private val title: () -> String) : AnimView(c) {
             KeyEvent.KEYCODE_DPAD_LEFT -> if (idx % cols > 0) idx - 1 else return false
             KeyEvent.KEYCODE_DPAD_UP -> if (idx >= cols) idx - cols else if (upExit) return false else idx
             KeyEvent.KEYCODE_DPAD_DOWN -> if (idx + cols < n) idx + cols else if (idx / cols < (n - 1) / cols) n - 1 else idx
-            KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> { list.getOrNull(idx)?.let(onPick); return true }
+            KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> { if (list.isEmpty()) retry() else onPick(list[idx]); return true }
             KeyEvent.KEYCODE_MENU, KeyEvent.KEYCODE_INFO -> { list.getOrNull(idx)?.let(onMenu); return true }
             else -> return false
         }
@@ -81,7 +80,7 @@ class Grid(c: Context, private val title: () -> String) : AnimView(c) {
     override fun render(c: Canvas, dt: Float) {
         val w = cw; val s = scroll.value
         if (title().isNotEmpty()) Txt.draw(c, title(), pad, Ui.u(84) - s, width - pad * 2, head)
-        if (list.isEmpty()) { fx.empty(c, pad, top, w, gap, rowH, cols, busy, width.toFloat(), message); return }
+        if (list.isEmpty()) { fx.empty(c, pad, top, w, gap, rowH, cols, busy, width.toFloat(), message, onRetry != null, lit); return }
         val h = Cards.height(w)
         for (i in list.indices) {
             val y = top + (i / cols) * rowH - s

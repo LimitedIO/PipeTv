@@ -50,4 +50,5 @@ val Hi = mapOf(
     LTR to "बाएँ से दाएँ", RTL to "दाएँ से बाएँ", RTL_ASK to "क्या इस भाषा के लिए लेआउट उलटें?",
     KEEP_LTR to "नहीं, बाएँ से दाएँ रखें", USE_RTL to "हाँ, दाएँ से बाएँ",
     POPULAR to "लोकप्रिय", T_MUSIC to "संगीत", T_GAMING to "गेमिंग", T_NEWS to "समाचार", T_SPORTS to "खेल", T_MOVIES to "फ़िल्में", T_LEARN to "सीखें", T_COMEDY to "कॉमेडी", T_LIVE to "लाइव",
+    RETRY to "पुनः प्रयास करें",
 )

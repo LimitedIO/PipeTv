@@ -50,4 +50,5 @@ val Zh = mapOf(
     LTR to "从左到右", RTL to "从右到左", RTL_ASK to "要为此语言镜像布局吗？",
     KEEP_LTR to "否，保持从左到右", USE_RTL to "是，从右到左",
     POPULAR to "热门", T_MUSIC to "音乐", T_GAMING to "游戏", T_NEWS to "新闻", T_SPORTS to "体育", T_MOVIES to "电影", T_LEARN to "学习", T_COMEDY to "喜剧", T_LIVE to "直播",
+    RETRY to "重试",
 )
