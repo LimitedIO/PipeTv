@@ -1,54 +1,270 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PipeTv – Free YouTube Client for Android TV (No Google, Open Source APK)</title>
-<meta name="description" content="PipeTv is a fast, private, keyboard-first YouTube app for Android TV and Fire TV. No ads, no account, no Google services. Powered by NewPipeExtractor. Download the free APK.">
-<meta name="keywords" content="PipeTv, YouTube Android TV, NewPipe Android TV, SmartTube alternative, YouTube without ads, Fire TV YouTube, open source YouTube client, APK, SponsorBlock">
-<meta name="robots" content="index,follow,max-image-preview:large"><meta name="theme-color" content="#2a1065">
+<title>PipeTv – Free YouTube Client for Android TV (No Ads, No Google, Open Source APK)</title>
+<meta name="description" content="PipeTv is a fast, private, remote-first YouTube app for Android TV, Google TV and Fire TV. No ads, no account, no Google services, SponsorBlock built in. Free and open source. Download the APK.">
+<meta name="keywords" content="PipeTv, YouTube Android TV, NewPipe Android TV, SmartTube alternative, YouTube without ads, Fire TV YouTube, Google TV YouTube, open source YouTube client, APK, SponsorBlock">
+<meta name="robots" content="index,follow,max-image-preview:large"><meta name="theme-color" content="#0b0a24">
 <link rel="canonical" href="https://limitedio.github.io/PipeTv/">
-<link rel="icon" href="assets/favicon.ico"><link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="icon" href="assets/favicon.ico"><link rel="icon" type="image/svg+xml" href="assets/logo.svg"><link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <meta property="og:type" content="website"><meta property="og:site_name" content="PipeTv">
-<meta property="og:title" content="PipeTv – Free YouTube Client for Android TV">
-<meta property="og:description" content="Fast, private, keyboard-first YouTube for Android TV. No ads, no account, no Google services.">
+<meta property="og:title" content="PipeTv – YouTube on your TV, like it used to feel">
+<meta property="og:description" content="Fast, private, remote-first YouTube for Android TV. No ads, no account, no Google services. Free & open source.">
 <meta property="og:url" content="https://limitedio.github.io/PipeTv/"><meta property="og:image" content="https://limitedio.github.io/PipeTv/assets/social.png">
 <meta property="og:image:width" content="1280"><meta property="og:image:height" content="640">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="PipeTv – YouTube for Android TV">
-<meta name="twitter:description" content="Fast, private, open-source YouTube client for Android TV."><meta name="twitter:image" content="https://limitedio.github.io/PipeTv/assets/social.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"PipeTv","operatingSystem":"Android TV, Android 5.0+","applicationCategory":"MultimediaApplication","description":"Fast, private, keyboard-first YouTube client for Android TV.","url":"https://limitedio.github.io/PipeTv/","downloadUrl":"https://github.com/LimitedIO/PipeTv/releases/latest","screenshot":["https://limitedio.github.io/PipeTv/assets/shots/home.jpg","https://limitedio.github.io/PipeTv/assets/shots/music.jpg","https://limitedio.github.io/PipeTv/assets/shots/search.jpg","https://limitedio.github.io/PipeTv/assets/shots/details.jpg","https://limitedio.github.io/PipeTv/assets/shots/settings.jpg"],"image":"https://limitedio.github.io/PipeTv/assets/social.png","license":"https://www.gnu.org/licenses/gpl-3.0.html","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Organization","name":"LimitedIO","url":"https://github.com/LimitedIO"}}</script>
+<meta property="og:video" content="https://limitedio.github.io/PipeTv/assets/demo.mp4"><meta property="og:video:type" content="video/mp4">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="PipeTv – YouTube on your TV, like it used to feel">
+<meta name="twitter:description" content="Fast, private, open-source YouTube client for Android TV. No ads, no account."><meta name="twitter:image" content="https://limitedio.github.io/PipeTv/assets/social.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"PipeTv","operatingSystem":"Android TV, Google TV, Fire TV, Android 5.0+","applicationCategory":"MultimediaApplication","description":"Fast, private, remote-first YouTube client for Android TV. No ads, no account, no Google services.","url":"https://limitedio.github.io/PipeTv/","downloadUrl":"https://github.com/LimitedIO/PipeTv/releases/latest","image":"https://limitedio.github.io/PipeTv/assets/social.png","screenshot":["https://limitedio.github.io/PipeTv/assets/shots/home.jpg","https://limitedio.github.io/PipeTv/assets/shots/player.jpg","https://limitedio.github.io/PipeTv/assets/shots/keyboard.jpg","https://limitedio.github.io/PipeTv/assets/shots/details.jpg","https://limitedio.github.io/PipeTv/assets/shots/settings.jpg"],"video":{"@type":"VideoObject","name":"PipeTv tour","description":"Every PipeTv feature in one minute.","thumbnailUrl":"https://limitedio.github.io/PipeTv/assets/poster.jpg","contentUrl":"https://limitedio.github.io/PipeTv/assets/demo.mp4","uploadDate":"2026-10-25"},"license":"https://www.gnu.org/licenses/gpl-3.0.html","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Organization","name":"LimitedIO","url":"https://github.com/LimitedIO"}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Righteous&family=VT323&display=swap" rel="stylesheet">
 <style>
-:root{color-scheme:dark}*{box-sizing:border-box}
-body{margin:0;font:17px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:linear-gradient(160deg,#0d1b2a,#2a1065);color:#e9ecff;min-height:100vh}
-main{max-width:920px;margin:auto;padding:48px 20px}
-header{text-align:center}header img{width:128px;height:128px;border-radius:28px}
-h1{font-size:clamp(2.2rem,6vw,3.6rem);margin:.3em 0 0}h2{margin-top:2em;color:#1fd1a5}
-.tag{color:#cfd8ff;font-size:1.25rem}
-.btn{display:inline-block;margin:8px;padding:14px 28px;border-radius:14px;background:linear-gradient(135deg,#1fd1a5,#5b3df5);color:#fff;font-weight:700;text-decoration:none}
-.btn.alt{background:#ffffff1a}
-ul{padding-left:1.2em}li{margin:.4em 0}a{color:#9fb4ff}
-code{background:#0006;padding:2px 6px;border-radius:6px}
-.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:18px}figure{margin:0}.shots img{width:100%;height:auto;border-radius:12px;border:1px solid #ffffff22}figcaption{font-size:.85rem;color:#9aa7d6;margin-top:4px}
-footer{margin-top:3em;font-size:.85rem;color:#9aa7d6;text-align:center}
-</style></head><body><main>
-<header><img src="assets/logo-512.png" alt="PipeTv logo" width="128" height="128">
-<h1>PipeTv</h1><p class="tag">A fast, private, keyboard-first YouTube client for Android TV.</p>
-<a class="btn" id="dl" href="https://github.com/LimitedIO/PipeTv/releases/latest">Download APK</a>
-<a class="btn alt" href="https://github.com/LimitedIO/PipeTv">View on GitHub</a></header>
-<h2>See it in action</h2><video src="assets/demo.mp4" poster="assets/shots/home.jpg" autoplay loop muted playsinline controls style="width:100%;border-radius:12px"></video>
-<h2>Screenshots</h2><div class="shots"><figure><img src="assets/shots/home.jpg" alt="PipeTv Android TV screenshot: Personalised recommendations on the home screen" width="1280" height="720" loading="lazy"><figcaption>Personalised recommendations on the home screen</figcaption></figure><figure><img src="assets/shots/music.jpg" alt="PipeTv Android TV screenshot: Popular topics: Trending, Music, Gaming, News and more" width="1280" height="720" loading="lazy"><figcaption>Popular topics: Trending, Music, Gaming, News and more</figcaption></figure><figure><img src="assets/shots/search.jpg" alt="PipeTv Android TV screenshot: Smart search with live suggestions and filters" width="1280" height="720" loading="lazy"><figcaption>Smart search with live suggestions and filters</figcaption></figure><figure><img src="assets/shots/details.jpg" alt="PipeTv Android TV screenshot: Video details, comments, up next and channel jump" width="1280" height="720" loading="lazy"><figcaption>Video details, comments, up next and channel jump</figcaption></figure><figure><img src="assets/shots/settings.jpg" alt="PipeTv Android TV screenshot: Focused settings with sliders, steppers and toggles" width="1280" height="720" loading="lazy"><figcaption>Focused settings with sliders, steppers and toggles</figcaption></figure></div>
-<h2>Why PipeTv?</h2>
-<ul>
-<li><b>Instant &amp; smooth</b> – custom-drawn UI, cached feeds, Android 5.0+ (Android TV, Fire TV, Google TV).</li>
-<li><b>Private</b> – no Google services, no account, no API key, no ads. Built on <a href="https://github.com/TeamNewPipe/NewPipeExtractor">NewPipeExtractor</a>.</li>
-<li><b>Smart search</b> – on-screen keyboard in 14 layouts, live suggestions, filters and voice search.</li>
-<li><b>SponsorBlock</b> – silently skips sponsor segments.</li>
-<li><b>Keep browsing while watching</b> – mini player and overlay menus.</li>
-<li><b>10 languages</b> incl. full Arabic RTL. <b>Auto-updates</b> from GitHub Releases.</li></ul>
-<h2>Install</h2>
-<ol><li>Download the latest <code>PipeTv-*.apk</code> from <a href="https://github.com/LimitedIO/PipeTv/releases/latest">Releases</a>.</li>
-<li>Sideload with <code>adb install</code>, Downloader or a USB drive.</li>
-<li>PipeTv then updates itself (Settings → Updates). <a href="https://github.com/ImranR98/Obtainium">Obtainium</a> works too.</li></ol>
-<h2>FAQ</h2>
-<p><b>Is PipeTv a NewPipe alternative for TV?</b> Yes – it uses NewPipe's extractor with a TV-first, remote-friendly interface.</p>
-<p><b>Is it free?</b> Yes, open source under GPL-3.0.</p>
-<footer>Not affiliated with YouTube or Google. © LimitedIO · <a href="https://github.com/LimitedIO/PipeTv">Source</a></footer>
-</main></body></html>
+:root{color-scheme:dark;--ink:#0b0a24;--ink2:#141040;--teal:#1fd1a5;--mint:#6bffe6;--violet:#5b3df5;--purple:#8a1cf0;--text:#eef0ff;--dim:#a9b1dc;--line:#ffffff1f;--grad:linear-gradient(135deg,var(--teal),var(--violet) 55%,var(--purple))}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font:18px/1.6 Outfit,system-ui,sans-serif;background:var(--ink);color:var(--text);overflow-x:hidden}
+a{color:var(--mint)}img,video{display:block;max-width:100%}
+.vt{font-family:VT323,monospace;letter-spacing:.06em}
+.wrap{max-width:1180px;margin:auto;padding:0 20px}
+/* ---------- hero ---------- */
+.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;
+ background:linear-gradient(#08071d 0%,#1d1260 55%,#3b1a8f 72%)}
+.stars{position:absolute;inset:0;background-image:radial-gradient(1.5px 1.5px at 20px 30px,#fff,transparent),radial-gradient(1px 1px at 120px 80px,#fff,transparent),radial-gradient(1.2px 1.2px at 200px 140px,#cfe,transparent),radial-gradient(1px 1px at 300px 40px,#fff,transparent),radial-gradient(2px 2px at 380px 160px,#fff,transparent);background-size:420px 220px;opacity:.7;animation:twinkle 5s ease-in-out infinite alternate}
+@keyframes twinkle{to{opacity:.35}}
+.sun{position:absolute;left:var(--sx,68%);bottom:28%;width:min(70vw,720px);aspect-ratio:1;transform:translate(-50%,50%);border-radius:50%;
+ background:linear-gradient(var(--teal),var(--violet) 60%,var(--purple));filter:drop-shadow(0 0 60px #5b3df588);
+ -webkit-mask:linear-gradient(#000 0 27%,transparent 27% 28.5%,#000 28.5% 33%,transparent 33% 35%,#000 35% 39%,transparent 39% 41.5%,#000 41.5% 45%,transparent 45% 48%,#000 48%);
+ mask:linear-gradient(#000 0 27%,transparent 27% 28.5%,#000 28.5% 33%,transparent 33% 35%,#000 35% 39%,transparent 39% 41.5%,#000 41.5% 45%,transparent 45% 48%,#000 48%)}
+.floor{position:absolute;left:0;right:0;bottom:0;height:28%;background:linear-gradient(#170c45,#07061a);overflow:hidden;border-top:2px solid var(--mint);box-shadow:0 -6px 30px #6bffe655}
+.floor:before{content:"";position:absolute;left:-60%;right:-60%;top:0;height:260%;transform:perspective(260px) rotateX(58deg);transform-origin:50% 0;
+ background-image:linear-gradient(#7a5cffaa 2px,transparent 2px),linear-gradient(90deg,#7a5cffaa 2px,transparent 2px);background-size:80px 80px;animation:drive 1.2s linear infinite}
+@keyframes drive{to{background-position:0 80px}}
+.hero-in{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1.05fr;gap:48px;align-items:center;padding-top:40px;padding-bottom:22vh}
+.logo{display:flex;align-items:center;gap:14px}.logo img{width:64px;height:64px;border-radius:16px;box-shadow:0 10px 30px #0008}
+.word{font-family:Righteous;font-size:clamp(3.4rem,8vw,6.4rem);line-height:.95;margin:.15em 0 .1em;
+ background:linear-gradient(#fff 0 48%,var(--teal) 52%,#7a5cff);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(5px 6px 0 #0b0a24)}
+h1.tag{font-size:clamp(1.5rem,3.2vw,2.3rem);line-height:1.2;margin:.2em 0 .4em;font-weight:800}
+.lead{color:var(--dim);font-size:1.1rem;max-width:34em}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 26px;padding:0;list-style:none}
+.chips li{font:22px VT323,monospace;padding:2px 12px;border:1px solid #6bffe655;border-radius:8px;color:var(--mint);background:#0b0a2488}
+.cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:16px 28px;border-radius:16px;font-weight:800;font-size:1.1rem;text-decoration:none;color:#fff;background:var(--grad);box-shadow:0 10px 30px #5b3df566,inset 0 -3px 0 #0003;transition:transform .15s,box-shadow .15s}
+.btn:hover,.btn:focus-visible{transform:translateY(-2px) scale(1.02);box-shadow:0 14px 40px #1fd1a566}
+.btn.alt{background:#ffffff14;box-shadow:inset 0 0 0 1px var(--line)}
+.btn small{font:20px VT323,monospace;opacity:.85}
+.meta{margin-top:12px;color:var(--dim);font-size:.9rem}
+/* ---------- CRT TV ---------- */
+.tv{position:relative;padding:22px 22px 26px;border-radius:44px;background:linear-gradient(#fff,#d9dcf3);box-shadow:0 30px 80px #000a,inset 0 -8px 0 #b9bde0;max-width:640px;justify-self:center;width:100%}
+.tv:before,.tv:after{content:"";position:absolute;top:-70px;width:10px;height:90px;background:#fff;border-radius:6px;z-index:-1}
+.tv:before{left:38%;transform:rotate(-28deg)}.tv:after{right:38%;transform:rotate(28deg)}
+.screen{position:relative;border-radius:30px;overflow:hidden;background:#000;aspect-ratio:16/9;box-shadow:inset 0 0 0 6px #0b0a24}
+.screen video{width:100%;height:100%;object-fit:cover}
+.screen:after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+ background:repeating-linear-gradient(#0000 0 3px,#0002 3px 4px),radial-gradient(ellipse at center,#0000 60%,#0007);box-shadow:inset 0 0 40px #0008}
+.tv .knobs{position:absolute;right:-4px;bottom:-14px;display:flex;gap:6px}
+.tv .vhs{position:absolute;top:34px;left:40px;font:26px VT323,monospace;color:#fff;text-shadow:2px 2px #000;z-index:2;animation:blink 1.2s steps(2) infinite}
+@keyframes blink{50%{opacity:.25}}
+.sound{position:absolute;right:38px;bottom:42px;z-index:3;font:20px VT323,monospace;background:#0b0a24cc;color:var(--mint);border:1px solid #6bffe655;border-radius:8px;padding:2px 10px;cursor:pointer}
+/* ---------- ticker ---------- */
+.ticker{background:#000;border-block:2px solid #6bffe644;overflow:hidden;white-space:nowrap}
+.ticker div{display:inline-block;padding:10px 0;font:28px VT323,monospace;color:var(--mint);animation:tick 40s linear infinite}
+.ticker span{margin:0 28px;color:#fff}.ticker b{color:#ffd27a;font-weight:400}
+@keyframes tick{to{transform:translateX(-50%)}}
+/* ---------- sections ---------- */
+section{padding:96px 0}
+.kicker{font:28px VT323,monospace;color:var(--mint);letter-spacing:.1em}
+h2{font-family:Righteous;font-weight:400;font-size:clamp(2rem,4.4vw,3.2rem);line-height:1.1;margin:.1em 0 .4em}
+.center{text-align:center}.center .lead{margin:auto}
+.why{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:40px}
+.why div{padding:24px;border-radius:22px;background:linear-gradient(#ffffff0d,#ffffff05);border:1px solid var(--line)}
+.why b{display:block;font-size:1.2rem;margin:.3em 0 .2em}.why p{margin:0;color:var(--dim);font-size:.98rem}
+.why i{font-style:normal;font-size:30px}
+/* feature channels */
+.ch{display:grid;grid-template-columns:1.25fr 1fr;gap:56px;align-items:center;padding:56px 0;border-top:1px solid var(--line)}
+.ch:nth-child(even){grid-template-columns:1fr 1.25fr}.ch:nth-child(even) .clip{order:2}
+.clip{position:relative;border-radius:22px;overflow:hidden;background:#000;aspect-ratio:16/9;box-shadow:0 24px 60px #0009,0 0 0 1px var(--line);transform:perspective(1200px) rotateY(var(--ry,0deg));transition:transform .6s}
+.ch:nth-child(odd) .clip{--ry:4deg}.ch:nth-child(even) .clip{--ry:-4deg}.ch:hover .clip{--ry:0deg}
+.clip video{width:100%;height:100%;object-fit:cover}
+.clip:after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(#0000 0 3px,#00000014 3px 4px)}
+.clip .osd{position:absolute;top:12px;right:16px;z-index:2;font:24px VT323,monospace;color:var(--mint);background:#0b0a24d9;border:1px solid #6bffe655;border-radius:8px;padding:0 10px}
+.ch h3{font-family:Righteous;font-weight:400;font-size:clamp(1.7rem,3vw,2.4rem);line-height:1.1;margin:.15em 0 .35em}
+.ch p{color:var(--dim);margin:.2em 0 .8em}
+.ch ul{margin:0;padding:0;list-style:none}.ch li{padding:4px 0 4px 28px;position:relative}
+.ch li:before{content:"▶";position:absolute;left:0;color:var(--teal);font-size:.8em;top:7px}
+kbd{font:20px VT323,monospace;padding:0 7px;border-radius:6px;background:#ffffff1a;border:1px solid var(--line)}
+/* gallery */
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:36px}
+.gal button{padding:0;border:0;background:none;cursor:zoom-in;border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px var(--line);transition:transform .2s,box-shadow .2s}
+.gal button:hover,.gal button:focus-visible{transform:scale(1.03);box-shadow:0 0 0 2px var(--teal),0 12px 30px #0008}
+.gal img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+dialog{border:0;padding:0;background:none;max-width:min(96vw,1600px)}dialog::backdrop{background:#04031acc;backdrop-filter:blur(6px)}
+dialog img{border-radius:14px;box-shadow:0 30px 80px #000}dialog p{text-align:center;color:var(--text);margin:10px 0 0}
+/* install & faq */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;counter-reset:s;margin-top:36px}
+.steps div{padding:26px;border-radius:22px;background:#ffffff08;border:1px solid var(--line);position:relative}
+.steps div:before{counter-increment:s;content:"0" counter(s);font:56px VT323,monospace;color:var(--teal);line-height:1;display:block;margin-bottom:6px}
+.steps p{color:var(--dim);margin:.3em 0 0}
+code{font:20px VT323,monospace;background:#0006;padding:1px 8px;border-radius:6px;color:var(--mint)}
+details{border:1px solid var(--line);border-radius:16px;padding:16px 22px;margin:12px 0;background:#ffffff06}
+summary{cursor:pointer;font-weight:600;font-size:1.1rem}details p{color:var(--dim);margin:.6em 0 0}
+.final{position:relative;overflow:hidden;text-align:center;background:linear-gradient(#0b0a24,#1d1260 70%,#3b1a8f)}
+.final .sun{--sx:50%;bottom:0;width:min(90vw,620px);transform:translate(-50%,62%)}
+.final .wrap{position:relative;z-index:2;padding-bottom:120px}
+footer{padding:30px 0 40px;color:var(--dim);font-size:.9rem;text-align:center;background:#07061a}
+/* reveal */
+.rv{opacity:0;transform:translateY(30px);transition:opacity .7s,transform .7s}.rv.on{opacity:1;transform:none}
+@media (max-width:900px){.hero .sun{display:none}.floor{height:16%}.hero-in{grid-template-columns:1fr;gap:80px;padding-top:28px;padding-bottom:22vh}.tv{max-width:560px}
+ .ch,.ch:nth-child(even){grid-template-columns:1fr;gap:24px}.ch:nth-child(even) .clip{order:0}.clip{--ry:0deg!important}section{padding:70px 0}}
+@media (max-width:520px){body{font-size:17px}.wrap{padding:0 16px}.tv{padding:12px 12px 16px;border-radius:28px}.screen{border-radius:18px}.tv .vhs{top:20px;left:24px}.sound{right:22px;bottom:26px}.btn{width:100%;justify-content:center}}
+@media (prefers-reduced-motion:reduce){*,*:before{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style></head><body>
+
+<header class="hero">
+ <div class="stars"></div><div class="sun"></div><div class="floor"></div>
+ <div class="wrap hero-in">
+  <div>
+   <div class="logo"><img src="assets/logo-512.png" alt="PipeTv logo" width="64" height="64"><span class="vt" style="font-size:26px;color:var(--mint)">FOR ANDROID TV · GOOGLE TV · FIRE TV</span></div>
+   <div class="word">PipeTv</div>
+   <h1 class="tag">YouTube on your TV,<br>like it used to feel.</h1>
+   <p class="lead">Fast, calm and made for the remote. No ads, no sign-in, no Google services. Just press OK and watch.</p>
+   <ul class="chips"><li>NO ADS</li><li>NO ACCOUNT</li><li>SPONSORBLOCK</li><li>10 LANGUAGES</li><li>FREE &amp; OPEN SOURCE</li></ul>
+   <div class="cta"><a class="btn dl" href="https://github.com/LimitedIO/PipeTv/releases/latest">▶ Download APK <small class="ver"></small></a>
+   <a class="btn alt" href="#tour">See every feature</a></div>
+   <p class="meta">Android 5.0+ · updates itself · GPL-3.0 · <a href="https://github.com/LimitedIO/PipeTv">source on GitHub</a></p>
+  </div>
+  <div class="tv"><span class="vhs">▶ PLAY</span>
+   <div class="screen"><video src="assets/demo.mp4" poster="assets/poster.jpg" autoplay muted loop playsinline aria-label="One-minute PipeTv tour"></video></div>
+  </div>
+ </div>
+</header>
+
+<div class="ticker" aria-hidden="true"><div>
+ <span>▶ NOW SHOWING</span><b>CH 01</b> INSTANT HOME <span>•</span><b>CH 03</b> POPULAR TOPICS <span>•</span><b>CH 04</b> REMOTE KEYBOARD <span>•</span><b>CH 06</b> PRESS OK, IT PLAYS <span>•</span><b>CH 09</b> MINI PLAYER <span>•</span><b>CH 11</b> SPONSORBLOCK <span>•</span>NO ADS · NO ACCOUNT · NO GOOGLE<span>•</span>
+ <span>▶ NOW SHOWING</span><b>CH 01</b> INSTANT HOME <span>•</span><b>CH 03</b> POPULAR TOPICS <span>•</span><b>CH 04</b> REMOTE KEYBOARD <span>•</span><b>CH 06</b> PRESS OK, IT PLAYS <span>•</span><b>CH 09</b> MINI PLAYER <span>•</span><b>CH 11</b> SPONSORBLOCK <span>•</span>NO ADS · NO ACCOUNT · NO GOOGLE<span>•</span>
+</div></div>
+
+<main>
+<section><div class="wrap center rv">
+ <div class="kicker">REMEMBER WHEN TV WAS SIMPLE?</div>
+ <h2>Sit back. Press OK. Watch.</h2>
+ <p class="lead">PipeTv strips YouTube back to what made it great on a big screen: things to watch, a remote in your hand, and nothing in the way.</p>
+ <div class="why">
+  <div><i>⚡</i><b>Instant</b><p>One custom-drawn view tree. Your last feed shows before the network answers.</p></div>
+  <div><i>🙈</i><b>Private</b><p>No account, no API key, no Google services. Your history stays on your TV.</p></div>
+  <div><i>⏭️</i><b>No interruptions</b><p>No ads, and SponsorBlock quietly skips sponsor reads.</p></div>
+  <div><i>📺</i><b>Runs anywhere</b><p>Android 5.0 and up: old boxes, new Google TVs, Fire TV sticks.</p></div>
+ </div>
+</div></section>
+
+<section id="tour" style="padding-top:20px"><div class="wrap">
+ <div class="center rv"><div class="kicker">THE TOUR · 12 CHANNELS</div><h2>Flip through every feature</h2></div>
+ <div class="channels">
+
+ <article class="ch rv"><div class="clip"><span class="osd">CH 01</span><video data-src="assets/clips/home.mp4" poster="assets/clips/home.jpg" muted loop playsinline preload="none"></video></div>
+  <div><div class="kicker">CH 01 · HOME</div><h3>Opens instantly. Your feed is already there.</h3>
+  <p>The last feed is cached, so there is something to watch before the network even answers. Recommendations grow from what you watch, mixed with trending, with no account behind them.</p>
+  <ul><li>Virtualised grid with spring physics</li><li>Thumbnails decoded at card size</li><li>A calm, slowly drifting background</li></ul></div></article>
+
+ <article class="ch rv"><div class="clip"><span class="osd">CH 02</span><video data-src="assets/clips/rail.mp4" poster="assets/clips/rail.jpg" muted loop playsinline preload="none"></video></div>
+  <div><div class="kicker">CH 02 · NAVIGATION</div><h3>Every page, one press away.</h3>
+  <p>Press <kbd>←</kbd> from the first column and the menu slides in: Home, Search, Popular, Favorites, History, Settings. No hunting, no nested menus.</p></div></article>
+
+ <article class="ch rv"><div class="clip"><span class="osd">CH 03</span><video data-src="assets/clips/popular.mp4" poster="assets/clips/popular.jpg" muted loop playsinline preload="none"></video></div>
+  <div><div class="kicker">CH 03 · POPULAR</div><h3>Channel surfing, the way it should be.</h3>
+  <p>Flip between topics like changing channels. Each one loads in place, no page reloads.</p>
+  <ul><li>Trending · Music · Gaming · News · Sports</li><li>Movies · Learning · Comedy · Live</li></ul></div></article>
+
+ <article class="ch rv"><div class="clip"><span class="osd">CH 04</span><video data-src="assets/clips/search.mp4" poster="assets/clips/search.jpg" muted loop playsinline preload="none"></video></div>
+  <div><div class="kicker">CH 04 · SEARCH</div><h3>A keyboard built for the remote.</h3>
+  <p>Big, color-coded keys with action rows on top. Suggestions update with every letter, and recent searches are one press away.</p>
+  <ul><li>14 layouts: English, العربية, Русский, हिन्दी…</li><li>Voice search from the remote's mic button</li><li>Any physical keyboard types straight in</li></ul></div></article>
+
+ <article class="ch rv"><div class="clip"><span class="osd">CH 05</span><video data-src="assets/clips/filters.mp4" poster="assets/clips/filters.jpg" muted loop playsinline preload="none"></video></div>
+  <div><div class="kicker">CH 05 · FILTERS</div><h3>Videos, channels or playlists. Instantly.</h3>
+  <p>Switch filters without searching again. Results keep loading as you scroll, so there's no "next page" button.</p></div></article>
+
+ <article class="ch rv"><div class="clip"><span class="osd">CH 06</span><video data-src="assets/clips/play.mp4" poster="assets/clips/play.jpg" muted loop playsinline preload="none"></video></div>
+  <div><div class="kicker">CH 06 · PLAYBACK</div><h3>Press OK. It just plays.</h3>
+  <p>A clear "Opening…" with the thumbnail while it loads, and the current video keeps playing until the new one is ready.</p>
+  <ul><li><kbd>←</kbd> <kbd>→</kbd> seek 10 → 30 → 60 s when held</li><li><kbd>0</kbd>–<kbd>9</kbd> jump to 0–90 %</li><li>Retries by itself if a stream hiccups</li></ul></div></article>
+
+ <article class="ch rv"><div class="clip"><span class="osd">CH 07</span><video data-src="assets/clips/options.mp4" poster="assets/clips/options.jpg" muted loop playsinline preload="none"></video></div>
+  <div><div class="kicker">CH 07 · PLAYER OPTIONS</div><h3>Quality, speed, subtitles, audio.</h3>
+  <p>Press <kbd>↑</kbd> while watching. Big sliders and pop-up menus that feel like an old TV's on-screen display: pick resolution, speed, any subtitle track, or the dub and audio language.</p></div></article>
+
+ <article class="ch rv"><div class="clip"><span class="osd">CH 08</span><video data-src="assets/clips/details.mp4" poster="assets/clips/details.jpg" muted loop playsinline preload="none"></video></div>
+  <div><div class="kicker">CH 08 · DETAILS</div><h3>Read the comments without stopping the show.</h3>
+  <p>Press <kbd>↓</kbd> while it plays: description, facts, comments with replies, up next and a jump to the channel. The video keeps playing.</p></div></article>
+
+ <article class="ch rv"><div class="clip"><span class="osd">CH 09</span><video data-src="assets/clips/mini.mp4" poster="assets/clips/mini.jpg" muted loop playsinline preload="none"></video></div>
+  <div><div class="kicker">CH 09 · MINI PLAYER</div><h3>Keep browsing. It keeps playing.</h3>
+  <p>Press Back and the video shrinks into a live preview in the menu. Press <kbd>←</kbd> again for the larger player panel, or select it to go back to fullscreen.</p></div></article>
+
+ <article class="ch rv"><div class="clip"><span class="osd">CH 10</span><video data-src="assets/clips/quick.mp4" poster="assets/clips/quick.jpg" muted loop playsinline preload="none"></video></div>
+  <div><div class="kicker">CH 10 · QUICK ACTIONS</div><h3>Hold OK. Do anything.</h3>
+  <p>Hold OK on any card to play, open info, favorite, or jump to the uploader's channel. The red or bookmark key on your remote favorites in one press.</p>
+  <ul><li>Favorites for videos, channels and playlists</li><li>History by day, with resume points</li></ul></div></article>
+
+ <article class="ch rv"><div class="clip"><span class="osd">CH 11</span><video data-src="assets/clips/settings.mp4" poster="assets/clips/settings.jpg" muted loop playsinline preload="none"></video></div>
+  <div><div class="kicker">CH 11 · SETTINGS</div><h3>SponsorBlock built in. Settings that stay simple.</h3>
+  <p>Sponsor segments are skipped silently and marked on the progress bar. Every option opens its own focused pop-up, so nothing gets lost.</p>
+  <ul><li>10 languages with full right-to-left layout</li><li>Content region separate from app language</li><li>Updates itself from GitHub Releases</li></ul></div></article>
+
+ <article class="ch rv"><div class="clip"><span class="osd">CH 12</span><video data-src="assets/clips/about.mp4" poster="assets/clips/about.jpg" muted loop playsinline preload="none"></video></div>
+  <div><div class="kicker">CH 12 · OPEN SOURCE</div><h3>Free. Open. Yours.</h3>
+  <p>GPL-3.0, built on <a href="https://github.com/TeamNewPipe/NewPipeExtractor">NewPipeExtractor</a> and <a href="https://github.com/androidx/media">Media3</a>. Scan the QR code on the About page to open the source on your phone.</p></div></article>
+
+ </div>
+</div></section>
+
+<section style="background:#07061a"><div class="wrap">
+ <div class="center rv"><div class="kicker">STILL FRAMES</div><h2>Take a closer look</h2><p class="lead">Captured on a 1080p Android TV. Click any frame to enlarge.</p></div>
+ <div class="gal" id="gal"></div>
+</div></section>
+
+<section id="install"><div class="wrap">
+ <div class="center rv"><div class="kicker">TUNE IN</div><h2>On your TV in three steps</h2></div>
+ <div class="steps rv">
+  <div><b>Download</b><p>Get the latest <code>PipeTv-*.apk</code> from <a href="https://github.com/LimitedIO/PipeTv/releases/latest">GitHub Releases</a>.</p></div>
+  <div><b>Sideload</b><p>Install with the Downloader app, a USB drive or <code>adb install PipeTv.apk</code>.</p></div>
+  <div><b>Watch</b><p>That's it. PipeTv updates itself from then on (Settings → Updates). <a href="https://github.com/ImranR98/Obtainium">Obtainium</a> works too.</p></div>
+ </div>
+</div></section>
+
+<section style="padding-top:20px"><div class="wrap" style="max-width:860px">
+ <div class="center rv"><div class="kicker">FAQ</div><h2>Questions</h2></div>
+ <details><summary>Is PipeTv really free, with no ads?</summary><p>Yes. It's open source under GPL-3.0, has no ads and asks for no account. Sponsor segments inside videos are skipped with SponsorBlock.</p></details>
+ <details><summary>Is it a NewPipe for Android TV?</summary><p>It uses NewPipe's extractor under the hood, with an interface designed from scratch for TVs and remotes.</p></details>
+ <details><summary>Does it work on Fire TV, Google TV or an old Android box?</summary><p>Anything running Android 5.0 or newer: Android TV, Google TV, Fire TV sticks and generic boxes.</p></details>
+ <details><summary>Do I need a Google account?</summary><p>No. PipeTv uses no Google services. Favorites and history are stored on your TV.</p></details>
+ <details><summary>How do updates work?</summary><p>PipeTv checks GitHub Releases on launch, downloads new versions in the background and offers to install them. A daily job ships a new build whenever NewPipeExtractor updates.</p></details>
+</div></section>
+
+<section class="final"><div class="sun"></div><div class="wrap rv">
+ <div class="kicker">THE SHOW'S ABOUT TO START</div>
+ <h2>Bring back the good TV nights.</h2>
+ <p class="lead" style="margin-bottom:26px">Free. Private. No ads. No account.</p>
+ <a class="btn dl" href="https://github.com/LimitedIO/PipeTv/releases/latest">▶ Download PipeTv <small class="ver"></small></a>
+</div></section>
+</main>
+
+<dialog id="lb"><img alt=""><p></p></dialog>
+<footer>Not affiliated with YouTube or Google. © LimitedIO · <a href="https://github.com/LimitedIO/PipeTv">Source</a> · <a href="https://github.com/LimitedIO/PipeTv/releases">Releases</a></footer>
+
+<script>
+const shots=[["home","Home: instant, cached feed"],["popular","Popular topics: switch like channels"],["keyboard","Remote keyboard with live suggestions"],["playlists","Filter by videos, channels or playlists"],["results","Search results"],["player","Fullscreen playback"],["options","Player options: quality and speed"],["details","Video details while it plays"],["comments","Comments with replies"],["upnext","Up next"],["rail-preview","Live mini preview in the menu"],["player-panel","Larger player panel"],["quick-actions","Hold OK for quick actions"],["favorites","Favorites"],["settings","Settings with SponsorBlock"],["language","10 app languages"],["rtl","Full right-to-left layout"],["about","About, licenses and repository QR"]];
+const gal=document.getElementById('gal'),lb=document.getElementById('lb');
+gal.innerHTML=shots.map(([f,t])=>`<button aria-label="${t}"><img src="assets/shots/${f}.jpg" alt="PipeTv on Android TV: ${t}" width="1600" height="900" loading="lazy"></button>`).join('');
+gal.querySelectorAll('button').forEach((b,i)=>b.onclick=()=>{lb.querySelector('img').src=`assets/shots/${shots[i][0]}.jpg`;lb.querySelector('p').textContent=shots[i][1];lb.showModal()});
+lb.onclick=()=>lb.close();
+// play feature clips only while visible
+const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting){if(!v.src)v.src=v.dataset.src;v.play().catch(()=>{})}else v.pause()}),{threshold:.35});
+document.querySelectorAll('video[data-src]').forEach(v=>io.observe(v));
+const rv=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');rv.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>rv.observe(el));
+// show latest version and point straight at the APK
+fetch('https://api.github.com/repos/LimitedIO/PipeTv/releases/latest').then(r=>r.ok?r.json():null).then(j=>{if(!j)return;
+ const apk=(j.assets||[]).find(a=>a.name.endsWith('.apk'));
+ document.querySelectorAll('.ver').forEach(s=>s.textContent=j.tag_name+(apk?` · ${(apk.size/1048576).toFixed(0)} MB`:''));
+ if(apk)document.querySelectorAll('a.dl').forEach(a=>a.href=apk.browser_download_url)}).catch(()=>{});
+</script>
+</body></html>
