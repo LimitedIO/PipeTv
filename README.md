@@ -95,6 +95,16 @@ update/  Updater · Installer
 ```
 Add a language: new file in `i18n/lang/`, one line in `S.all` (and optionally a keyboard in `Layouts`).
 
+## Support PipeTv
+PipeTv is free and always will be. If you'd like to help, tips are welcome:
+
+| | Address |
+|---|---|
+| **Monero (XMR)** – private, recommended | `49H8xQ538uPf8dwmUCmq9GScNAZhMh6H51TQWTTcY5p4aXdg71z9raG16yGnaU1PGHWDg7doEmR3GfhVEniBMDb88fut64j` |
+| **Bitcoin (BTC)** | `bc1qsghvgn84rmkjr3fjgc7gvkt4fqsxde6uk50ave` |
+
+<p><img src="docs/assets/donate-xmr.svg" width="150" alt="Monero QR"> &nbsp; <img src="docs/assets/donate-btc.svg" width="150" alt="Bitcoin QR"></p>
+
 ## Star history
 If PipeTv makes your TV nights better, a ★ helps others find it.
 
