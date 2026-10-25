@@ -8,7 +8,7 @@ No ads · no account · no Google services · SponsorBlock built in
 
 [![Release](https://img.shields.io/github/v/release/LimitedIO/PipeTv)](https://github.com/LimitedIO/PipeTv/releases/latest) [![Downloads](https://img.shields.io/github/downloads/LimitedIO/PipeTv/total)](https://github.com/LimitedIO/PipeTv/releases) [![License](https://img.shields.io/badge/license-GPL--3.0-blue)](#) [![Website](https://img.shields.io/badge/site-limitedio.github.io%2FPipeTv-5b3df5)](https://limitedio.github.io/PipeTv/)
 
-**[⬇ Download the APK](https://github.com/LimitedIO/PipeTv/releases/latest)** · **[▶ Watch the full tour](https://limitedio.github.io/PipeTv/#tour)**
+**[⬇ Download the APK](https://github.com/LimitedIO/PipeTv/releases/latest)** · **[▶ Watch the full tour](https://limitedio.github.io/PipeTv/#tour)** · **[★ Star the repo](https://github.com/LimitedIO/PipeTv/stargazers)**
 
 <img src="docs/assets/demo.gif" width="720" alt="PipeTv tour: home, search, playback, details, mini player, quick actions, settings">
 
@@ -94,5 +94,15 @@ ui/widgets   Slider / Step / Toggle / Choice rows
 update/  Updater · Installer
 ```
 Add a language: new file in `i18n/lang/`, one line in `S.all` (and optionally a keyboard in `Layouts`).
+
+## Star history
+If PipeTv makes your TV nights better, a ★ helps others find it.
+
+<a href="https://star-history.com/#LimitedIO/PipeTv&Date">
+ <picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=limitedio%2Fpipetv&type=Date&theme=dark">
+  <img alt="PipeTv star history chart" src="https://api.star-history.com/svg?repos=limitedio%2Fpipetv&type=Date" width="640">
+ </picture>
+</a>
 
 <sub>Not affiliated with YouTube or Google. Releases are signed with the open key in `keystore/` so updates stay installable; fork and replace it for your own builds.</sub>
