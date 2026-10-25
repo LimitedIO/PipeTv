@@ -5,7 +5,8 @@ name: Release APK
 on:
   push:
     branches: [main]
-    paths-ignore: ["**.md"]
+    paths-ignore: ["**.md", "docs/**", ".github/assets/**"]
+  workflow_dispatch:
 
 permissions:
   contents: write

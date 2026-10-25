@@ -1,9 +1,14 @@
 <div align="center">
 
+<img src="docs/assets/logo-512.png" width="128" alt="PipeTv logo">
+
 # ▶ PipeTv
 
 **A fast, private, keyboard-first YouTube client for Android TV.**
 Pure Kotlin · no XML layouts · no Google services · no account · no API key
+
+
+[![Release](https://img.shields.io/github/v/release/LimitedIO/PipeTv)](https://github.com/LimitedIO/PipeTv/releases/latest) [![Downloads](https://img.shields.io/github/downloads/LimitedIO/PipeTv/total)](https://github.com/LimitedIO/PipeTv/releases) [![License](https://img.shields.io/badge/license-GPL--3.0-blue)](#) [![Website](https://img.shields.io/badge/site-limitedio.github.io%2FPipeTv-5b3df5)](https://limitedio.github.io/PipeTv/)
 
 </div>
 
@@ -53,7 +58,7 @@ Pure Kotlin · no XML layouts · no Google services · no account · no API key
 
 ## Install & update
 Grab the latest `PipeTv-*.apk` from [Releases](../../releases) and sideload it (`adb install`, Downloader, USB).
-After that PipeTv updates itself: **Settings → Updates**. Every push to `main` is built and published by CI.
+After that PipeTv updates itself: **Settings → Updates**. Every push to `main` is built and published by CI, and a daily job releases a new build whenever NewPipeExtractor updates.
 Works with [Obtainium](https://github.com/ImranR98/Obtainium) too.
 
 ## Build

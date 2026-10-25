@@ -1,0 +1,47 @@
+name: NewPipeExtractor update
+
+# Daily: if a newer NewPipeExtractor exists, bump it, verify the build,
+# push to main and trigger a signed APK release.
+on:
+  schedule: [{ cron: "17 5 * * *" }]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find latest version
+        id: v
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          latest=$(gh api repos/TeamNewPipe/NewPipeExtractor/releases/latest --jq .tag_name)
+          current=$(grep -oP 'NewPipeExtractor:\K[^"]+' app/build.gradle.kts)
+          echo "latest=$latest current=$current"
+          echo "latest=$latest" >> "$GITHUB_OUTPUT"
+          [ "$latest" != "$current" ] && echo "update=true" >> "$GITHUB_OUTPUT" || true
+      - uses: actions/setup-java@v4
+        if: steps.v.outputs.update
+        with: { distribution: temurin, java-version: 17 }
+      - uses: gradle/actions/setup-gradle@v4
+        if: steps.v.outputs.update
+      - name: Bump and verify build
+        if: steps.v.outputs.update
+        run: |
+          sed -i -E "s#(NewPipeExtractor:)[^\"]+#\1${{ steps.v.outputs.latest }}#" app/build.gradle.kts
+          ./gradlew assembleRelease -q
+      - name: Commit and release
+        if: steps.v.outputs.update
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name LimitedIO
+          git config user.email "160145221+LimitedIO@users.noreply.github.com"
+          git commit -am "Update NewPipeExtractor to ${{ steps.v.outputs.latest }}"
+          git push
+          gh workflow run release.yml --ref main
