@@ -19,12 +19,15 @@ jobs:
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: 17 }
       - uses: gradle/actions/setup-gradle@v4
+      - name: Version
+        # Offset past the pre-existing v1.0.1..v1.0.22 tags so tags and versionCodes stay unique and increasing
+        run: echo "V=$(( ${{ github.run_number }} + 22 ))" >> "$GITHUB_ENV"
       - name: Build
-        run: ./gradlew assembleRelease -Pvcode=${{ github.run_number }} -Pvname=1.0.${{ github.run_number }}
+        run: ./gradlew assembleRelease -Pvcode=$V -Pvname=1.0.$V
       - name: Publish
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cp app/build/outputs/apk/release/app-release.apk PipeTv-1.0.${{ github.run_number }}.apk
-          gh release create v1.0.${{ github.run_number }} PipeTv-*.apk \
-            --title "PipeTv 1.0.${{ github.run_number }}" --generate-notes
+          cp app/build/outputs/apk/release/app-release.apk PipeTv-1.0.$V.apk
+          gh release create v1.0.$V PipeTv-*.apk \
+            --title "PipeTv 1.0.$V" --generate-notes
