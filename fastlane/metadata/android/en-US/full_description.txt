@@ -1,0 +1,14 @@
+YouTube on your TV, like it used to feel. A fast, private, remote-first YouTube client for Android TV, Google TV and Fire TV.
+
+• No ads, no account, no Google services
+• SponsorBlock built in
+• Instant home feed, cached so it shows before the network answers
+• Custom on-screen keyboard (14 layouts) with live suggestions and voice search
+• Search filters for videos, channels and playlists
+• Details, comments with replies and up-next while a video plays
+• Watch history timeline with resume points
+• Quality, speed and subtitle controls with sliders and steppers
+• 10 languages with full right-to-left support
+• Android 5.0+
+
+Powered by NewPipe Extractor. Free and open source (GPL-3.0).
