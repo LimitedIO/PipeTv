@@ -1,23 +1,32 @@
 <div align="center">
 
-<img src="docs/assets/logo-512.png" width="128" alt="PipeTv logo">
+<a href="https://limitedio.github.io/PipeTv/"><img src="docs/assets/social.png" width="860" alt="PipeTv – YouTube on your TV, like it used to feel"></a>
 
-# ▶ PipeTv
-
-**A fast, private, keyboard-first YouTube client for Android TV.**
-Pure Kotlin · no XML layouts · no Google services · no account · no API key
-
+**YouTube on your TV, like it used to feel.**
+A fast, private, remote-first YouTube client for Android TV, Google TV and Fire TV.
+No ads · no account · no Google services · SponsorBlock built in
 
 [![Release](https://img.shields.io/github/v/release/LimitedIO/PipeTv)](https://github.com/LimitedIO/PipeTv/releases/latest) [![Downloads](https://img.shields.io/github/downloads/LimitedIO/PipeTv/total)](https://github.com/LimitedIO/PipeTv/releases) [![License](https://img.shields.io/badge/license-GPL--3.0-blue)](#) [![Website](https://img.shields.io/badge/site-limitedio.github.io%2FPipeTv-5b3df5)](https://limitedio.github.io/PipeTv/)
 
+**[⬇ Download the APK](https://github.com/LimitedIO/PipeTv/releases/latest)** · **[▶ Watch the full tour](https://limitedio.github.io/PipeTv/#tour)**
+
+<img src="docs/assets/demo.gif" width="720" alt="PipeTv tour: home, search, playback, details, mini player, quick actions, settings">
+
 </div>
 
-<p align="center"><img src="docs/assets/demo.gif" width="720" alt="PipeTv demo on Android TV"></p>
-
 ## Screenshots
-<p><img src="docs/assets/shots/home.jpg" width="49%" alt="Personalised recommendations on the home screen"><img src="docs/assets/shots/music.jpg" width="49%" alt="Popular topics: Trending, Music, Gaming, News and more"><img src="docs/assets/shots/search.jpg" width="49%" alt="Smart search with live suggestions and filters"><img src="docs/assets/shots/details.jpg" width="49%" alt="Video details, comments, up next and channel jump"><img src="docs/assets/shots/settings.jpg" width="49%" alt="Focused settings with sliders, steppers and toggles"></p>
+| | | |
+|---|---|---|
+| <img src="docs/assets/shots/home.jpg" alt="Home feed"> | <img src="docs/assets/shots/keyboard.jpg" alt="Remote keyboard with live suggestions"> | <img src="docs/assets/shots/player.jpg" alt="Fullscreen playback"> |
+| Instant home feed | Remote keyboard, live suggestions | Fullscreen playback |
+| <img src="docs/assets/shots/options.jpg" alt="Player options"> | <img src="docs/assets/shots/details.jpg" alt="Details while playing"> | <img src="docs/assets/shots/comments.jpg" alt="Comments"> |
+| Quality & speed in the player | Details while it plays | Comments with replies |
+| <img src="docs/assets/shots/rail-preview.jpg" alt="Mini player in the menu"> | <img src="docs/assets/shots/quick-actions.jpg" alt="Quick actions"> | <img src="docs/assets/shots/playlists.jpg" alt="Search filters"> |
+| Live mini preview | Hold OK for quick actions | Videos / channels / playlists |
+| <img src="docs/assets/shots/settings.jpg" alt="Settings with SponsorBlock"> | <img src="docs/assets/shots/rtl.jpg" alt="Right-to-left layout"> | <img src="docs/assets/shots/about.jpg" alt="About with repository QR"> |
+| SponsorBlock & settings | 10 languages, full RTL | Open source, repo QR |
 
-<sub>Captured on a virtual Android TV (1080p) emulator.</sub>
+<sub>Captured on a 1080p Android TV emulator. More on the [website](https://limitedio.github.io/PipeTv/).</sub>
 
 ## Why
 - **Instant** – one custom-drawn view tree; the last feed is cached so it shows before the network answers.
