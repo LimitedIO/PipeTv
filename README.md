@@ -12,6 +12,11 @@ Pure Kotlin · no XML layouts · no Google services · no account · no API key
 
 </div>
 
+## Screenshots
+<p><img src="docs/assets/shots/home.jpg" width="49%" alt="Personalised recommendations on the home screen"><img src="docs/assets/shots/music.jpg" width="49%" alt="Popular topics: Trending, Music, Gaming, News and more"><img src="docs/assets/shots/search.jpg" width="49%" alt="Smart search with live suggestions and filters"><img src="docs/assets/shots/details.jpg" width="49%" alt="Video details, comments, up next and channel jump"><img src="docs/assets/shots/settings.jpg" width="49%" alt="Focused settings with sliders, steppers and toggles"></p>
+
+<sub>Captured on a virtual Android TV (1080p) emulator.</sub>
+
 ## Why
 - **Instant** – one custom-drawn view tree; the last feed is cached so it shows before the network answers.
 - **Smooth everywhere** – virtualised canvas grid, spring physics, thumbnails decoded at card size. Android 5.0+.
