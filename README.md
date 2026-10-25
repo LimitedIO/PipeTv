@@ -12,6 +12,8 @@ Pure Kotlin · no XML layouts · no Google services · no account · no API key
 
 </div>
 
+<p align="center"><img src="docs/assets/demo.gif" width="720" alt="PipeTv demo on Android TV"></p>
+
 ## Screenshots
 <p><img src="docs/assets/shots/home.jpg" width="49%" alt="Personalised recommendations on the home screen"><img src="docs/assets/shots/music.jpg" width="49%" alt="Popular topics: Trending, Music, Gaming, News and more"><img src="docs/assets/shots/search.jpg" width="49%" alt="Smart search with live suggestions and filters"><img src="docs/assets/shots/details.jpg" width="49%" alt="Video details, comments, up next and channel jump"><img src="docs/assets/shots/settings.jpg" width="49%" alt="Focused settings with sliders, steppers and toggles"></p>
 
