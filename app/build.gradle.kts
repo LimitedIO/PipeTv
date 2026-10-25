@@ -12,6 +12,8 @@ android {
         targetSdk = 35
         versionCode = (findProperty("vcode") as String? ?: "1").toInt()
         versionName = findProperty("vname") as String? ?: "1.0.0"
+        // F-Droid builds pass -Pnoupdater: that store updates the app itself, so the in-app updater is switched off
+        buildConfigField("boolean", "UPDATER", if (hasProperty("noupdater")) "false" else "true")
     }
     signingConfigs {
         create("release") {
@@ -33,6 +35,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
         isCoreLibraryDesugaringEnabled = true
     }
+    buildFeatures { buildConfig = true }
     kotlinOptions { jvmTarget = "17" }
     sourceSets["main"].java.srcDir("src/main/kotlin")
 }

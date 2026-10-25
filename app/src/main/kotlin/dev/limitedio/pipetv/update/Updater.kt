@@ -1,6 +1,7 @@
 package dev.limitedio.pipetv.update
 
 import dev.limitedio.pipetv.App
+import dev.limitedio.pipetv.BuildConfig
 import dev.limitedio.pipetv.Bg
 import dev.limitedio.pipetv.Config
 import dev.limitedio.pipetv.i18n.K
@@ -36,6 +37,7 @@ object Updater {
 
     /** Looks for a newer release and downloads it in the background. */
     fun check(manual: Boolean = false) {
+        if (!BuildConfig.UPDATER) return
         if (st == St.CHECKING || st == St.DOWNLOADING) return
         if (manual) snoozed = false
         if (st == St.FOUND) return download()
