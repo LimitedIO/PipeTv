@@ -24,9 +24,9 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false // NewPipeExtractor relies on reflection; keep it intact
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.findByName("release")
         }
-        debug { signingConfig = signingConfigs.getByName("release") }
+        debug { signingConfig = signingConfigs.findByName("release") }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
